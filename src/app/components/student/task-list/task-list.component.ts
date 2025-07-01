@@ -2,35 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { TaskdataService } from 'src/app/services/taskdata.service';
-
-interface Group {
-  id: number;
-  name: string;
-  memberIds: string[];
-}
-
-interface Project {
-  id: number;
-  name: string;
-  description: string;
-  groups?: Group[];
-  dueDate: string; // ISO string
-}
-
-export interface Task {
-  id: number;
-  title: string;
-  description: string;
-  dueDate: string; // ISO string
-  status: string;
-  createdDate: string;
-  createdBy: string;
-  projectId: number;
-  graded: boolean;
-  visible: boolean;
-  scope: 'INDIVIDUAL' | 'GROUP' | 'CLASS';
-  assignedTo: string[]; // array of member IDs
-}
+import { Task, Group, Project } from 'src/app/Models/Task';
 
 @Component({
   selector: 'app-task-list',

@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { Submission } from 'src/app/models/Submission';
+import { Submission } from '../../Models/Submission';
 import { SidebarService } from 'src/app/services/sidebar.service';
 
 @Component({

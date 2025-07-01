@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { Task } from '../student/task-list/task-list.component';
+import { Task } from '../Models/Task';
 
 @Injectable({ providedIn: 'root' })
 export class TaskdataService {

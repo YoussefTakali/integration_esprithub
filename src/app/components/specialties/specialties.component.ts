@@ -1,6 +1,6 @@
 import { Component,  OnInit, Input } from "@angular/core"
-import { ApiService } from "../services/api.service.service"
-import  { Specialty } from "../models/specialty"
+import { ApiService } from "../../services/api.service.service"
+import  { Specialty } from "../../Models/specialty"
 
 @Component({
   selector: "app-specialties",

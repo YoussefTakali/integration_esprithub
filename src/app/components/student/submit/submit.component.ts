@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { TaskdataService } from 'src/app/services/taskdata.service';
-import { Task } from '../task-list/task-list.component';
+import { Task } from 'src/app/Models/Task';
 
 @Component({
   selector: 'app-submit',

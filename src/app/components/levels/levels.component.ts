@@ -1,7 +1,7 @@
 import { Component, type OnInit, Input } from "@angular/core"
 import  { ActivatedRoute, Router } from "@angular/router"
 import  { Location } from "@angular/common"
-import  { ApiService } from "../services/api.service.service"
+import  { ApiService } from "../../services/api.service.service"
 
 
 @Component({
