@@ -1,0 +1,167 @@
+<div class="main-content">
+  <!-- Left-aligned header with red title -->
+  <div class="header">
+    <div class="header-content">
+      <div class="header-top">
+        <div class="user-profile">
+          <div class="avatar-container">
+            <img src="assets/image.png" alt="User Avatar" class="user-avatar" />
+          </div>
+          <div class="user-info">
+            <h3 class="username">Maram Oueslati</h3>
+            <span *ngIf="totalLanguages > 0" class="language-count-badge">{{ totalLanguages }} languages</span>
+          </div>
+        </div>
+     
+      </div>
+      <p class="page-subtitle">
+        Manage repositories for {{ className || 'this class' }}
+        <span *ngIf="filteredCount !== totalRepos">(Showing {{ filteredCount }} of {{ totalRepos }})</span>
+      </p>
+    </div>
+  </div>
+
+  <!-- Search and Filters -->
+  <div class="filters-container">
+    <div class="search-wrapper">
+      <input 
+        type="text" 
+        placeholder="Find a repository..." 
+        [(ngModel)]="searchTerm" 
+        (input)="onSearch()"
+        class="search-input">
+    </div>
+
+    <div class="filter-buttons">
+      <!-- Type Filter -->
+      <div class="filter-dropdown" [class.open]="showTypeDropdown">
+        <button class="filter-btn" (click)="toggleTypeDropdown($event)">
+          Type: {{ selectedType === 'all' ? 'All' : selectedType }}
+     </button>
+        <div class="dropdown-menu" *ngIf="showTypeDropdown">
+          <div class="dropdown-item" [class.active]="selectedType === 'all'" (click)="selectType('all', $event)">
+            <i class="fas fa-list"></i> All repositories
+          </div>
+          <div class="dropdown-item" [class.active]="selectedType === 'public'" (click)="selectType('public', $event)">
+            <i class="fas fa-globe"></i> Public only
+          </div>
+          <div class="dropdown-item" [class.active]="selectedType === 'private'" (click)="selectType('private', $event)">
+            <i class="fas fa-lock"></i> Private only
+          </div>
+          <div class="dropdown-item" [class.active]="selectedType === 'forks'" (click)="selectType('forks', $event)">
+            <i class="fas fa-code-branch"></i> Forks only
+          </div>
+          <div class="dropdown-item" [class.active]="selectedType === 'sources'" (click)="selectType('sources', $event)">
+            <i class="fas fa-code"></i> Source repositories
+          </div>
+          <div class="dropdown-item" [class.active]="selectedType === 'archived'" (click)="selectType('archived', $event)">
+            <i class="fas fa-archive"></i> Archived
+          </div>
+          <div class="dropdown-item" [class.active]="selectedType === 'templates'" (click)="selectType('templates', $event)">
+            <i class="fas fa-file-code"></i> Templates
+          </div>
+        </div>
+      </div>
+
+      <!-- Language Filter -->
+      <div class="filter-dropdown" [class.open]="showLanguageDropdown" *ngIf="languages.length > 0">
+        <button class="filter-btn" (click)="toggleLanguageDropdown($event)">
+          Language: {{ selectedLanguage === 'all' ? 'All' : selectedLanguage }}
+          <img src="assets/chevron-down.svg" alt="Dropdown" width="12" height="12" class="dropdown-arrow" />
+        </button>
+        <div class="dropdown-menu language-dropdown" *ngIf="showLanguageDropdown">
+          <div class="dropdown-item" [class.active]="selectedLanguage === 'all'" (click)="selectLanguage('all', $event)">
+            <span class="language-dot all-languages"></span> All Languages
+          </div>
+          <div class="dropdown-item" *ngFor="let lang of languages" [class.active]="selectedLanguage === lang" (click)="selectLanguage(lang, $event)">
+            <span class="language-dot" [style.backgroundColor]="getLanguageColor(lang)"></span> {{ lang }}
+          </div>
+        </div>
+      </div>
+
+      <!-- Sort Filter -->
+      <div class="filter-dropdown" [class.open]="showSortDropdown">
+        <button class="filter-btn" (click)="toggleSortDropdown($event)">
+          Sort: {{ getSortLabel() }}
+      </button>
+        <div class="dropdown-menu" *ngIf="showSortDropdown">
+          <div class="dropdown-item" [class.active]="selectedSort === 'created'" (click)="selectSort('created', $event)">Recently created</div>
+          <div class="dropdown-item" [class.active]="selectedSort === 'updated'" (click)="selectSort('updated', $event)">Recently updated</div>
+          <div class="dropdown-item" [class.active]="selectedSort === 'pushed'" (click)="selectSort('pushed', $event)">Recently pushed</div>
+          <div class="dropdown-item" [class.active]="selectedSort === 'name'" (click)="selectSort('name', $event)">Name (A-Z)</div>
+          <div class="dropdown-item" [class.active]="selectedSort === 'name-desc'" (click)="selectSort('name-desc', $event)">Name (Z-A)</div>
+          <div class="dropdown-item" [class.active]="selectedSort === 'stars'" (click)="selectSort('stars', $event)">Most stars</div>
+          <div class="dropdown-item" [class.active]="selectedSort === 'forks'" (click)="selectSort('forks', $event)">Most forks</div>
+          <div class="dropdown-item" [class.active]="selectedSort === 'size'" (click)="selectSort('size', $event)">Repository size</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Repository List -->
+  <div class="levels-list-wrapper">
+    <!-- Repository Cards -->
+    <div *ngFor="let repo of displayedRepos" class="level-list-card">
+      <!-- Colored Border -->
+      <div class="level-border"></div>
+
+      <!-- Card Content -->
+      <div class="level-card-content">
+        <div class="level-title">
+          <a [routerLink]="['/repo', repo.ownerName, repo.repoName]" class="repo-link">
+            {{ repo.repoName }}
+          </a>
+          <span class="repo-visibility" *ngIf="repo.private !== true">Public</span>
+          <span class="repo-visibility private" *ngIf="repo.private === true">Private</span>
+          <span class="repo-fork" *ngIf="repo.fork === true">Fork</span>
+        </div>
+
+        <div class="repo-description" *ngIf="repo.description">
+          <p>{{ repo.description }}</p>
+        </div>
+      
+        <div class="level-meta">
+          <div class="level-info">
+            <img src="assets/image.png" alt="Owner" class="owner-avatar" />
+            <span class="owner-name">maramoueslati</span>
+          </div>
+          
+          <div class="level-info">
+         
+            Created {{ getRelativeTime(repo.creationDate) }}
+          </div>
+          <div class="level-info" *ngIf="repo.language">
+            <span class="language-dot" [style.backgroundColor]="getLanguageColor(repo.language)"></span>
+            {{ repo.language }}
+          </div>
+        </div>
+      </div>
+
+      <!-- Enhanced Action Buttons -->
+      <div class="level-card-actions">
+        <button 
+          (click)="deleteRepo(repo)" 
+          title="Delete repository"
+          class="action-button delete-button">
+          <img src="assets/bin.svg" alt="Delete" width="22" height="22" />
+        </button>
+        <a class="view-btn action-button"
+          [routerLink]="['/repo', repo.ownerName, repo.repoName]">
+          <img src="assets/next.png" alt="View" width="22" height="22" />
+        </a>
+      </div>
+    </div>
+
+    <!-- Empty State -->
+    <div *ngIf="displayedRepos.length === 0" class="empty-state">
+      <div class="empty-state-content">
+        <div class="empty-state-icon">
+          <img src="assets/repo.svg" alt="No repositories" width="45" height="45" />
+        </div>
+        <h3>No repositories found</h3>
+        <p *ngIf="searchTerm || selectedType !== 'all' || selectedLanguage !== 'all'">Try adjusting your search or filters.</p>
+        <p *ngIf="!searchTerm && selectedType === 'all' && selectedLanguage === 'all'">No repositories available for this class.</p>
+      </div>
+    </div>
+  </div>
+</div>

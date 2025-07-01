@@ -1,0 +1,247 @@
+[
+    {
+        "id": 12,
+        "name": "Maggie Mitchell",
+        "description": "Voluptate velit sapi",
+        "createdDate": "2025-05-30T11:31:22.92",
+        "dueDate": "2008-04-16T00:31:00",
+        "status": "COMPLETED",
+        "createdBy": "61eb987b-d7ea-487d-b42d-9f9e4951af05",
+        "collaborators": [],
+        "associatedClasses": [
+            {
+                "id": 2,
+                "name": "Mathematics 201"
+            },
+            {
+                "id": 3,
+                "name": "Physics 101"
+            }
+        ],
+        "groups": []
+    },
+    {
+        "id": 11,
+        "name": "Bert Scott",
+        "description": "Reiciendis ad dolor ",
+        "createdDate": "2025-05-30T11:04:31.931",
+        "dueDate": "1998-10-18T09:24:00",
+        "status": "COMPLETED",
+        "createdBy": "61eb987b-d7ea-487d-b42d-9f9e4951af05",
+        "collaborators": [],
+        "associatedClasses": [
+            {
+                "id": 1,
+                "name": "Computer Science 101"
+            },
+            {
+                "id": 5,
+                "name": "Business Management"
+            },
+            {
+                "id": 4,
+                "name": "English Literature"
+            }
+        ],
+        "groups": []
+    },
+    {
+        "id": 8,
+        "name": "jcp",
+        "description": "aaaaaaaaaaa",
+        "createdDate": "2025-05-27T02:58:53.351",
+        "dueDate": "2025-02-06T16:59:00",
+        "status": "ACTIVE",
+        "createdBy": "61eb987b-d7ea-487d-b42d-9f9e4951af05",
+        "collaborators": [],
+        "associatedClasses": [
+            {
+                "id": 2,
+                "name": "Mathematics 201"
+            },
+            {
+                "id": 4,
+                "name": "English Literature"
+            }
+        ],
+        "groups": [
+            {
+                "id": 9,
+                "name": "Group t",
+                "projectId": 8,
+                "classId": 4,
+                "classe": null,
+                "memberIds": [
+                    "101",
+                    "102",
+                    "103"
+                ]
+            },
+            {
+                "id": 8,
+                "name": "Group c",
+                "projectId": 8,
+                "classId": 4,
+                "classe": null,
+                "memberIds": [
+                    "101",
+                    "102",
+                    "103"
+                ]
+            }
+        ]
+    },
+    {
+        "id": 9,
+        "name": "xxxxxx",
+        "description": "xxxxxxxxxxxxxxxxxx",
+        "createdDate": "2025-05-27T10:32:51.219",
+        "dueDate": "2028-12-05T14:50:00",
+        "status": "ACTIVE",
+        "createdBy": "61eb987b-d7ea-487d-b42d-9f9e4951af05",
+        "collaborators": [],
+        "associatedClasses": [
+            {
+                "id": 4,
+                "name": "English Literature"
+            }
+        ],
+        "groups": []
+    },
+    {
+        "id": 10,
+        "name": "Mohammad Stanton",
+        "description": "Dolor omnis incididu",
+        "createdDate": "2025-05-30T10:58:06.505",
+        "dueDate": "2015-10-07T11:06:00",
+        "status": "ACTIVE",
+        "createdBy": "61eb987b-d7ea-487d-b42d-9f9e4951af05",
+        "collaborators": [],
+        "associatedClasses": [
+            {
+                "id": 4,
+                "name": "English Literature"
+            }
+        ],
+        "groups": []
+    },
+    {
+        "id": 2,
+        "name": "youssef",
+        "description": "aaaa",
+        "createdDate": "2025-05-21T02:51:59.287",
+        "dueDate": "2626-02-06T05:53:00",
+        "status": "COMPLETED",
+        "createdBy": "61eb987b-d7ea-487d-b42d-9f9e4951af05",
+        "collaborators": [],
+        "associatedClasses": [
+            {
+                "id": 1,
+                "name": "Computer Science 101"
+            },
+            {
+                "id": 3,
+                "name": "Physics 101"
+            }
+        ],
+        "groups": [
+            {
+                "id": 5,
+                "name": "Group A",
+                "projectId": 2,
+                "classId": 3,
+                "classe": null,
+                "memberIds": [
+                    "101",
+                    "102",
+                    "103"
+                ]
+            },
+            {
+                "id": 6,
+                "name": "Group A",
+                "projectId": 2,
+                "classId": 3,
+                "classe": null,
+                "memberIds": [
+                    "101",
+                    "102",
+                    "103"
+                ]
+            },
+            {
+                "id": 7,
+                "name": "Group B",
+                "projectId": 2,
+                "classId": 3,
+                "classe": null,
+                "memberIds": [
+                    "101",
+                    "102",
+                    "103"
+                ]
+            },
+            {
+                "id": 4,
+                "name": "Group A",
+                "projectId": 2,
+                "classId": 3,
+                "classe": null,
+                "memberIds": [
+                    "101",
+                    "102",
+                    "103"
+                ]
+            }
+        ]
+    },
+    {
+        "id": 1,
+        "name": "aaa",
+        "description": "aaaa",
+        "createdDate": "2025-05-21T02:47:51.981",
+        "dueDate": "2200-02-06T04:48:00",
+        "status": "COMPLETED",
+        "createdBy": "61eb987b-d7ea-487d-b42d-9f9e4951af05",
+        "collaborators": [],
+        "associatedClasses": [],
+        "groups": [
+            {
+                "id": 1,
+                "name": "Group A",
+                "projectId": 1,
+                "classId": 3,
+                "classe": null,
+                "memberIds": [
+                    "101",
+                    "102",
+                    "103"
+                ]
+            },
+            {
+                "id": 3,
+                "name": "Group A",
+                "projectId": 1,
+                "classId": 3,
+                "classe": null,
+                "memberIds": [
+                    "101",
+                    "102",
+                    "103"
+                ]
+            },
+            {
+                "id": 2,
+                "name": "Group A",
+                "projectId": 1,
+                "classId": 3,
+                "classe": null,
+                "memberIds": [
+                    "101",
+                    "102",
+                    "103"
+                ]
+            }
+        ]
+    }
+]

@@ -1,0 +1,168 @@
+<div class="projects-page">
+  <!-- Filter Bar -->
+  <div class="filter-bar">
+    <div class="filter-group">
+      <label for="statusFilter">
+        <i class="fas fa-filter"></i>
+        Filter by Status:
+      </label>
+      <select id="statusFilter" [(ngModel)]="statusFilter" (ngModelChange)="applyFilters()" class="status-filter">
+        <option value="">All Statuses</option>
+        <option value="ACTIVE">Active</option>
+        <option value="COMPLETED">Completed</option>
+      </select>
+    </div>
+
+    <button class="add-project-btn" (click)="openAddProjectModal()">
+      <i class="fas fa-plus"></i>
+      Add Project
+    </button>
+  </div>
+<div *ngIf="filteredProjects.length === 0 && !errorMessage" class="no-projects-message">
+  No projects found.
+</div>
+
+<!-- Show error message if any -->
+<div *ngIf="errorMessage" class="error-message">
+  {{ errorMessage }}
+</div>
+  <!-- Project Cards -->
+  <div class="projects-grid">
+    <div class="project-card" *ngFor="let project of filteredProjects">
+      <div class="card-header">
+        <div class="date-badge">
+          <i class="fas fa-calendar-alt"></i>
+          <span>{{ project.date }}</span>
+        </div>
+        <button class="menu-btn">
+          <i class="fas fa-ellipsis-h"></i>
+        </button>
+      </div>
+
+      <div class="card-content">
+        <h3 class="project-title">{{ project.title }}</h3>
+        <p class="project-description">{{ project.subtitle }}</p>
+
+        <div class="progress-section">
+          <div class="progress-info">
+            <span class="progress-label">
+              <i class="fas fa-chart-line"></i>
+              Progress
+            </span>
+            <!-- <span class="progress-percentage">{{ project.progress }}%</span> -->
+                         <span class="progress-percentage">0%</span>
+          </div>
+          <div class="progress-bar">
+            <div class="progress-fill" [style.width.%]="0" [ngClass]="getProgressClass(0)"></div>
+          </div>
+        </div>
+
+        <button class="view-btn" (click)="goToProjectDetails(project.id)">
+          <i class="fas fa-arrow-right"></i>
+          View Details
+        </button>
+      </div>
+
+      <div class="card-footer">
+        <div class="team-avatars">
+          <div class="avatar-stack">
+            <div class="add-member">
+              <i class="fas fa-plus"></i>
+            </div>
+          </div>
+        </div>
+        <div class="deadline">
+          <i class="fas fa-clock"></i>
+          <span>{{ project.remainingDays }}d left</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal -->
+  <div class="modal-overlay" *ngIf="showAddModal" (click)="closeAddProjectModal()">
+    <div class="modal-container" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h2>
+          <i class="fas fa-plus-circle"></i>
+          Create New Project
+        </h2>
+        <button class="close-btn" (click)="closeAddProjectModal()">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+
+      <form (ngSubmit)="submitNewProject()" #projectForm="ngForm" class="modal-form">
+        <div class="form-grid">
+          <div class="form-field">
+            <label for="projectTitle">
+              <i class="fas fa-heading"></i>
+              Project Title
+            </label>
+            <input id="projectTitle" type="text" [(ngModel)]="newProject.name" name="name" required class="form-input" placeholder="Enter project title" />
+          </div>
+
+          <div class="form-field full-width">
+            <label for="projectDescription">
+              <i class="fas fa-align-left"></i>
+              Description
+            </label>
+            <textarea id="projectDescription" [(ngModel)]="newProject.description" name="description" required class="form-textarea" placeholder="Enter project description" rows="3"></textarea>
+          </div>
+
+          <div class="form-field">
+            <label for="projectDueDate">
+              <i class="fas fa-calendar"></i>
+              Due Date
+            </label>
+            <input id="projectDueDate" type="date" [(ngModel)]="newProject.dueDate" name="dueDate" required class="form-input" />
+          </div>
+
+          <div class="form-field">
+            <label for="projectDueTime">
+              <i class="fas fa-clock"></i>
+              Due Time
+            </label>
+            <input id="projectDueTime" type="time" [(ngModel)]="newProject.dueTime" name="dueTime" required class="form-input" />
+          </div>
+
+          <div class="form-field">
+            <label for="projectStatus">
+              <i class="fas fa-flag"></i>
+              Status
+            </label>
+            <select id="projectStatus" [(ngModel)]="newProject.status" name="status" class="form-select">
+              <option value="ACTIVE">Active</option>
+              <option value="COMPLETED">Completed</option>
+            </select>
+          </div>
+
+          <div class="form-field full-width">
+            <label class="classes-label">
+              <i class="fas fa-graduation-cap"></i>
+              Associated Classes
+            </label>
+            <div class="checkbox-grid">
+              <label *ngFor="let classOption of classOptions" class="checkbox-item">
+                <input type="checkbox" [value]="classOption.id" (change)="onClassSelectionChange($event, classOption)" [checked]="selectedClasses.includes(classOption.id)" />
+                <span class="checkmark"></span>
+                {{ classOption.name }}
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="cancel-btn" (click)="closeAddProjectModal()">
+            <i class="fas fa-times"></i>
+            Cancel
+          </button>
+          <button type="submit" class="submit-btn">
+            <i class="fas fa-check"></i>
+            Create Project
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

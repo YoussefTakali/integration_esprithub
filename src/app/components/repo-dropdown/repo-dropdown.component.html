@@ -1,0 +1,52 @@
+<div class="repo-dropdown-container">
+  <button class="repo-dropdown-button" (click)="toggleDropdown($event)">
+    <span class="button-text">Repositories</span>
+    <span class="dropdown-arrow">▾</span>
+  </button>
+
+  <div class="dropdown-menu" [class.show]="isDropdownOpen" (click)="$event.stopPropagation()">
+    <div class="dropdown-header">
+      <div class="header-title-row">
+        <h3>Your repositories</h3>
+        <a routerLink="" class="view-all-link" (click)="closeDropdown()">View all</a>
+      </div>
+      <div class="search-container">
+        <input
+          type="text"
+          placeholder="Find a repository..."
+          class="search-input"
+          [(ngModel)]="searchQuery"
+          (click)="$event.stopPropagation()"
+        >
+      </div>
+    </div>
+
+    <div class="dropdown-content">
+      <ul class="repo-list">
+        <li *ngFor="let repo of filteredRepos" class="repo-item" (click)="navigateToRepo(repo, $event)">
+          <div class="repo-icon">
+            <i class="fas fa-book"></i>
+          </div>
+          <div class="repo-info">
+            <div class="repo-name">{{ repo.fullName }}</div>
+            <div class="repo-time">Updated {{ getTimeAgo(repo.lastAccessed) }}</div>
+          </div>
+        </li>
+
+        <li *ngIf="filteredRepos.length === 0 && recentRepos.length > 0" class="no-results">
+          No matching repositories found
+        </li>
+
+        <li *ngIf="recentRepos.length === 0" class="no-repos">
+          You don't have any recent repositories
+        </li>
+      </ul>
+    </div>
+
+    <div class="dropdown-footer">
+      <button class="show-all-button" (click)="navigateToRepoSelector($event)">
+        Browse all repositories
+      </button>
+    </div>
+  </div>
+</div>

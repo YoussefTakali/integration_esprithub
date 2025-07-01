@@ -1,0 +1,36 @@
+<div
+  class="submissions-container border-2 border-neutral-200 rounded-lg p-8 max-w-[95vw] mx-auto font-[Segoe\\ UI]"
+  [ngClass]="{ 'sidebarvisible': sidebarVisible, 'sidebarnotvisible': !sidebarVisible }"
+>
+  <h2 class="text-[35px] mb-1 font-semibold">Recent Submissions</h2>
+  <p class="subtext text-gray-500">Student work submitted in the past week</p>
+
+  <div class="submission mt-6" *ngFor="let item of submissions">
+    <img src="assets/logos/dev.png" alt="submission logo" class="submission-logo w-10 h-10" />
+
+    <div class="details ml-4">
+      <div class="title font-semibold text-lg">Submission #{{ item.id }}</div>
+      <div class="subtitle text-sm text-gray-600">
+        {{ item.description || 'No content provided' }}
+      </div>
+
+      <div class="info flex items-center gap-2 mt-1 text-sm text-gray-500">
+        <span class="author">
+          Submitted by
+          <ng-container *ngIf="item.groupId; else individual">
+            group ({{ item.groupId }})
+          </ng-container>
+          <ng-template #individual>
+            individual ({{ item.studentId }})
+          </ng-template>
+        </span>
+        ·
+        <span class="time">{{ item.submittedAt }}</span>
+      </div>
+    </div>
+
+    <div *ngIf="item.status" class="grade-btn ml-auto text-sm text-white bg-blue-600 rounded px-3 py-1">
+      Status: {{ item.status }}
+    </div>
+  </div>
+</div>

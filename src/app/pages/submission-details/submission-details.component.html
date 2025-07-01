@@ -1,0 +1,205 @@
+<!-- No changes needed to HTML structure -->
+<div class="submission-detail-container" *ngIf="!isLoading && submission">
+  <!-- Header Section -->
+  <div class="submission-header">
+    <div class="header-content">
+      <div class="title-section">
+        <h2 class="submission-title">
+<i class="fa-solid fa-file-lines title-icon"></i>
+          Submission #{{ submission.id }}
+        </h2>
+        <div class="title-underline"></div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Metadata Card -->
+  <div class="card submission-meta-card">
+    <div class="card-header">
+      <h3 class="card-title">
+        <i class="fas fa-info-circle"  style="color: black;"></i>
+        Submission Details
+      </h3>
+      <div class="header-decoration"></div>
+    </div>
+    <div class="card-content">
+      <div class="meta-grid">
+        <div class="meta-item">
+          <div class="meta-icon">
+            <i class="fas fa-calendar-alt"></i>
+          </div>
+          <div class="meta-content">
+            <span class="meta-label">Submitted At</span>
+            <span class="meta-value">{{ submission.submittedAt | date:'medium' }}</span>
+          </div>
+          <div class="meta-accent"></div>
+        </div>
+
+        <div class="meta-item">
+          <div class="meta-icon">
+          <i class="fas fa-user"></i>         <!-- Student ID -->
+          </div>
+          <div class="meta-content">
+            <span class="meta-label">Student ID</span>
+            <span class="meta-value">{{ submission.studentId }}</span>
+          </div>
+          <div class="meta-accent"></div>
+        </div>
+
+        <div class="meta-item">
+          <div class="meta-icon">
+            <i class="fas fa-users"  style="color: black;"></i>
+          </div>
+          <div class="meta-content">
+            <span class="meta-label">Group Name</span>
+            <span class="meta-value">Group B</span>
+          </div>
+          <div class="meta-accent"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content Layout -->
+  <div class="content-layout">
+    <!-- Content Card -->
+    <div class="card submission-content-card">
+      <div class="card-header">
+        <h3 class="card-title">
+          <i class="fas fa-file-text"  style="color: black;"></i>
+          Submission Content
+        </h3>
+        <div class="header-decoration"></div>
+      </div>
+      <div class="card-content">
+        <div class="content-section">
+          <div class="section-header">
+            <h4 class="section-title">
+              <i class="fas fa-align-left"  style="color: black;"></i>
+              Description
+            </h4>
+            <div class="section-line"></div>
+          </div>
+          <div class="description-content">
+            <div class="content-wrapper">
+              {{ submission.description }}
+            </div>
+          </div>
+        </div>
+
+        <div class="content-divider">
+          <div class="divider-line"></div>
+          <div class="divider-icon">
+            <i class="fas fa-code"  style="color: black;"></i>
+          </div>
+          <div class="divider-line"></div>
+        </div>
+
+        <div class="content-section">
+          <div class="section-header">
+            <h4 class="section-title">
+              <i class="fas fa-file-code"  style="color: black;"></i>
+              Content
+            </h4>
+            <div class="section-line"></div>
+          </div>
+          <div class="submission-content-box">
+            <div class="content-wrapper">
+              {{ submission.content }}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+<!-- AI Suggestion Section -->
+
+
+    <!-- Grading Card -->
+    <div class="card grade-card">
+      <div class="card-header">
+        <h3 class="card-title">
+          <i class="fas fa-graduation-cap"  style="color: black;"></i>
+          Grade Submission
+        </h3>
+        <div class="header-decoration grade-decoration"></div>
+      </div>
+      <div class="card-content">
+        <div class="ai-suggestion">
+  <div class="ai-header">
+    <i class="fas fa-robot" style="color: black;"></i>
+    <span class="ai-title">AI Suggestion</span>
+  </div>
+  <div class="ai-content">
+    <p class="suggestion-text">
+      Suggested Grade: <strong>{{ aiSuggestedGrade }}</strong>
+    </p>
+    <p class="suggestion-detail">
+      {{ aiSuggestionExplanation }}
+    </p>
+  </div>
+</div>
+        <form [formGroup]="gradeForm" (ngSubmit)="onSubmitGrade()" class="grade-form">
+          <div class="form-group">
+            <label for="grade" class="form-label">
+              <i class="fas fa-star"  style="color: black;"></i>
+              Grade (0-20)
+            </label>
+            <div class="input-container">
+              <div class="input-wrapper">
+                <input 
+                  id="grade"
+                  type="number" 
+                  min="0" 
+                  max="20" 
+                  formControlName="grade" 
+                  placeholder="Enter grade"
+                  class="form-input"
+                />
+                <div class="input-border"></div>
+              </div>
+              <button 
+                type="submit" 
+                [disabled]="gradeForm.invalid"
+                class="submit-btn"
+                [ngClass]="{'btn-disabled': gradeForm.invalid}"
+              >
+                <i class="fas fa-paper-plane "  style="color: black;"></i>
+                <span class="btn-txt">Submit Grade</span>
+                <div class="btn-glow"></div>
+              </button>
+            </div>
+          </div>
+
+          <div class="success-message" *ngIf="successMessage">
+            <div class="success-icon">
+              <i class="fas fa-check-circle " style="color: black;"></i>
+            </div>
+            <div class="success-content">
+              <span class="success-title">Success!</span>
+              <span class="success-text">{{ successMessage }}</span>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Loading State -->
+<div *ngIf="isLoading" class="loading-container">
+  <div class="loading-content">
+    <div class="loading-spinner">
+      <div class="spinner-ring"></div>
+      <div class="spinner-ring"></div>
+      <div class="spinner-ring"></div>
+      <i class="fas fa-cog spinner-icon" style="color: black;"></i>
+    </div>
+    <p class="loading-text">Loading submission details...</p>
+    <div class="loading-dots">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+  </div>
+</div>

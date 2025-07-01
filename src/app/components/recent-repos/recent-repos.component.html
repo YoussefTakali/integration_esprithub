@@ -1,0 +1,31 @@
+<div class="recent-repos-dropdown">
+  <div class="dropdown-header" (click)="toggleShowAll()">
+    <span class="header-title">Repositories</span>
+    <span class="dropdown-icon">{{ showAllRepos ? '▲' : '▼' }}</span>
+  </div>
+  
+  <div class="dropdown-content" [class.show]="showAllRepos">
+    <div class="search-box">
+      <input type="text" placeholder="Find a repository..." class="repo-search">
+    </div>
+    
+    <ul class="repo-list">
+      <li *ngFor="let repo of recentRepos" class="repo-item" (click)="navigateToRepo(repo)">
+        <div class="repo-icon">
+          <i class="fas fa-book"></i>
+        </div>
+        <div class="repo-info">
+          <span class="repo-name">{{ formatRepoName(repo.fullName) }}</span>
+        </div>
+      </li>
+      
+      <li *ngIf="recentRepos.length === 0" class="empty-message">
+        No recent repositories
+      </li>
+    </ul>
+    
+    <div class="dropdown-footer">
+      <a routerLink="/repo-selector" class="show-more-link">Show more</a>
+    </div>
+  </div>
+</div>

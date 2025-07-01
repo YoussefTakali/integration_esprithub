@@ -1,0 +1,247 @@
+<br>
+<br>
+<br>
+<div class="dashboard-container">
+  <!-- Repository Header -->
+  <div class="repo-header">
+    <div class="header-top">
+      <button class="back-btn" (click)="goBackToRepo()">
+        <i class="fa fa-arrow-left"></i> Back to Repositories
+      </button>
+
+      <div class="repo-info">
+        <div class="repo-icon">📁</div>
+        <div class="repo-details">
+          <h1 class="repo-name">{{ repoFullName }}</h1>
+          <span class="repo-visibility">Public repository</span>
+          <span class="repo-path">{{ repoFullName }}</span>
+        </div>
+      </div>
+
+      <div class="repo-stats">
+        <div class="stat-item">
+          <span class="stat-number">0</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-number">0</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-number">0</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Navigation Tabs -->
+    <div class="nav-tabs">
+      <div class="tab-item">
+        <i class="fa fa-code"></i> Code
+      </div>
+      
+      <div class="tab-item active">
+        <i class="fa fa-bar-chart"></i> Statistics
+      </div>
+    </div>
+  </div>
+
+  <!-- Dashboard Header -->
+  <div class="dashboard-header">
+    <div class="header-content">
+      <div class="dashboard-title">
+        <i class="fa fa-bar-chart dashboard-icon"></i>
+        <h1>Repository Dashboard</h1>
+        <span class="repo-name-subtitle">{{ repoFullName }}</span>
+      </div>
+      <button class="refresh-btn" (click)="refreshStats()">
+        Refresh
+      </button>
+    </div>
+  </div>
+
+  <!-- Quick Stats Overview -->
+  <div class="quick-stats">
+    <div class="stat-card commits">
+      <div class="stat-icon">
+        <i class="fa fa-line-chart"></i>
+      </div>
+      <div class="stat-content">
+        <h3>{{ formatNumber(getTotalCommits()) }}</h3>
+        <p>TOTAL COMMITS ({{ activityDays }} DAYS)</p>
+      </div>
+    </div>
+
+    <div class="stat-card contributors">
+      <div class="stat-icon">
+        <i class="fa fa-users"></i>
+      </div>
+      <div class="stat-content">
+        <h3>{{ contributorStats?.length || 0 }}</h3>
+        <p>CONTRIBUTORS</p>
+      </div>
+    </div>
+
+    <div class="stat-card files">
+      <div class="stat-icon">
+        <i class="fa fa-folder-open"></i>
+      </div>
+      <div class="stat-content">
+        <h3>5</h3>
+        <p>TOTAL FILES</p>
+      </div>
+    </div>
+
+    <div class="stat-card size">
+      <div class="stat-icon">
+        <i class="fa fa-save"></i>
+      </div>
+      <div class="stat-content">
+        <h3>2.1 MB</h3>
+        <p>REPOSITORY SIZE</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Dashboard Content -->
+  <div class="dashboard-content">
+
+    <!-- Activity Stats -->
+    <div class="stats-section">
+      <div class="section-header">
+        <h3>📈 Activity Statistics</h3>
+        <div class="time-selector">
+          <button [class.active]="activityDays === 7" (click)="updateActivityDays(7)">7 days</button>
+          <button [class.active]="activityDays === 30" (click)="updateActivityDays(30)">30 days</button>
+          <button [class.active]="activityDays === 90" (click)="updateActivityDays(90)">90 days</button>
+        </div>
+      </div>
+
+      <div class="stats-content" *ngIf="!isLoadingActivity && !errors['activity']">
+        <div class="activity-summary">
+          <div class="summary-item">
+            <span class="label">Total Commits:</span>
+            <span class="value">{{ formatNumber(getTotalCommits()) }}</span>
+          </div>
+          <div class="summary-item">
+            <span class="label">Lines Added:</span>
+            <span class="value positive">+{{ formatNumber(getTotalAdditions()) }}</span>
+          </div>
+          <div class="summary-item">
+            <span class="label">Lines Deleted:</span>
+            <span class="value negative">-{{ formatNumber(getTotalDeletions()) }}</span>
+          </div>
+        </div>
+
+        <div class="activity-chart" *ngIf="activityStats && activityStats.length > 0">
+          <div class="chart-header">Daily Activity</div>
+          <div class="chart-bars">
+            <div class="bar-item" *ngFor="let stat of (activityStats | slice:-14)">
+              <div class="bar" [style.height.%]="((stat.commits || 0) / getMaxCommits()) * 100"></div>
+              <div class="bar-label">{{ formatDate(stat.date).split('/')[1] }}/{{ formatDate(stat.date).split('/')[0] }}</div>
+              <div class="bar-value">{{ stat.commits || 0 }}</div>
+            </div>
+          </div>
+        </div>
+        <div *ngIf="!activityStats || activityStats.length === 0" class="no-data">
+          No activity data available
+        </div>
+      </div>
+
+      <div class="loading" *ngIf="isLoadingActivity">Loading activity statistics...</div>
+      <div class="error" *ngIf="errors['activity']">{{ errors['activity'] }}</div>
+    </div>
+
+    <!-- File Types Stats -->
+    <div class="stats-section">
+      <div class="section-header">
+        <h3>📁 File Types Distribution</h3>
+      </div>
+
+      <div class="stats-content" *ngIf="!isLoadingFileTypes && !errors['fileTypes']">
+        <div class="file-types-grid" *ngIf="fileTypeStats && fileTypeStats.length > 0">
+          <div class="file-type-item" *ngFor="let fileType of (fileTypeStats | slice:0:8)">
+            <div class="file-type-info">
+              <span class="extension">.{{ fileType.extension }}</span>
+              <span class="count">{{ formatNumber(fileType.count) }} files</span>
+            </div>
+            <div class="percentage-bar">
+              <div class="bar-fill" [style.width.%]="fileType.percentage"></div>
+            </div>
+            <span class="percentage">{{ (fileType.percentage || 0).toFixed(1) }}%</span>
+          </div>
+        </div>
+        <div *ngIf="!fileTypeStats || fileTypeStats.length === 0" class="no-data">
+          No file type data available
+        </div>
+      </div>
+
+      <div class="loading" *ngIf="isLoadingFileTypes">Loading file type statistics...</div>
+      <div class="error" *ngIf="errors['fileTypes']">{{ errors['fileTypes'] }}</div>
+    </div>
+
+    <!-- Contributors Stats -->
+    <div class="stats-section">
+      <div class="section-header">
+        <h3>👥 Top Contributors</h3>
+      </div>
+
+      <div class="stats-content" *ngIf="!isLoadingContributors && !errors['contributors']">
+        <div class="contributors-list" *ngIf="contributorStats && contributorStats.length > 0">
+          <div class="contributor-item" *ngFor="let contributor of (contributorStats | slice:0:10)">
+            <div class="contributor-info">
+              <div class="contributor-name">{{ contributor.username }}</div>
+              <div class="contributor-stats">
+                <span class="commits">{{ formatNumber(contributor.commits) }} commits</span>
+                <span class="changes">+{{ formatNumber(contributor.additions) }} -{{ formatNumber(contributor.deletions) }}</span>
+              </div>
+            </div>
+            <div class="last-commit">{{ getTimeAgo(contributor.lastCommit) }}</div>
+          </div>
+        </div>
+        <div *ngIf="!contributorStats || contributorStats.length === 0" class="no-data">
+          No contributor data available
+        </div>
+      </div>
+
+      <div class="loading" *ngIf="isLoadingContributors">Loading contributor statistics...</div>
+      <div class="error" *ngIf="errors['contributors']">{{ errors['contributors'] }}</div>
+    </div>
+
+    <!-- Repository Size Stats -->
+    <div class="stats-section">
+      <div class="section-header">
+        <h3>💾 Repository Size Analysis</h3>
+      </div>
+
+      <div class="stats-content" *ngIf="!isLoadingSize && !errors['size'] && repoSizeStats">
+        <div class="size-overview">
+          <div class="size-item">
+            <span class="label">Total Size:</span>
+            <span class="value">{{ formatFileSize(repoSizeStats.totalSize) }}</span>
+          </div>
+          <div class="size-item">
+            <span class="label">Files:</span>
+            <span class="value">{{ formatNumber(repoSizeStats.fileCount) }}</span>
+          </div>
+          <div class="size-item">
+            <span class="label">Directories:</span>
+            <span class="value">{{ formatNumber(repoSizeStats.directoryCount) }}</span>
+          </div>
+        </div>
+
+        <div class="largest-files" *ngIf="repoSizeStats.largestFiles && repoSizeStats.largestFiles.length > 0">
+          <h4>Largest Files</h4>
+          <div class="file-item" *ngFor="let file of repoSizeStats.largestFiles.slice(0, 5)">
+            <div class="file-info">
+              <span class="file-name">{{ file.name }}</span>
+              <span class="file-path">{{ file.path }}</span>
+            </div>
+            <span class="file-size">{{ formatFileSize(file.size) }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="loading" *ngIf="isLoadingSize">Loading repository size statistics...</div>
+      <div class="error" *ngIf="errors['size']">{{ errors['size'] }}</div>
+    </div>
+
+  </div>
+</div>

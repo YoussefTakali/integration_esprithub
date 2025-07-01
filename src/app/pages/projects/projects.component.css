@@ -1,0 +1,707 @@
+@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css');
+
+:root {
+  --primary-red: #ff0000;
+  --secondary-red: #cc3333;
+  --tertiary-red: #b34747;
+  --quaternary-red: #996666;
+  --light-gray: #857575;
+  --medium-gray: #757575;
+  --white: #ffffff;
+  --light-bg: #f8fafc;
+  --border-light: #e2e8f0;
+  --text-dark: #1e293b;
+  --text-medium: #64748b;
+  --text-light: #94a3b8;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.projects-page {
+  padding: 24px;
+  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+  min-height: 100vh;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* Filter Bar */
+.filter-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--white);
+  padding: 20px 24px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 24px;
+  border: 1px solid var(--border-light);
+}
+
+.filter-group {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.filter-group label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  color: var(--text-dark);
+  font-size: 14px;
+}
+
+.filter-group i {
+  color: var(--primary-red);
+}
+
+.status-filter {
+  padding: 10px 14px;
+  border: 2px solid var(--border-light);
+  border-radius: 8px;
+  background: var(--white);
+  color: var(--text-dark);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 160px;
+}
+
+.status-filter:focus {
+  outline: none;
+  border-color: var(--primary-red);
+  box-shadow: 0 0 0 3px rgba(255, 0, 0, 0.1);
+}
+
+.add-project-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 24px;
+  background: linear-gradient(135deg, var(--primary-red), var(--secondary-red));
+  color: var(--white);
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(255, 0, 0, 0.2);
+}
+
+.add-project-btn:hover {
+  background: linear-gradient(135deg, var(--secondary-red), var(--tertiary-red));
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(255, 0, 0, 0.3);
+}
+
+/* Projects Grid - Dynamic Heights */
+.projects-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* Exactly 3 per row */
+  gap: 20px;
+  align-items: start;
+}
+
+/* Project Card - Dynamic Height */
+.project-card {
+  background: var(--white);
+  border-radius: 12px;
+  border: 2px solid var(--border-light);
+  overflow: hidden;
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  /* Removed fixed height to allow dynamic sizing */
+  min-height: 220px; /* Minimum height for consistency */
+}
+
+.project-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 30px rgba(255, 0, 0, 0.15);
+  border-color: var(--primary-red);
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px 12px;
+  border-bottom: 1px solid var(--light-bg);
+  background: linear-gradient(135deg, #fafafa, #f5f5f5);
+}
+
+.date-badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--text-medium);
+  background: var(--light-bg);
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-weight: 500;
+}
+
+.date-badge i {
+  color: var(--secondary-red);
+}
+
+.menu-btn {
+  background: none;
+  border: none;
+  color: var(--text-light);
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.menu-btn:hover {
+  background: var(--light-bg);
+  color: var(--text-medium);
+}
+
+.card-content {
+  padding: 20px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 16px; /* Consistent spacing between elements */
+}
+
+.project-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text-dark);
+  line-height: 1.3;
+  margin: 0;
+}
+
+.project-description {
+  font-size: 13px;
+  color: var(--text-medium);
+  line-height: 1.5;
+  /* Removed line clamp to allow full text display */
+  flex-grow: 1; /* This allows description to take available space */
+}
+
+.progress-section {
+  margin-top: auto; /* Push progress to bottom of content area */
+}
+
+.progress-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.progress-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-dark);
+}
+
+.progress-label i {
+  color: var(--tertiary-red);
+}
+
+.progress-percentage {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-dark);
+}
+
+.progress-bar {
+  width: 100%;
+  height: 6px;
+  background: var(--border-light);
+  border-radius: 3px;
+  overflow: hidden;
+  margin-bottom: 16px;
+}
+
+.progress-fill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.3s ease;
+}
+
+.progress-low {
+  background: linear-gradient(90deg, var(--primary-red), var(--secondary-red));
+}
+
+.progress-medium {
+  background: linear-gradient(90deg, var(--secondary-red), var(--tertiary-red));
+}
+
+.progress-high {
+  background: linear-gradient(90deg, var(--tertiary-red), var(--quaternary-red));
+}
+
+.view-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 16px;
+  background: var(--light-bg);
+  color: var(--text-dark);
+  border: 2px solid var(--border-light);
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.view-btn:hover {
+  background: linear-gradient(135deg, var(--primary-red), var(--secondary-red));
+  color: var(--white);
+  border-color: var(--primary-red);
+  transform: translateY(-1px);
+}
+
+.card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  background: linear-gradient(135deg, #fafafa, #f5f5f5);
+  border-top: 1px solid var(--light-bg);
+  margin-top: auto; /* Push footer to bottom */
+}
+
+.avatar-stack {
+  display: flex;
+  align-items: center;
+}
+
+.avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 2px solid var(--white);
+  margin-left: -8px;
+  object-fit: cover;
+  transition: transform 0.2s ease;
+}
+
+.avatar:first-child {
+  margin-left: 0;
+}
+
+.avatar:hover {
+  transform: scale(1.1);
+  z-index: 10;
+}
+
+.add-member {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--light-gray), var(--medium-gray));
+  color: var(--white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  margin-left: -8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.add-member:hover {
+  background: linear-gradient(135deg, var(--primary-red), var(--secondary-red));
+  transform: scale(1.1);
+}
+
+.deadline {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--text-medium);
+  font-weight: 500;
+}
+
+.deadline i {
+  color: var(--primary-red);
+}
+
+/* Modal */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background:white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  backdrop-filter: blur(4px);
+}
+
+.modal-container {
+  background: var(--white);
+  border-radius: 16px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  max-width: 600px;
+  width: 90%;
+  max-height: 90vh;
+  overflow-y: auto;
+  border: 2px solid var(--border-light);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24px 32px;
+  border-bottom: 2px solid var(--border-light);
+  background: linear-gradient(135deg, #fafafa, #f5f5f5);
+}
+
+.modal-header h2 {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text-dark);
+}
+
+.modal-header i {
+  color: var(--primary-red);
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  color: var(--text-light);
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+  font-size: 16px;
+}
+
+.close-btn:hover {
+  background: var(--light-bg);
+  color: var(--primary-red);
+}
+
+.modal-form {
+  padding: 32px;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-field.full-width {
+  grid-column: 1 / -1;
+}
+
+.form-field label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-dark);
+}
+
+.form-field label i {
+  color: var(--primary-red);
+}
+
+.form-input,
+.form-textarea,
+.form-select {
+  padding: 12px 16px;
+  border: 2px solid var(--border-light);
+  border-radius: 8px;
+  font-size: 14px;
+  color: var(--text-dark);
+  transition: all 0.3s ease;
+  font-weight: 500;
+}
+
+.form-input:focus,
+.form-textarea:focus,
+.form-select:focus {
+  outline: none;
+  border-color: var(--primary-red);
+  box-shadow: 0 0 0 3px rgba(255, 0, 0, 0.1);
+}
+
+.form-textarea {
+  resize: vertical;
+  font-family: inherit;
+}
+
+.checkbox-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+  padding: 16px;
+  background: var(--light-bg);
+  border-radius: 8px;
+  border: 2px solid var(--border-light);
+}
+
+.checkbox-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  color: var(--text-dark);
+  font-weight: 500;
+}
+
+.checkbox-item input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--primary-red);
+}
+
+.modal-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  margin-top: 32px;
+  padding-top: 24px;
+  border-top: 2px solid var(--border-light);
+}
+
+.cancel-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 24px;
+  background: var(--light-bg);
+  color: var(--text-dark);
+  border: 2px solid var(--border-light);
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.cancel-btn:hover {
+  background: var(--border-light);
+  border-color: var(--text-medium);
+}
+
+.submit-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 24px;
+  background: linear-gradient(135deg, var(--primary-red), var(--secondary-red));
+  color: var(--white);
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(255, 0, 0, 0.2);
+}
+
+.submit-btn:hover {
+  background: linear-gradient(135deg, var(--secondary-red), var(--tertiary-red));
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(255, 0, 0, 0.3);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .projects-page {
+    padding: 16px;
+  }
+  
+  .filter-bar {
+    flex-direction: column;
+    gap: 16px;
+    align-items: stretch;
+  }
+  
+  .projects-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .modal-container {
+    width: 95%;
+    margin: 16px;
+  }
+  
+  .modal-form {
+    padding: 24px;
+  }
+}
+/* === Transparent Red Accents (Direct, Not Variables) === */
+
+/* Filter bar border and background accent */
+.filter-bar {
+  border: 2px solid rgba(255,0,0,0.13) !important;
+  background: rgba(255,0,0,0.03) !important;
+}
+
+/* Project card border and hover accent */
+.project-card {
+  border: 2px solid rgba(255,0,0,0.13) !important;
+}
+.project-card:hover {
+  border-color: rgba(255,0,0,0.35) !important;
+  box-shadow: 0 12px 30px rgba(255,0,0,0.10);
+}
+
+/* Card header subtle red underline */
+.card-header {
+  border-bottom: 2px solid rgba(255,0,0,0.10) !important;
+}
+
+/* Progress bar background and fill accent */
+.progress-bar {
+  background: rgba(255,0,0,0.07) !important;
+}
+.progress-fill.progress-low {
+  background: linear-gradient(90deg, rgba(255,0,0,0.25), rgba(255,0,0,0.13)) !important;
+}
+.progress-fill.progress-medium {
+  background: linear-gradient(90deg, rgba(255,0,0,0.18), rgba(255,0,0,0.10)) !important;
+}
+.progress-fill.progress-high {
+  background: linear-gradient(90deg, rgba(255,0,0,0.10), rgba(255,0,0,0.07)) !important;
+}
+
+/* Modal border accent */
+.modal-container {
+  border: 2px solid rgba(255,0,0,0.13) !important;
+}
+
+/* Modal header underline */
+.modal-header {
+  border-bottom: 2px solid rgba(255,0,0,0.10) !important;
+}
+
+/* Checkbox grid border accent */
+.checkbox-grid {
+  border: 2px solid rgba(255,0,0,0.10) !important;
+  background: rgba(255,0,0,0.02) !important;
+}
+
+/* Modal actions border accent */
+.modal-actions {
+  border-top: 2px solid rgba(255,0,0,0.10) !important;
+}
+
+/* Add member button hover accent */
+.add-member:hover {
+  background: linear-gradient(135deg, rgba(255,0,0,0.18), rgba(255,0,0,0.10)) !important;
+}
+
+/* View button hover accent */
+.view-btn:hover {
+  background: linear-gradient(135deg, rgba(255,0,0,0.13), rgba(255,0,0,0.07)) !important;
+  color: #fff !important;
+  border-color: rgba(255,0,0,0.25) !important;
+}
+
+/* Responsive tweaks: keep as is or add red if needed *//* ...existing code... */
+
+/* === Strong Red Accents (Direct Colors, No Variables) === */
+
+/* Filter bar border and background accent */
+.filter-bar {
+  border: 2px solid #ff0000 !important;
+  background: #fff5f5 !important;
+}
+
+/* Project card border and hover accent */
+.project-card {
+  border: 2px solid #ff0000 !important;
+}
+.project-card:hover {
+  border-color: #cc3333 !important;
+  box-shadow: 0 12px 30px rgba(255,0,0,0.18);
+}
+
+/* Card header subtle red underline */
+.card-header {
+  border-bottom: 2px solid #ff0000 !important;
+}
+
+/* Progress bar background and fill accent */
+.progress-bar {
+  background: #ffeaea !important;
+}
+.progress-fill.progress-low {
+  background: linear-gradient(90deg, #ff0000, #cc3333) !important;
+}
+.progress-fill.progress-medium {
+  background: linear-gradient(90deg, #cc3333, #b34747) !important;
+}
+.progress-fill.progress-high {
+  background: linear-gradient(90deg, #b34747, #996666) !important;
+}
+
+/* Modal border accent */
+.modal-container {
+  border: 2px solid #ff0000 !important;
+}
+
+/* Modal header underline */
+.modal-header {
+  border-bottom: 2px solid #ff0000 !important;
+}
+
+/* Checkbox grid border accent */
+.checkbox-grid {
+  border: 2px solid #ff0000 !important;
+  background: #fff5f5 !important;
+}
+
+/* Modal actions border accent */
+.modal-actions {
+  border-top: 2px solid #ff0000 !important;
+}
+
+/* Add member button hover accent */
+.add-member:hover {
+  background: linear-gradient(135deg, #ff0000, #cc3333) !important;
+}
+
+/* View button hover accent */
+.view-btn:hover {
+  background: linear-gradient(135deg, #ff0000, #cc3333) !important;
+  color: #fff !important;
+  border-color: #ff0000 !important;
+}
+

@@ -1,0 +1,224 @@
+<div class="dashboard-container">
+  <!-- Top Navigation Bar -->
+  <nav class="top-nav">
+    <div class="nav-left">
+      <button class="menu-btn">
+        <span class="hamburger"></span>
+        <span class="hamburger"></span>
+        <span class="hamburger"></span>
+      </button>
+      <div class="logo">
+        <div class="logo-icon">esp</div>
+        <span class="logo-text">esprit lab</span>
+      </div>
+    </div>
+    <div class="nav-right">
+      <button class="nav-icon-btn">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"></path>
+          <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+        </svg>
+      </button>
+      <div class="user-avatar">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+          <circle cx="12" cy="7" r="4"></circle>
+        </svg>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Header Section -->
+  <header class="header-section">
+    <div class="header-content">
+      <div class="user-profile">
+        <!-- GitHub Avatar -->
+        <div class="avatar-container" *ngIf="!userAvatar">
+          <span>{{ getUserInitials() }}</span>
+        </div>
+        <img *ngIf="userAvatar" [src]="userAvatar" alt="User Avatar" class="github-avatar">
+        
+        <div class="user-info">
+          <h1 class="username">{{ userName || 'Guest User' }}</h1>
+          <p class="user-role">Student Dashboard</p>
+        </div>
+      </div>
+      <div class="datetime">
+        <div class="time">{{ getCurrentTime() }}</div>
+        <div class="date">{{ getCurrentDate() }}</div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <!-- Welcome Section -->
+    <div class="welcome-section">
+      <h2 class="welcome-title">Dashboard Overview</h2>
+      <p class="welcome-subtitle">Welcome to your GitHub Repository Management System</p>
+    </div>
+
+    <!-- Stats Grid -->
+    <div class="stats-grid">
+      <!-- Assignments Card -->
+      <div class="stat-card assignments" (click)="navigateTo('/tasks-list')">
+        <div class="stat-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+            <polyline points="14,2 14,8 20,8"></polyline>
+            <line x1="16" y1="13" x2="8" y2="13"></line>
+            <line x1="16" y1="17" x2="8" y2="17"></line>
+            <polyline points="10,9 9,9 8,9"></polyline>
+          </svg>
+        </div>
+        <div class="stat-content">
+          <div class="stat-number">{{ studentStats.assignments.total }}</div>
+          <div class="stat-label">Assignments</div>
+          <div class="stat-description">Total assigned tasks</div>
+        </div>
+      </div>
+
+      <!-- Completed Card -->
+      <div class="stat-card completed" (click)="navigateTo('/submissions')">
+        <div class="stat-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+            <polyline points="22,4 12,14.01 9,11.01"></polyline>
+          </svg>
+        </div>
+        <div class="stat-content">
+          <div class="stat-number">{{ studentStats.assignments.completed }}</div>
+          <div class="stat-label">Completed</div>
+          <div class="stat-description">Finished assignments</div>
+        </div>
+      </div>
+
+      <!-- Pending Card -->
+      <div class="stat-card pending" (click)="navigateTo('/tasks-list')">
+        <div class="stat-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <polyline points="12,6 12,12 16,14"></polyline>
+          </svg>
+        </div>
+        <div class="stat-content">
+          <div class="stat-number">{{ studentStats.assignments.pending }}</div>
+          <div class="stat-label">Pending</div>
+          <div class="stat-description">Assignments to complete</div>
+        </div>
+      </div>
+
+      <!-- Urgent Card -->
+      <div class="stat-card urgent" (click)="navigateTo('/classes')">
+        <div class="stat-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="8" x2="12" y2="12"></line>
+            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+          </svg>
+        </div>
+        <div class="stat-content">
+          <div class="stat-number">{{ studentStats.assignments.urgent }}</div>
+          <div class="stat-label">Urgent</div>
+          <div class="stat-description">Due soon assignments</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick Actions Section -->
+    <div class="actions-section">
+      <h3 class="section-title">Quick Actions</h3>
+      <div class="actions-grid">
+        <button class="action-card" (click)="navigateTo('/tasks-list')">
+          <div class="action-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+              <polyline points="14,2 14,8 20,8"></polyline>
+            </svg>
+          </div>
+          <span class="action-text">View Assignments</span>
+        </button>
+
+        <button class="action-card" (click)="navigateTo('/repo-selector')">
+          <div class="action-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
+            </svg>
+          </div>
+          <span class="action-text">My Repositories</span>
+        </button>
+
+        <button class="action-card" (click)="navigateTo('/projects')">
+          <div class="action-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+              <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+            </svg>
+          </div>
+          <span class="action-text">View Projects</span>
+        </button>
+
+        <button class="action-card" (click)="navigateTo('/submissions')">
+          <div class="action-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="7,10 12,15 17,10"></polyline>
+              <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+          </div>
+          <span class="action-text">Submit Work</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- GitHub Overview Section -->
+    <div class="github-section">
+      <h3 class="section-title">GitHub Overview</h3>
+      <div class="github-grid">
+        <!-- Repositories Card -->
+        <div class="github-card" (click)="navigateTo('/repo-selector')">
+          <div class="github-icon">
+            <span class="github-number">{{ studentStats.github.repositories }}</span>
+          </div>
+          <div class="github-content">
+            <div class="github-label">Repositories</div>
+            <div class="github-description">Total repos</div>
+          </div>
+        </div>
+
+        <!-- Commits Card -->
+        <div class="github-card" (click)="navigateTo('/repo-browser')">
+          <div class="github-icon">
+            <span class="github-number">{{ studentStats.github.commits }}</span>
+          </div>
+          <div class="github-content">
+            <div class="github-label">Commits</div>
+            <div class="github-description">Total commits</div>
+          </div>
+        </div>
+
+        <!-- Pull Requests Card -->
+        <div class="github-card" (click)="navigateTo('/projects')">
+          <div class="github-icon">
+            <span class="github-number">{{ studentStats.github.pullRequests }}</span>
+          </div>
+          <div class="github-content">
+            <div class="github-label">Pull Requests</div>
+            <div class="github-description">Submitted PRs</div>
+          </div>
+        </div>
+
+        <!-- Issues Card -->
+        <div class="github-card" (click)="navigateTo('/classes')">
+          <div class="github-icon">
+            <span class="github-number">{{ studentStats.github.issues }}</span>
+          </div>
+          <div class="github-content">
+            <div class="github-label">Issues</div>
+            <div class="github-description">Repository issues</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>

@@ -1,0 +1,41 @@
+<div 
+  class="card-container" 
+  [ngClass]="{ 
+    'sidebar-open-container': sidebarVisible 
+  }"
+>
+    <div 
+      *ngFor="let card of classrepo" 
+      class="card"  [ngClass]="{'sidebar-open': sidebarVisible}">
+      
+      <div class="card-content">
+        <div class="card-left">
+          <div class="card-icon-name">
+            <img src="assets/logos/git-branch-svgrepo-com (3).png" class="card-icon"/>
+            <h3 class="card-name">{{ card.name }}</h3>
+            <span class="ai-assisted-box" *ngIf="card.ai_assited">AI</span>
+          </div>
+          <p class="card-value">{{ card.description }}</p>
+        </div>
+        
+        <!-- AI Assisted badge -->
+      </div>
+  
+      <!-- Bottom info row -->
+      <div class="card-bottom">
+        <div class="card-meta">
+          <img src="assets/logos/open-book-svgrepo-com.png" alt="code icon" class="meta-icon" />
+          <p class="card-text">{{ card.code }}</p>
+        </div>
+        <div class="card-meta">
+          <img src="assets/logos/student-cap-svgrepo-com.png" alt="students icon" class="meta-icon" />
+          <p class="card-text">Students: {{ card.students }}</p>
+        </div>
+        <div class="card-meta">
+          <img src="assets/logos/git-fork-svgrepo-com (1).png" alt="forks icon" class="meta-icon" />
+          <p class="card-text">Forks: {{ card.forks }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  

@@ -1,0 +1,29 @@
+<div class="submissions-container border-2 border-neutral-200 rounded-lg p-8 max-w-[95vw] mx-auto font-[Segoe UI]" [ngClass]="{ 'sidebarvisible': sidebarVisible, 'sidebarnotvisible': !sidebarVisible }">
+    <h2 class="text-[35px] mb-1 font-[Geist], 'Segoe UI', sans-serif">Grading Queue</h2>
+    <p class="subtext">Assignments waiting for your review</p>
+  
+    <div class="submission" *ngFor="let item of submissions">
+        <span 
+        class="dot" 
+        [ngClass]="{
+          'grade-a': item.grade === 'A',
+          'grade-b': item.grade === 'B',
+          'grade-c': item.grade === 'C',
+          'grade-d': item.grade === 'D'
+        }">  </span>
+      <div class="details">
+        <div class="title">{{ item.author }}</div>
+        <div class="subtitle">{{ item.title }}</div>
+  
+        <div class="info flex items-center gap-2 mt-1">
+          <span class="author">Submitted : </span> · 
+          <span class="time">{{ item.time }}</span>
+        </div>
+        <div class="aispan">
+            <img src="assets/logos/task.png/" class="tasklogo">
+            <span>Ai Suggestion :{{item.aiSuggestion}}%</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  

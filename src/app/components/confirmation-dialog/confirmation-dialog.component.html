@@ -1,0 +1,97 @@
+<!-- Enhanced Dialog Template -->
+<div class="dialog-header">
+  <h2 mat-dialog-title 
+      [id]="'dialog-title-' + dialogId"
+      class="dialog-title-enhanced">
+    <mat-icon *ngIf="data.icon" 
+              [class]="'dialog-icon dialog-icon-' + (data.type || 'info')"
+              aria-hidden="true">
+      {{ data.icon }}
+    </mat-icon>
+    <span class="dialog-title-text">{{ data.title }}</span>
+  </h2>
+</div>
+
+<mat-dialog-content 
+    class="dialog-content-enhanced"
+    [attr.aria-labelledby]="'dialog-title-' + dialogId"
+    [attr.aria-describedby]="data.message ? 'dialog-message-' + dialogId : null">
+  
+  <!-- Main Message -->
+  <div *ngIf="data.message" 
+       [id]="'dialog-message-' + dialogId"
+       class="dialog-message"
+       [innerHTML]="data.message | safeHtml">
+  </div>
+  
+  <!-- Additional Content Slot -->
+  <div *ngIf="data.content" 
+       class="dialog-additional-content"
+       [innerHTML]="data.content | safeHtml">
+  </div>
+  
+  <!-- Warning/Error Details -->
+  <div *ngIf="data.details && (data.type === 'warning' || data.type === 'error')" 
+       class="dialog-details">
+    <details>
+      <summary class="dialog-details-summary">
+        <mat-icon aria-hidden="true">info_outline</mat-icon>
+        Show Details
+      </summary>
+      <div class="dialog-details-content">{{ data.details }}</div>
+    </details>
+  </div>
+  
+  <!-- Progress Indicator for Loading States -->
+  <div *ngIf="isLoading" class="dialog-loading">
+    <mat-progress-bar mode="indeterminate" aria-label="Processing..."></mat-progress-bar>
+    <span class="dialog-loading-text">{{ data.loadingText || 'Processing...' }}</span>
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-actions 
+    align="end" 
+    class="dialog-actions-enhanced"
+    [class.dialog-actions-loading]="isLoading">
+  
+  <!-- Cancel Button -->
+  <button 
+    mat-button 
+    type="button"
+    class="dialog-button dialog-button-secondary"
+    [disabled]="isLoading"
+    [mat-dialog-close]="false"
+    [attr.aria-label]="data.cancelLabel || 'Cancel action'">
+    <mat-icon *ngIf="data.cancelIcon" aria-hidden="true">{{ data.cancelIcon }}</mat-icon>
+    <span>{{ data.cancelLabel || 'Cancel' }}</span>
+  </button>
+  
+  <!-- Confirm Button -->
+  <button 
+    mat-raised-button 
+    color="primary"
+    type="button"
+    class="dialog-button dialog-button-primary"
+    [class.dialog-button-danger]="data.type === 'error' || data.type === 'warning'"
+    [disabled]="isLoading || data.confirmDisabled"
+    [mat-dialog-close]="true"
+    [attr.aria-label]="data.confirmLabel || 'Confirm action'"
+    cdkFocusInitial>
+    
+    <!-- Loading Spinner -->
+    <mat-icon *ngIf="isLoading" 
+              class="dialog-button-spinner" 
+              aria-hidden="true">
+      refresh
+    </mat-icon>
+    
+    <!-- Button Icon -->
+    <mat-icon *ngIf="!isLoading && data.confirmIcon" 
+              aria-hidden="true">
+      {{ data.confirmIcon }}
+    </mat-icon>
+    
+    <!-- Button Text -->
+    <span>{{ isLoading ? (data.loadingText || 'Processing...') : (data.confirmLabel || 'Confirm') }}</span>
+  </button>
+</mat-dialog-actions>

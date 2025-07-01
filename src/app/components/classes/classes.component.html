@@ -1,0 +1,133 @@
+<div class="main-content" [ngClass]="{'sidebar-open': sidebarOpen, 'sidebar-collapsed': sidebarCollapsed}">
+  <!-- Left-aligned header with red title -->
+  <div class="header">
+    <div class="header-content">
+      <div class="header-top">
+        <button class="back-button" (click)="goBack()" title="Back to levels">
+          <span>Return</span>
+        </button>
+        <button class="add-class-button" (click)="openAddModal()" title="Add a class">
+          <span>Add a class</span>
+        </button>
+      </div>
+      <h1 class="page-title">Classes</h1>
+      <p class="page-subtitle">List of classes for the level
+        <span class="spec">{{ levelName ? '"' + levelName + '"' : '' }}</span>
+      </p>
+    </div>
+  </div>
+
+  <!-- Horizontal divider line -->
+  <div class="content-divider"></div>
+
+  <!-- Main Container -->
+  <div class="container">
+    <div class="levels-list-wrapper">
+      <!-- Enhanced Class Cards -->
+      <div *ngFor="let classe of classes" class="level-list-card">
+        <!-- Colored Border -->
+        <div class="level-border"></div>
+
+        <!-- Card Content -->
+        <div class="level-card-content">
+          <div class="level-title">
+            Class {{ classe.number }}
+          </div>
+
+          <div class="level-meta">
+            <div class="level-info">
+              <img src="assets/book(4).png" alt="Capacity" width="17" height="17" />
+              {{ classe.capacity }} seats
+            </div>
+          </div>
+        </div>
+
+        <!-- Enhanced Action Buttons -->
+        <div class="level-card-actions">
+          <button 
+            (click)="deleteClass(classe.id)" 
+            title="Delete class">
+            <img src="assets/bin.svg" alt="Delete" width="17" height="17" />
+          </button>
+          <button class="view-btn" (click)="viewClassDetails(classe)">
+            <img src="assets/next.png" alt="View" width="17" height="17" />
+          </button>
+        </div>
+      </div>
+
+      <!-- Empty State -->
+      <div *ngIf="classes.length === 0" class="empty-state">
+        <div class="empty-state-content">
+          <div class="empty-state-icon">
+            <img src="assets/book(4).png" alt="No Classes" width="45" height="45" />
+          </div>
+          <h3>No classes found</h3>
+          <p>Start by adding classes for this level.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Class Modal -->
+  <div class="modal-overlay" *ngIf="showAddModal" (click)="closeAddModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h2>Add a new class</h2>
+        <button class="modal-close" (click)="closeAddModal()">×</button>
+      </div>
+      
+      <div class="modal-body">
+        <form (ngSubmit)="addClass()" #classForm="ngForm">
+          <div class="form-group">
+            <label for="number">Class number</label>
+            <input 
+              type="text" 
+              id="number" 
+              name="number" 
+              class="form-input" 
+              [(ngModel)]="newClass.number" 
+              (change)="checkClassExists()"
+              required
+              placeholder="Ex: 1, 2, 3, etc.">
+              
+            <!-- Error message for existing class -->
+            <div *ngIf="classExistsError" class="error-message">
+              <img src="assets/warning.png" alt="Warning" width="16" height="16" />
+              <span>This class already exists for this level</span>
+            </div>
+            
+            <!-- Success message for available class -->
+            <div *ngIf="newClass.number && !classExistsError" class="success-message">
+              <img src="assets/check.png" alt="Success" width="16" height="16" />
+              <span>This class can be added</span>
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label for="capacity">Capacity (number of seats)</label>
+            <input 
+              type="number" 
+              id="capacity" 
+              name="capacity" 
+              class="form-input" 
+              [(ngModel)]="newClass.capacity" 
+              required
+              min="1"
+              max="100"
+              placeholder="Ex: 30">
+            <small class="form-help">Maximum number of students in this class</small>
+          </div>
+          
+          <div class="modal-actions">
+            <button type="button" class="btn btn-cancel" (click)="closeAddModal()">
+              Cancel
+            </button>
+            <button type="submit" class="btn btn-save" [disabled]="!classForm.form.valid || classExistsError">
+              Add class
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

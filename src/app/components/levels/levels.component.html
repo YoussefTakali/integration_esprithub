@@ -1,0 +1,122 @@
+<div class="main-content" [ngClass]="{'sidebar-open': sidebarOpen, 'sidebar-collapsed': sidebarCollapsed}">
+  <!-- Left-aligned header with red title -->
+  <div class="header">
+    <div class="header-content">
+      <div class="header-top">
+        <button class="back-button" (click)="goBack()" title="Return to specialties">
+          <span>Return</span>
+        </button>
+        <button class="add-level-button" (click)="openAddModal()" title="Add a level">
+          <span>Add a level</span>
+        </button>
+      </div>
+      <h1 class="page-title">Levels</h1>
+      <p class="page-subtitle">
+        List of levels for the specialty 
+        <span class="spec">{{ specialtyName ? '"' + specialtyName + '"' : '' }}</span>
+      </p>
+      
+    </div>
+  </div>
+
+  <!-- Main Container -->
+  <div class="container">
+    <div class="levels-list-wrapper">
+      <!-- Enhanced Level Cards -->
+      <div *ngFor="let level of levels" class="level-list-card">
+        <!-- Colored Border -->
+        <div class="level-border"></div>
+
+        <!-- Card Content -->
+        <div class="level-card-content">
+          <div class="level-title">
+            {{ getLevelDisplayName(level.annee) }}
+          </div>
+
+          <div class="level-meta">
+            <div class="level-info">
+              <img src="assets/book(4).png" alt="Classes" width="17" height="17" />
+              {{ level.classes?.length || 0 }} classes
+            </div>
+          </div>
+        </div>
+
+        <!-- Enhanced Action Buttons -->
+        <div class="level-card-actions">
+          <button 
+            (click)="deleteLevel(level.id)" 
+            title="Delete the level">
+            <img src="assets/bin.svg" alt="Delete" width="17" height="17" />
+          </button>
+          <button class="view-btn" (click)="viewLevelDetails(level)">
+            <img src="assets/next.png" alt="View" width="17" height="17" />
+          </button>
+        </div>
+      </div>
+
+      <!-- Empty State -->
+      <div *ngIf="levels.length === 0" class="empty-state">
+        <div class="empty-state-content">
+          <div class="empty-state-icon">
+            <img src="assets/book(4).png" alt="No levels" width="45" height="45" />
+          </div>
+          <h3>No levels found</h3>
+          <p>Start by adding levels for this specialty.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Level Modal -->
+  <div class="modal-overlay" *ngIf="showAddModal" (click)="closeAddModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h2>Add a new level</h2>
+        <button class="modal-close" (click)="closeAddModal()">×</button>
+      </div>
+      
+      <div class="modal-body">
+        <form (ngSubmit)="addLevel()" #levelForm="ngForm">
+          <div class="form-group">
+            <label for="annee">Level year</label>
+            <select 
+              id="annee" 
+              name="annee" 
+              class="form-input" 
+              [(ngModel)]="newLevel.annee" 
+              (change)="checkLevelExists()"
+              required>
+              <option value="">Select a year</option>
+              <option value="PREMIERE_ANNEE">First Year</option>
+              <option value="DEUXIEME_ANNEE">Second Year</option>
+              <option value="TROISIEME_ANNEE">Third Year</option>
+              <option value="QUATRIEME_ANNEE">Fourth Year</option>
+              <option value="CINQUIEME_ANNEE">Fifth Year</option>
+            </select>
+            
+            <!-- Error message for existing level -->
+            <div *ngIf="levelExistsError" class="error-message">
+              <img src="assets/warning.png" alt="Warning" width="20" height="20" />
+              <span>This level already exists for this specialty</span>
+            </div>
+            
+            <!-- Success message for available level -->
+            <div *ngIf="newLevel.annee && !levelExistsError" class="success-message">
+              <img src="assets/check.png" alt="Success" width="16" height="16" />
+              <span>This level can be added</span>
+            </div>
+          </div>
+          
+          <div class="modal-actions">
+            <button type="button" class="btn btn-cancel" (click)="closeAddModal()">
+              Cancel
+            </button>
+            <button type="submit" class="btn btn-save" [disabled]="!levelForm.form.valid || levelExistsError">
+              Add level
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

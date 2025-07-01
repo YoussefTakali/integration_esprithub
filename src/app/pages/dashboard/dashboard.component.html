@@ -1,0 +1,41 @@
+<div class="d-container">
+    
+  <div class="card-container">
+    <app-starcard
+      *ngFor="let stat of stats"
+      [title]="stat.title"
+      [value]="stat.value"
+      [description]="stat.description"
+      [logo]="stat.logo"
+      [sidebarVisible]="sidebarVisible">
+    </app-starcard>
+  </div>
+
+  <div class="sub-nav-container">
+    <div class="sub-nav">
+      <button (click)="changeTab('activity')" [class.active]="selectedTab === 'activity'">Assignments</button>
+      <button (click)="changeTab('submissions')" [class.active]="selectedTab === 'submissions'">Submissions</button>
+      <button (click)="changeTab('progress')" [class.active]="selectedTab === 'progress'">Class Repos</button>
+      <button (click)="changeTab('projects')" [class.active]="selectedTab === 'projects'">Projects</button>
+    </div>
+
+<div class="search-container">
+  <div class="search-bar">
+    <input
+      type="text"
+      placeholder="Search..."
+      (input)="onSearch()" />
+    <i class="fa fa-search"></i>
+  </div>
+</div>
+  </div>
+
+  <!-- Tab Content -->
+  <div class="tab-content">
+    <app-activity *ngIf="selectedTab === 'activity'"></app-activity>
+    <app-dashboardsubmissions *ngIf="selectedTab === 'submissions'"></app-dashboardsubmissions>
+    <app-progress *ngIf="selectedTab === 'progress'"></app-progress>
+    <app-projects *ngIf="selectedTab === 'projects'"></app-projects>
+  </div>
+
+</div>

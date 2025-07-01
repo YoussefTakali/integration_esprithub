@@ -1,0 +1,449 @@
+<span></span>
+<div class="task-management-container">
+  <div class="sidebar">
+    <h2 class="sidebar-title">Classes & Projects</h2>
+    <div class="tree-view">
+      <div *ngFor="let classe of classTree" class="tree-item">
+        <div class="tree-node class-node" [class.expanded]="classe.expanded">
+          <span class="tree-icon arrow-icon" (click)="toggleClass(classe)">
+            <i class="fas" [class.fa-chevron-right]="!classe.expanded" [class.fa-chevron-down]="classe.expanded"></i>
+          </span>
+          <span class="tree-icon">
+            <i class="fas fa-graduation-cap"></i>
+          </span>
+          <span class="tree-label" (click)="filterByClass(classe)">{{ classe.name }}</span>
+        </div>
+        <div *ngIf="classe.expanded" class="tree-children">
+          <div *ngFor="let project of classe.projects" class="tree-item">
+            <div class="tree-node project-node" [class.selected]="selectedProject?.id === project.id" [class.expanded]="project.expanded">
+              <span class="tree-icon arrow-icon" (click)="toggleProject(project)">
+                <i class="fas" [class.fa-chevron-right]="!project.expanded" [class.fa-chevron-down]="project.expanded"></i>
+              </span>
+              <span class="tree-icon">
+                <i class="fas fa-folder"></i>
+              </span>
+              <span class="tree-label" (click)="selectProject(project)">{{ project.name }}</span>
+              <span class="add-icon" (click)="addToProject(project, classe.id)">
+                <i class="fas fa-plus"></i>
+              </span>
+            </div>
+            <div *ngIf="project.expanded" class="tree-children">
+              <div *ngFor="let group of project.groups" class="tree-item">
+                <div class="tree-node group-node" [class.expanded]="group.expanded" (mouseenter)="onGroupMouseEnter(group, $event)"
+     (mouseleave)="onGroupMouseLeave()">
+                  <span class="tree-icon arrow-icon" (click)="toggleGroup(group)">
+                    <i class="fas" [class.fa-chevron-right]="!group.expanded" [class.fa-chevron-down]="group.expanded"></i>
+                  </span>
+                  <span class="tree-icon">
+                    <i class="fas fa-users"></i>
+                  </span>
+                  <span class="tree-label" (click)="filterByGroup(group)">
+                  {{ group.name }}
+                </span>
+                <span class="add-icon" (click)="openAddMemberModal(group)">
+                  <i class="fas fa-plus"></i>
+                </span>
+                <span class="remove-icon" (click)="confirmRemoveGroup(group)">
+                  <i class="fas fa-minus"></i>
+                </span>
+                </div>
+                <div *ngIf="group.expanded" class="tree-children">
+<div *ngFor="let studentId of group.memberIds" class="tree-item">
+  <div class="tree-node student-node">
+    <span class="tree-icon">
+      <i class="fas fa-user"></i>
+    </span>
+    <span class="tree-label" (click)="filterByStudent(studentId)">
+      {{ getStudentName(StringToNumber(studentId)) }}
+    </span>
+    <span class="remove-icon" (click)="confirmRemoveMember(group, studentId)">
+      <i class="fas fa-minus-circle"></i>
+    </span>
+  </div>
+</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Main Content - Task list -->
+  <div class="main-content">
+    <div class="content-header">
+      <h1 class="content-title">Tasks for {{ selectedProject?.name || 'All Projects' }}</h1>
+      <div class="header-actions">
+        <div class="search-container">
+          <i class="fas fa-search search-icon"></i>
+          <input type="text" 
+                 placeholder="Search tasks..." 
+                 class="search-input"
+                 [(ngModel)]="searchTerm">
+        </div>
+        <button class="add-task-btn" (click)="addTask()">
+          <i class="fas fa-plus"></i>
+          Add Task
+        </button>
+      </div>
+    </div>
+    <div class="task-grid">
+      <div *ngFor="let task of filteredTasks" class="task-card">
+  <div class="task-header">
+    <h3 class="task-title">{{ task.title }}</h3>
+
+    <!-- Status display or edit -->
+    <span *ngIf="statusEditTaskId !== task.id"
+          class="task-status"
+          [class]="'status-' + task.status.toLowerCase()"
+          (click)="startEditingStatus(task.id)">
+      {{ task.status }}
+    </span>
+
+<!-- Show status text if not editing -->
+
+<!-- Show dropdown when editing -->
+<select *ngIf="statusEditTaskId === task.id" class="status-select"
+        #statusSelect 
+        [value]="task.status"
+        (change)="updateTaskStatus(task, $event, statusSelect)">
+  <option value="PENDING">PENDING</option>
+  <option value="IN_PROGRESS">IN_PROGRESS</option>
+  <option value="COMPLETED">COMPLETED</option>
+  <option value="OVERDUE">OVERDUE</option>
+</select>
+
+<!-- Eye icon for visibility -->
+<i class="fas"
+   [ngClass]="task.isVisible ? 'fa-eye' : 'fa-eye-slash'"
+   (click)="toggleVisibility(task)"
+   style="cursor: pointer; margin-left: 10px;"
+   title="{{ task.isVisible ? 'Visible' : 'Hidden' }}">
+</i>
+
+
+
+  </div>
+
+  <p class="task-description">{{ task.description }}</p>       
+
+  <div class="task-meta">
+    <div class="task-assignee">
+      <i class="fas fa-user meta-icon"></i>
+      <span>Assigned to: {{ formatAssignments(task) }}</span>
+    </div>
+    <div class="task-due-date">
+      <i class="fas fa-calendar meta-icon"></i>
+      <span>Due: {{ task.dueDate | date:'M/d/yyyy' }}</span>
+    </div>
+  </div>
+
+  <div class="task-actions">
+    <button class="action-btn edit-btn" (click)="editWholeTask(task)">
+      <i class="fas fa-edit"></i>
+      Edit
+    </button>
+    <button class="action-btn delete-btn" (click)="deleteTask(task)">
+      <i class="fas fa-trash"></i>
+      Delete
+    </button>
+    <button class="action-btn view-submissions-btn" (click)="viewSubmissions(task)">
+      <i class="fas fa-file-alt"></i>
+      Submissions
+    </button>
+  </div>
+</div>
+
+    </div>
+  </div>
+</div>
+
+<!-- Add Task Modal -->
+<div class="atm-overlay" *ngIf="showAddTaskModal" (click)="closeModal()">
+  <div class="atm-container" (click)="$event.stopPropagation()">
+    <header class="atm-header">
+      <h2 class="atm-title">Add New Task</h2>
+      <button class="atm-close-btn" (click)="closeModal()">
+        <i class="fas fa-times"></i>
+      </button>
+    </header>
+    <form class="atm-form" (ngSubmit)="createTask()">
+      <!-- Title -->
+      <div class="atm-form-group">
+        <label class="atm-label">Task Title</label>
+        <input type="text" class="atm-input" [(ngModel)]="newTask.title" name="title" required>
+      </div>
+
+      <!-- Description -->
+      <div class="atm-form-group">
+        <label class="atm-label">Description</label>
+        <textarea class="atm-textarea" [(ngModel)]="newTask.description" name="description" rows="3"></textarea>
+      </div>
+
+      <!-- Assignment Type -->
+      <section class="atm-section">
+        <h4 class="atm-section-title">Assignment Type</h4>
+        <div class="atm-radio-group">
+          <label class="atm-radio-label">
+            <input type="radio" name="type" [(ngModel)]="newTask.type" value="individual">
+            <span class="atm-radio-custom"></span>
+            Individual
+          </label>
+          <label class="atm-radio-label">
+            <input type="radio" name="type" [(ngModel)]="newTask.type" value="group">
+            <span class="atm-radio-custom"></span>
+            Group
+          </label>
+          <label class="atm-radio-label">
+            <input type="radio" name="type" [(ngModel)]="newTask.type" value="project">
+            <span class="atm-radio-custom"></span>
+            Project (All Groups)
+          </label>
+          <label class="atm-radio-label">
+            <input type="radio" name="type" [(ngModel)]="newTask.type" value="class">
+            <span class="atm-radio-custom"></span>
+            Class (All Groups in Class)
+          </label>
+        </div>
+      </section>
+
+      <!-- Assigned To -->
+      <div class="atm-form-group">
+        <label for="assignmentSelect" class="atm-label">
+          Assign to
+          <span *ngIf="newTask.type === 'individual'">Student(s)</span>
+          <span *ngIf="newTask.type === 'group'">Group(s)</span>
+          <span *ngIf="newTask.type === 'project'">Project</span>
+          <span *ngIf="newTask.type === 'class'">Class</span>:
+        </label>
+        <select id="assignmentSelect" class="atm-select" multiple [(ngModel)]="newTask.assignedTo" name="assignedTo" required>
+          <option *ngFor="let option of availableOptions" [value]="option.id">
+            {{ option.name }}
+          </option>
+        </select>
+      </div>
+
+      <!-- Due Date -->
+      <div class="atm-form-group">
+        <label class="atm-label">Due Date</label>
+        <input type="date" class="atm-input" [(ngModel)]="newTask.dueDate" name="dueDate">
+      </div>
+
+      <!-- Graded Checkbox -->
+      <div class="atm-form-group">
+        <label class="atm-checkbox-label">
+          <input type="checkbox" [(ngModel)]="newTask.isGraded" name="graded">
+          Graded
+        </label>
+      </div>
+
+      <!-- Visible Checkbox -->
+      <div class="atm-form-group">
+        <label class="atm-checkbox-label">
+          <input type="checkbox" [(ngModel)]="newTask.isVisible" name="visible">
+          Visible to Students
+        </label>
+      </div>
+
+      <!-- Status -->
+      <section class="atm-section">
+        <h4 class="atm-section-title">Status</h4>
+        <div class="atm-radio-group">
+          <label class="atm-radio-label">
+            <input type="radio" name="status" [(ngModel)]="newTask.status" value="pending" required>
+            <span class="atm-radio-custom"></span>
+            Pending
+          </label>
+          <label class="atm-radio-label">
+            <input type="radio" name="status" [(ngModel)]="newTask.status" value="in_progress">
+            <span class="atm-radio-custom"></span>
+            In Progress
+          </label>
+          <label class="atm-radio-label">
+            <input type="radio" name="status" [(ngModel)]="newTask.status" value="completed">
+            <span class="atm-radio-custom"></span>
+            Completed
+          </label>
+          <label class="atm-radio-label">
+            <input type="radio" name="status" [(ngModel)]="newTask.status" value="on_hold">
+            <span class="atm-radio-custom"></span>
+            On Hold
+          </label>
+        </div>
+      </section>
+
+      <!-- Form Actions -->
+      <footer class="atm-actions">
+        <button type="button" class="atm-btn atm-cancel-btn" (click)="closeModal()">Cancel</button>
+        <button type="submit" class="atm-btn atm-create-btn">Create Task</button>
+      </footer>
+    </form>
+  </div>
+</div>
+
+
+
+<!-- Add Group Modal -->
+<!-- Add Group Modal -->
+<div *ngIf="showGroupModal" class="modal">
+  <div class="modal-content">
+    <h3>Add New Group</h3>
+    <label>Group Name:</label>
+    <input type="text" [(ngModel)]="newGroup.name" class="form-control" />
+    
+    <label>Members:</label>
+    <div class="student-selection">
+      <div class="student-search">
+        <input type="text" placeholder="Search students..." 
+               [(ngModel)]="studentSearchTerm"
+               (input)="filterStudents()">
+      </div>
+      
+      <div class="student-list">
+        <div *ngFor="let student of filteredStudents" 
+             class="student-item"
+             [class.selected]="newGroup.memberIds.includes(student.id)"
+             (click)="toggleStudentSelection(student.id)">
+          <span>{{ student.name }}</span>
+        </div>
+      </div>
+    </div>
+    
+    <div class="selected-members">
+      <h4>Selected Members ({{ newGroup.memberIds.length }}):</h4>
+      <div *ngFor="let id of newGroup.memberIds" class="selected-member">
+        {{ getStudentName(id) }}
+        <button (click)="removeSelectedMember(id)">×</button>
+      </div>
+    </div>
+    
+    <div class="modal-actions">
+      <button (click)="createGroup()">Create Group</button>
+      <button (click)="closeGroupModal()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- Add Member to Group Modal -->
+<div *ngIf="showAddMemberModal" class="modal">
+  <div class="modal-content">
+    <h3>Add Member to {{ selectedGroupForMemberUpdate?.name }}</h3>
+    
+    <div class="student-search-container">
+      <input type="text" 
+             class="search-input"
+             [(ngModel)]="studentSearchTerm"
+             (input)="filterStudents()"
+             placeholder="Search students...">
+    </div>
+    
+    <div class="student-list">
+      <div *ngFor="let student of filteredStudents" 
+           class="student-item"
+           (click)="selectStudentForAdd(student)">
+        <span>{{ student.name }} (ID: {{ student.id }})</span>
+      </div>
+    </div>
+    
+    <div *ngIf="selectedStudent" class="selected-student">
+      Selected: {{ selectedStudent.name }} 
+    </div>
+    
+    <div class="modal-actions">
+      <button (click)="submitNewMember()" 
+              [disabled]="!selectedStudent">
+        Add
+      </button>
+      <button (click)="cancelAddMember()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- Remove Member Confirmation Modal -->
+<div *ngIf="showRemoveConfirmModal" class="modal-overlay" (click)="cancelRemoveMember()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <h3>Confirm Removal</h3>
+    <p>Are you sure you want to remove member {{ memberToRemove }} from group {{ groupForRemove?.name }}?</p>
+    <div class="modal-actions">
+      <button (click)="confirmRemoveMemberAction()">Yes, Remove</button>
+      <button (click)="cancelRemoveMember()">Cancel</button>
+    </div>
+  </div>
+</div>
+<!-- Your existing task list -->
+
+<!-- Edit Task Modal -->
+<div class="edit-task-modal" *ngIf="editingTask" (click)="closeEditModal($event)">
+  <div class="edit-task-content" (click)="$event.stopPropagation()">
+    <h2>Edit Task</h2>
+
+    <form (ngSubmit)="saveEditedTask()">
+      <label>Title:</label>
+      <input type="text" [(ngModel)]="editingTask.title" name="title" required />
+
+      <label>Description:</label>
+      <textarea [(ngModel)]="editingTask.description" name="description"></textarea>
+
+      <label>Status:</label>
+      <select [(ngModel)]="editingTask.status" name="status" required>
+        <option value="PENDING">PENDING</option>
+        <option value="IN_PROGRESS">IN_PROGRESS</option>
+        <option value="COMPLETED">COMPLETED</option>
+        <option value="OVERDUE">OVERDUE</option>
+      </select>
+
+      <label>Due Date:</label>
+      <input type="datetime-local" [(ngModel)]="editingTask.dueDate" name="dueDate" required />
+
+<label>
+  Graded:
+  <input type="checkbox" [(ngModel)]="editingTask.isGraded" />
+</label>
+
+      <label>Visible:</label>
+      <input type="checkbox" [(ngModel)]="editingTask.isVisible" name="isVisible" />
+
+      <button type="submit" class="save-btn">Save</button>
+      <button type="button" (click)="cancelEdit()" class="cancel-btn">Cancel</button>
+    </form>
+  </div>
+</div>
+<div class="group-stats-tooltip" *ngIf="hoveredGroup && groupStats" 
+     [style.left.px]="tooltipX" 
+     [style.top.px]="tooltipY">
+  <h4>{{ hoveredGroup.name }}</h4>
+  
+  <div class="stats-section">
+    <h5>Members:</h5>
+    <ul>
+      <li *ngFor="let memberId of hoveredGroup.memberIds">
+        {{ getStudentName(StringToNumber(memberId)) }}
+      </li>
+    </ul>
+  </div>
+  
+  <div class="stats-section" *ngIf="getGroupStats(hoveredGroup.id) as stats">
+    <h5>Completion Rate:</h5>
+    <div class="progress-bar">
+      <div class="progress-fill" [style.width.%]="stats.taskCompletionRate * 100"></div>
+      <span class="progress-text">{{ (stats.taskCompletionRate * 100).toFixed(1) }}%</span>
+    </div>
+    
+    <h5>Average Grade:</h5>
+    <div class="grade-display">
+      {{ stats.averageGrade !== null ? stats.averageGrade.toFixed(1) : 'N/A' }}
+    </div>
+  </div>
+</div>
+<!-- Confirmation Modal -->
+<div *ngIf="showConfirmationModal" class="modal-overlay" (click)="cancelConfirmation()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <h3>{{ confirmationTitle }}</h3>
+    <p>{{ confirmationMessage }}</p>
+    <div class="modal-actions">
+      <button (click)="cancelConfirmation()">Cancel</button>
+      <button (click)="executeConfirmation()">Confirm</button>
+    </div>
+  </div>
+</div>

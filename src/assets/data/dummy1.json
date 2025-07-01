@@ -1,0 +1,252 @@
+[
+    {
+        "id": 1,
+        "name": "Computer Science 101",
+        "description": "Introduction to Computer Science concepts.",
+        "academicYear": "2024-2025",
+        "subject": "Computer Science",
+        "projects": [
+            {
+                "id": 2,
+                "name": "youssef",
+                "description": "aaaa",
+                "createdDate": "2025-05-21T02:51:59.287",
+                "dueDate": "2626-02-06T05:53:00",
+                "status": "COMPLETED",
+                "createdBy": "61eb987b-d7ea-487d-b42d-9f9e4951af05",
+                "collaborators": [],
+                "groups": []
+            },
+            {
+                "id": 7,
+                "name": "Project Alpha",
+                "description": "Project with multiple groups",
+                "createdDate": "2025-05-21T10:00:00",
+                "dueDate": "2025-06-30T23:59:59",
+                "status": "ACTIVE",
+                "createdBy": "teacher-123",
+                "collaborators": [
+                    "teacher-456",
+                    "teacher-789"
+                ],
+                "groups": []
+            },
+            {
+                "id": 11,
+                "name": "Bert Scott",
+                "description": "Reiciendis ad dolor ",
+                "createdDate": "2025-05-30T11:04:31.931",
+                "dueDate": "1998-10-18T09:24:00",
+                "status": "COMPLETED",
+                "createdBy": "61eb987b-d7ea-487d-b42d-9f9e4951af05",
+                "collaborators": [],
+                "groups": []
+            }
+        ]
+    },
+    {
+        "id": 2,
+        "name": "Mathematics 201",
+        "description": "Advanced Calculus and Linear Algebra.",
+        "academicYear": "2024-2025",
+        "subject": "Mathematics",
+        "projects": [
+            {
+                "id": 8,
+                "name": "jcp",
+                "description": "aaaaaaaaaaa",
+                "createdDate": "2025-05-27T02:58:53.351",
+                "dueDate": "2025-02-06T16:59:00",
+                "status": "ACTIVE",
+                "createdBy": "61eb987b-d7ea-487d-b42d-9f9e4951af05",
+                "collaborators": [],
+                "groups": []
+            },
+            {
+                "id": 7,
+                "name": "Project Alpha",
+                "description": "Project with multiple groups",
+                "createdDate": "2025-05-21T10:00:00",
+                "dueDate": "2025-06-30T23:59:59",
+                "status": "ACTIVE",
+                "createdBy": "teacher-123",
+                "collaborators": [
+                    "teacher-456",
+                    "teacher-789"
+                ],
+                "groups": []
+            },
+            {
+                "id": 12,
+                "name": "Maggie Mitchell",
+                "description": "Voluptate velit sapi",
+                "createdDate": "2025-05-30T11:31:22.92",
+                "dueDate": "2008-04-16T00:31:00",
+                "status": "COMPLETED",
+                "createdBy": "61eb987b-d7ea-487d-b42d-9f9e4951af05",
+                "collaborators": [],
+                "groups": []
+            }
+        ]
+    },
+    {
+        "id": 3,
+        "name": "Physics 101",
+        "description": "Fundamentals of Physics for beginners.",
+        "academicYear": "2024-2025",
+        "subject": "Physics",
+        "projects": [
+            {
+                "id": 2,
+                "name": "youssef",
+                "description": "aaaa",
+                "createdDate": "2025-05-21T02:51:59.287",
+                "dueDate": "2626-02-06T05:53:00",
+                "status": "COMPLETED",
+                "createdBy": "61eb987b-d7ea-487d-b42d-9f9e4951af05",
+                "collaborators": [],
+                "groups": [
+                    {
+                        "id": 4,
+                        "name": "Group A",
+                        "memberIds": [
+                            "101",
+                            "102",
+                            "103"
+                        ]
+                    },
+                    {
+                        "id": 5,
+                        "name": "Group A",
+                        "memberIds": [
+                            "101",
+                            "102",
+                            "103"
+                        ]
+                    },
+                    {
+                        "id": 6,
+                        "name": "Group A",
+                        "memberIds": [
+                            "101",
+                            "102",
+                            "103"
+                        ]
+                    },
+                    {
+                        "id": 7,
+                        "name": "Group B",
+                        "memberIds": [
+                            "101",
+                            "102",
+                            "103"
+                        ]
+                    }
+                ]
+            },
+            {
+                "id": 12,
+                "name": "Maggie Mitchell",
+                "description": "Voluptate velit sapi",
+                "createdDate": "2025-05-30T11:31:22.92",
+                "dueDate": "2008-04-16T00:31:00",
+                "status": "COMPLETED",
+                "createdBy": "61eb987b-d7ea-487d-b42d-9f9e4951af05",
+                "collaborators": [],
+                "groups": []
+            }
+        ]
+    },
+    {
+        "id": 5,
+        "name": "Business Management",
+        "description": "Basics of management and organizational behavior.",
+        "academicYear": "2024-2025",
+        "subject": "Business",
+        "projects": [
+            {
+                "id": 11,
+                "name": "Bert Scott",
+                "description": "Reiciendis ad dolor ",
+                "createdDate": "2025-05-30T11:04:31.931",
+                "dueDate": "1998-10-18T09:24:00",
+                "status": "COMPLETED",
+                "createdBy": "61eb987b-d7ea-487d-b42d-9f9e4951af05",
+                "collaborators": [],
+                "groups": []
+            }
+        ]
+    },
+    {
+        "id": 4,
+        "name": "English Literature",
+        "description": "Study of classic and modern literature.",
+        "academicYear": "2024-2025",
+        "subject": "English",
+        "projects": [
+            {
+                "id": 9,
+                "name": "xxxxxx",
+                "description": "xxxxxxxxxxxxxxxxxx",
+                "createdDate": "2025-05-27T10:32:51.219",
+                "dueDate": "2028-12-05T14:50:00",
+                "status": "ACTIVE",
+                "createdBy": "61eb987b-d7ea-487d-b42d-9f9e4951af05",
+                "collaborators": [],
+                "groups": []
+            },
+            {
+                "id": 8,
+                "name": "jcp",
+                "description": "aaaaaaaaaaa",
+                "createdDate": "2025-05-27T02:58:53.351",
+                "dueDate": "2025-02-06T16:59:00",
+                "status": "ACTIVE",
+                "createdBy": "61eb987b-d7ea-487d-b42d-9f9e4951af05",
+                "collaborators": [],
+                "groups": [
+                    {
+                        "id": 9,
+                        "name": "Group t",
+                        "memberIds": [
+                            "101",
+                            "102",
+                            "103"
+                        ]
+                    },
+                    {
+                        "id": 8,
+                        "name": "Group c",
+                        "memberIds": [
+                            "101",
+                            "102",
+                            "103"
+                        ]
+                    }
+                ]
+            },
+            {
+                "id": 10,
+                "name": "Mohammad Stanton",
+                "description": "Dolor omnis incididu",
+                "createdDate": "2025-05-30T10:58:06.505",
+                "dueDate": "2015-10-07T11:06:00",
+                "status": "ACTIVE",
+                "createdBy": "61eb987b-d7ea-487d-b42d-9f9e4951af05",
+                "collaborators": [],
+                "groups": []
+            },
+            {
+                "id": 11,
+                "name": "Bert Scott",
+                "description": "Reiciendis ad dolor ",
+                "createdDate": "2025-05-30T11:04:31.931",
+                "dueDate": "1998-10-18T09:24:00",
+                "status": "COMPLETED",
+                "createdBy": "61eb987b-d7ea-487d-b42d-9f9e4951af05",
+                "collaborators": [],
+                "groups": []
+            }
+        ]
+    }
+]

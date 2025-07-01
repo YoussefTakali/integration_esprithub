@@ -1,0 +1,79 @@
+.assignment-card {
+    width: 31vw;
+    background: white;
+    border: 1px solid rgb(255, 255, 255);
+    border-radius: 0.75rem;
+    padding: 2rem;
+    box-shadow: 0 0 6px rgba(0, 0, 0, 0.1);
+    font-family: 'Segoe UI', sans-serif;
+  }
+  .sidebar-open {
+    width: 26vw !important; /* slightly smaller */
+    transition: width 0.3s ease;
+  }
+  
+  /* Sidebar is closed */
+  .sidebar-closed {
+    transition: width 0.3s ease;
+  }
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .title {
+    font-size: 2rem;
+    font-weight: 600;
+    color: #111827;
+  }
+  
+  .ai-badge {
+    background-color: #a851ff;
+    color: white;
+    font-size: 0.9rem;
+    font-weight: 500;
+    padding: 0.25rem 0.5rem;
+    border-radius: 1.5rem;
+  }
+  
+  .description {
+    font-size: 1.2rem;
+    color: #4b5563;
+    margin: 0.5rem 0;
+  }
+  
+  .submission-info {
+    display: flex;
+    justify-content: space-between;
+    font-size: 1.2rem;
+    font-weight: 500;
+    margin-top: 0.5rem;
+    margin-bottom: 0.25rem;
+  }
+  
+  .progress-bar {
+    height: 10px;
+    background-color: #e5e7eb;
+    border-radius: 3px;
+    overflow: hidden;
+    margin-bottom: 0.75rem;
+  }
+  
+  .progress-bar .fill {
+    height: 100%;
+    background-color: #111827;
+    border-radius: 3px;
+  }
+  
+  .footer {
+    display: flex;
+    justify-content: space-between;
+    font-size: 1rem;
+    color: #6b7280;
+  }
+  
+  .icon {
+    margin-right: 4px;
+  }
+  

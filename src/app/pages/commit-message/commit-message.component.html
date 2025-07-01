@@ -1,0 +1,30 @@
+<div class="commit-message-container" (click)="$event.stopPropagation()">
+    <div class="commit-message-form">
+      <h2>Enter Commit Message</h2>
+      <form (ngSubmit)="submit()" #commitForm="ngForm">
+        <input
+          type="text"
+          [(ngModel)]="commitMessage"
+          name="commitMessage"
+          placeholder="Commit message..."
+          class="form-control"
+          required
+        />
+        
+        <div class="selected-files" *ngIf="selectedFiles.length > 0">
+          <h3>Selected Files ({{ selectedFiles.length }})</h3>
+          <ul>
+            <li *ngFor="let file of selectedFiles">
+              {{ file.name }} ({{ formatFileSize(file.size) }})
+            </li>
+          </ul>
+        </div>
+        
+        <div class="actions">
+          <button type="submit" class="btn btn-primary">Submit</button>
+          <button type="button" class="btn btn-secondary" (click)="closeModal()">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+  

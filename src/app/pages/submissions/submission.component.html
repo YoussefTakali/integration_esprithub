@@ -1,0 +1,205 @@
+<div class="submissions-container red-accent-bg">
+  <div class="header-section red-accent-border">
+    <h2 class="page-title">
+      <i class="fas fa-tasks"></i>
+      Submissions for Task {{ taskId }}
+    </h2>
+    <div class="submissions-count" *ngIf="!isLoading">
+      Showing {{ filteredSubmissions.length }} of {{ submissions.length }} submissions
+    </div>
+  </div>
+
+  <!-- Search and Filter Section -->
+  <div class="filters-section red-accent-border">
+    <div class="search-container">
+      <i class="fas fa-search search-icon"></i>
+      <input 
+        type="text" 
+        class="search-input red-accent-border"
+        placeholder="Search by student ID, content, or description..."
+        [(ngModel)]="searchTerm"
+        (input)="onSearchChange()"
+      >
+    </div>
+
+    <div class="filters-row">
+      <div class="filter-group">
+        <label for="statusFilter">
+          <i class="fas fa-filter"></i>
+          Status:
+        </label>
+        <select 
+          id="statusFilter"
+          class="filter-select red-accent-border"
+          [(ngModel)]="selectedStatus"
+          (change)="onStatusFilterChange()"
+        >
+          <option value="">All Statuses</option>
+          <option *ngFor="let status of statusOptions" [value]="status">
+            {{ status }}
+          </option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label for="groupFilter">
+          <i class="fas fa-users"></i>
+          Group:
+        </label>
+        <select 
+          id="groupFilter"
+          class="filter-select red-accent-border"
+          [(ngModel)]="selectedGroupId"
+          (change)="onGroupFilterChange()"
+        >
+          <option value="">All Groups</option>
+          <option *ngFor="let groupId of groupOptions" [value]="groupId">
+            Group {{ groupId }}
+          </option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label for="sortBy">
+          <i class="fas fa-sort"></i>
+          Sort by:
+        </label>
+        <select 
+          id="sortBy"
+          class="filter-select red-accent-border"
+          [(ngModel)]="sortBy"
+          (change)="onSortChange()"
+        >
+          <option value="submittedAt">Submission Date</option>
+          <option value="studentId">Student ID</option>
+          <option value="groupId">Group ID</option>
+          <option value="status">Status</option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label for="sortOrder">
+          <i class="fas fa-sort-amount-down"></i>
+          Order:
+        </label>
+        <select 
+          id="sortOrder"
+          class="filter-select red-accent-border"
+          [(ngModel)]="sortOrder"
+          (change)="onSortChange()"
+        >
+          <option value="desc">Descending</option>
+          <option value="asc">Ascending</option>
+        </select>
+      </div>
+
+      <button class="clear-filters-btn red-accent-hover" (click)="clearFilters()">
+        <i class="fas fa-times"></i>
+        Clear Filters
+      </button>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="loading-container">
+    <div class="loading-spinner">
+      <div class="spinner-ring"></div>
+      <div class="spinner-ring"></div>
+      <div class="spinner-ring"></div>
+      <i class="fas fa-cog spinner-icon"></i>
+    </div>
+    <p class="loading-text">Loading submissions...</p>
+    <div class="loading-dots">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+  </div>
+
+  <!-- No Submissions State -->
+  <div *ngIf="!isLoading && submissions.length === 0" class="no-submissions">
+    <div class="empty-state red-accent-border">
+      <div class="empty-icon red-accent-bg">
+        <i class="fas fa-file-alt"></i>
+      </div>
+      <h3>No submissions found</h3>
+      <p>No submissions have been made for this task yet.</p>
+    </div>
+  </div>
+
+  <!-- No Filtered Results -->
+  <div *ngIf="!isLoading && submissions.length > 0 && filteredSubmissions.length === 0" class="no-results">
+    <div class="empty-state red-accent-border">
+      <div class="empty-icon red-accent-bg">
+        <i class="fas fa-search"></i>
+      </div>
+      <h3>No matching submissions</h3>
+      <p>Try adjusting your search or filter criteria.</p>
+    </div>
+  </div>
+
+  <!-- Submissions List -->
+  <div *ngIf="!isLoading && filteredSubmissions.length > 0" class="submissions-list">
+    <a 
+      class="submission-card red-accent-border red-accent-hover" 
+      *ngFor="let submission of filteredSubmissions; trackBy: trackBySubmissionId"
+      [routerLink]="['/submissions', submission.id]"
+    >
+      <div class="submission-header red-accent-bg">
+        <div class="submission-title">
+          <h3>
+            <i class="fas fa-file-alt"></i>
+            Submission #{{ submission.id }}
+          </h3>
+          <span 
+            class="{{ getStatusBadgeClass(submission.status) }} red-accent-border"
+            *ngIf="submission.status"
+          >
+            <i class="fas fa-circle status-dot"></i>
+            {{ submission.status }}
+          </span>
+        </div>
+        <span class="submission-date">
+          <i class="fas fa-calendar-alt"></i>
+          {{ submission.submittedAt | date:'medium' }}
+        </span>
+      </div>
+
+      <div class="submission-details">
+        <div class="details-grid">
+          <div class="detail-item" *ngIf="submission.studentId">
+            <span class="detail-label">
+              <i class="fas fa-user"></i>
+              Student ID:
+            </span>
+            <span class="detail-value">{{ submission.studentId }}</span>
+          </div>
+          
+          <div class="detail-item" *ngIf="submission.groupId">
+            <span class="detail-label">
+              <i class="fas fa-users"></i>
+              Group ID:
+            </span>
+            <span class="detail-value">{{ submission.groupId }}</span>
+          </div>
+        </div>
+        
+        <div class="detail-item full-width" *ngIf="submission.description">
+          <span class="detail-label">
+            <i class="fas fa-align-left"></i>
+            Description:
+          </span>
+          <div class="detail-value description">{{ submission.description }}</div>
+        </div>
+        
+        <div class="detail-item full-width" *ngIf="submission.content">
+          <span class="detail-label">
+            <i class="fas fa-file-code"></i>
+            Content:
+          </span>
+          <div class="submission-content">{{ submission.content }}</div>
+        </div>
+      </div>
+    </a>
+  </div>
+</div>

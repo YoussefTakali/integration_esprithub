@@ -1,0 +1,739 @@
+<br>
+<br>
+<br><div class="github-explorer">
+    <!-- Modern Repository Navigation -->
+    <div class="modern-repo-nav">
+      <div class="nav-left">
+        <button class="modern-back-btn" (click)="navigateToRepoSelector()">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+            <path d="M7.78 12.53a.75.75 0 01-1.06 0L2.47 8.28a.75.75 0 010-1.06L6.72 2.97a.75.75 0 011.06 1.06L4.81 7h7.44a.75.75 0 010 1.5H4.81l2.97 2.97a.75.75 0 010 1.06z"></path>
+          </svg>
+          <span>Back to Repositories</span>
+        </button>
+        <div class="nav-divider"></div>
+        <div class="repo-identity">
+          <div class="repo-icon-container">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" class="repo-icon">
+              <path d="M1.75 1A1.75 1.75 0 000 2.75v10.5C0 14.216.784 15 1.75 15h12.5A1.75 1.75 0 0016 13.25v-8.5A1.75 1.75 0 0014.25 3H7.5a.25.25 0 01-.2-.1l-.9-1.2C6.07 1.26 5.55 1 5 1H1.75z"></path>
+            </svg>
+          </div>
+          <div class="repo-details">
+            <h1 class="repo-name">{{ selectedRepo || 'GitHub Explorer' }}</h1>
+            <div class="repo-meta">
+              <span class="repo-visibility">
+                <svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor">
+                  <path d="M1.679 7.932c.412-.621 1.242-1.75 2.366-2.717C5.175 4.242 6.527 3.5 8 3.5c1.473 0 2.824.742 3.955 1.715 1.124.967 1.954 2.096 2.366 2.717a.119.119 0 010 .136c-.412.621-1.242 1.75-2.366 2.717C10.825 11.758 9.473 12.5 8 12.5c-1.473 0-2.824-.742-3.955-1.715C2.92 9.818 2.09 8.69 1.679 8.068a.119.119 0 010-.136zM8 2c-1.981 0-3.67.992-4.933 2.078C1.797 5.169.88 6.423.43 7.1a1.619 1.619 0 000 1.798c.45.678 1.367 1.932 2.637 3.024C4.329 13.008 6.019 14 8 14c1.981 0 3.67-.992 4.933-2.078 1.27-1.092 2.187-2.346 2.637-3.024a1.619 1.619 0 000-1.798c-.45-.678-1.367-1.932-2.637-3.024C11.671 2.992 9.981 2 8 2zm0 8a2 2 0 100-4 2 2 0 000 4z"></path>
+                </svg>
+                Public repository
+              </span>
+              <span class="repo-path">{{ owner }}/{{ repo }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="nav-right">
+        <div class="repo-stats-mini">
+          <div class="stat-mini">
+            <svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor">
+              <path d="M8 .25a.75.75 0 01.673.418l1.882 3.815 4.21.612a.75.75 0 01.416 1.279l-3.046 2.97.719 4.192a.75.75 0 01-1.088.791L8 12.347l-3.766 1.98a.75.75 0 01-1.088-.79l.72-4.194L.818 6.374a.75.75 0 01.416-1.28l4.21-.611L7.327.668A.75.75 0 018 .25z"></path>
+            </svg>
+            <span>{{ repoInfo?.stars || 0 }}</span>
+          </div>
+          <div class="stat-mini">
+            <svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor">
+              <path d="M5 3.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm0 2.122a2.25 2.25 0 10-1.5 0v.878A2.25 2.25 0 005.75 8.5h1.5v2.128a2.251 2.251 0 101.5 0V8.5h1.5a2.25 2.25 0 002.25-2.25v-.878a2.25 2.25 0 10-1.5 0v.878a.75.75 0 01-.75.75h-4.5A.75.75 0 015 6.25v-.878z"></path>
+            </svg>
+            <span>{{ repoInfo?.forks || 0 }}</span>
+          </div>
+          <div class="stat-mini">
+            <svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor">
+              <path d="M8 2c1.981 0 3.671.992 4.933 2.078 1.27 1.091 2.187 2.345 2.637 3.023a1.62 1.62 0 010 1.798c-.45.678-1.367 1.932-2.637 3.023C11.67 13.008 9.981 14 8 14c-1.981 0-3.671-.992-4.933-2.078C1.797 10.83.88 9.576.43 8.898a1.62 1.62 0 010-1.798c.45-.677 1.367-1.931 2.637-3.022C4.33 2.992 6.019 2 8 2zM1.679 7.932a.12.12 0 000 .136c.411.622 1.241 1.75 2.366 2.717C5.176 11.758 6.527 12.5 8 12.5c1.473 0 2.825-.742 3.955-1.715 1.124-.967 1.954-2.096 2.366-2.717a.12.12 0 000-.136C13.91 7.311 13.08 6.183 11.955 5.215 10.824 4.242 9.473 3.5 8 3.5c-1.473 0-2.825.742-3.955 1.715-1.124.968-1.954 2.096-2.366 2.717zM8 10a2 2 0 100-4 2 2 0 000 4z"></path>
+            </svg>
+            <span>{{ repoInfo?.watchers || 0 }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <button class="action-button primary" (click)="viewCommitHistory()">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+        <path d="M1.643 3.143L.427 1.927A.25.25 0 000 2.104V5.75c0 .138.112.25.25.25h3.646a.25.25 0 00.177-.427L2.715 4.215a6.5 6.5 0 11-1.18 4.458.75.75 0 10-1.493.154 8.001 8.001 0 101.6-5.684zM7.75 4a.75.75 0 01.75.75v2.992l2.028.812a.75.75 0 01-.557 1.392l-2.5-1A.75.75 0 017 8.25v-3.5A.75.75 0 017.75 4z"></path>
+      </svg>
+      View Commit History
+    </button>
+    
+    <!-- Repository Tabs -->
+    <div class="repo-tabs">
+      <div class="tab" [class.active]="currentTab === 'code'" (click)="switchTab('code')">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+          <path d="M1.75 1A1.75 1.75 0 000 2.75v10.5C0 14.216.784 15 1.75 15h12.5A1.75 1.75 0 0016 13.25v-8.5A1.75 1.75 0 0014.25 3H7.5a.25.25 0 01-.2-.1l-.9-1.2C6.07 1.26 5.55 1 5 1H1.75z"></path>
+        </svg>
+        <span>Code</span>
+      </div>
+      <div class="tab" [class.active]="currentTab === 'statistics'" (click)="switchTab('statistics')">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+          <path d="M1.5 1.75a.75.75 0 00-1.5 0v12.5c0 .414.336.75.75.75h14.5a.75.75 0 000-1.5H1.5V1.75zm14.28 2.53a.75.75 0 00-1.06-1.06L10 7.94 7.53 5.47a.75.75 0 00-1.06 0L3.22 8.72a.75.75 0 001.06 1.06L7 7.06l2.47 2.47a.75.75 0 001.06 0l5.25-5.25z"></path>
+        </svg>
+        <span>Statistics</span>
+      </div>
+    </div>
+
+    <!-- Repository Header with Branch Selector -->
+    <div class="repo-header">
+      <div class="header-row-1">
+        <div class="branch-selector">
+          <label for="branch">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+              <path d="M11.75 2.5a.75.75 0 100 1.5.75.75 0 000-1.5zm-2.25.75a2.25 2.25 0 113 2.122V6A2.5 2.5 0 0110 8.5H6a1 1 0 00-1 1v1.128a2.251 2.251 0 11-1.5 0V5.372a2.25 2.25 0 111.5 0v1.836A2.492 2.492 0 016 7h4a1 1 0 001-1v-.628A2.25 2.25 0 019.5 3.25zM4.25 12a.75.75 0 100 1.5.75.75 0 000-1.5zM3.5 3.25a.75.75 0 111.5 0 .75.75 0 01-1.5 0z"></path>
+            </svg>
+            Branch
+          </label>
+          <div class="select-container">
+            <select id="branch" [(ngModel)]="selectedBranch" (change)="selectBranch(selectedBranch!)">
+              <option *ngFor="let branch of branches" [value]="branch">{{ branch }}</option>
+            </select>
+            <span class="dropdown-arrow">
+              <svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor">
+                <path d="M12.78 5.22a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06 0L3.22 6.28a.75.75 0 011.06-1.06L8 8.94l3.72-3.72a.75.75 0 011.06 0z"></path>
+              </svg>
+            </span>
+          </div>
+        </div>
+
+        <div class="actions">
+          <!-- Add File Button -->
+          <input type="file" #fileInput style="display: none" (change)="handleFileSelection($event)" multiple />
+          <button class="btn btn-secondary" (click)="fileInput.click()">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+              <path d="M7.75 2a.75.75 0 01.75.75V7h4.25a.75.75 0 010 1.5H8.5v4.25a.75.75 0 01-1.5 0V8.5H2.75a.75.75 0 010-1.5H7V2.75A.75.75 0 017.75 2z"></path>
+            </svg>
+            Add file
+          </button>
+          <button class="btn btn-secondary code-btn" (click)="openCodePopup()">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+              <path d="M4.72 3.22a.75.75 0 011.06 1.06L2.06 8l3.72 3.72a.75.75 0 11-1.06 1.06L.47 8.53a.75.75 0 010-1.06l4.25-4.25zm6.56 0a.75.75 0 10-1.06 1.06L13.94 8l-3.72 3.72a.75.75 0 101.06 1.06l4.25-4.25a.75.75 0 000-1.06l-4.25-4.25z"></path>
+            </svg>
+            Code
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Commit Message Popup -->
+    <div *ngIf="isCommitPopupOpen" class="commit-popup" (click)="$event.stopPropagation()">
+      <div class="popup-content" (click)="$event.stopPropagation()">
+        <h3>
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+            <path d="M11.013 1.427a1.75 1.75 0 012.474 0l1.086 1.086a1.75 1.75 0 010 2.474l-8.61 8.61c-.21.21-.47.364-.756.445l-3.251.93a.75.75 0 01-.927-.928l.929-3.25a1.75 1.75 0 01.445-.758l8.61-8.61zm1.414 1.06a.25.25 0 00-.354 0L10.811 3.75l1.439 1.44 1.263-1.263a.25.25 0 000-.354l-1.086-1.086zM11.189 6.25L9.75 4.81l-6.286 6.287a.25.25 0 00-.064.108l-.558 1.953 1.953-.558a.249.249 0 00.108-.064l6.286-6.286z"></path>
+          </svg>
+          Commit Message
+        </h3>
+        <textarea [(ngModel)]="commitMessage" placeholder="Enter your commit message..." (click)="$event.stopPropagation()"></textarea>
+        <div class="popup-actions">
+          <button class="btn btn-secondary" (click)="closeCommitPopup(); $event.stopPropagation()">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+              <path d="M3.72 3.72a.75.75 0 011.06 0L8 6.94l3.22-3.22a.75.75 0 111.06 1.06L9.06 8l3.22 3.22a.75.75 0 11-1.06 1.06L8 9.06l-3.22 3.22a.75.75 0 01-1.06-1.06L6.94 8 3.72 4.78a.75.75 0 010-1.06z"></path>
+            </svg>
+            Cancel
+          </button>
+          <button class="btn btn-primary" (click)="submitCommit(); $event.stopPropagation()">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+              <path d="M13.78 4.22a.75.75 0 010 1.06l-7.25 7.25a.75.75 0 01-1.06 0L2.22 9.28a.75.75 0 011.06-1.06L6 10.94l6.72-6.72a.75.75 0 011.06 0z"></path>
+            </svg>
+            Commit
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Code Popup -->
+    <div *ngIf="isCodePopupOpen" class="code-popup" (click)="$event.stopPropagation()">
+      <div class="popup-content" (click)="$event.stopPropagation()">
+        <h3>
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+            <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path>
+          </svg>
+          Clone or download this repository
+        </h3>
+
+        <div class="clone-section" (click)="$event.stopPropagation()">
+          <h4>
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+              <path d="M7.775 3.275a.75.75 0 001.06 1.06l1.25-1.25a2 2 0 112.83 2.83l-2.5 2.5a2 2 0 01-2.83 0 .75.75 0 00-1.06 1.06 3.5 3.5 0 004.95 0l2.5-2.5a3.5 3.5 0 00-4.95-4.95l-1.25 1.25zm-4.69 9.64a2 2 0 010-2.83l2.5-2.5a2 2 0 012.83 0 .75.75 0 001.06-1.06 3.5 3.5 0 00-4.95 0l-2.5 2.5a3.5 3.5 0 004.95 4.95l1.25-1.25a.75.75 0 00-1.06-1.06l-1.25 1.25a2 2 0 01-2.83 0z"></path>
+            </svg>
+            Clone with HTTPS
+          </h4>
+          <div class="clone-url-container">
+            <input type="text" [value]="cloneUrl" readonly class="clone-url-input" (click)="$event.stopPropagation()" />
+            <button class="btn btn-secondary copy-btn" (click)="copyCloneUrl(); $event.stopPropagation()">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                <path d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 010 1.5h-1.5a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-1.5a.75.75 0 011.5 0v1.5A1.75 1.75 0 019.25 16h-7.5A1.75 1.75 0 010 14.25v-7.5z"></path>
+                <path d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0114.25 11h-7.5A1.75 1.75 0 015 9.25v-7.5zm1.75-.25a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-7.5a.25.25 0 00-.25-.25h-7.5z"></path>
+              </svg>
+              Copy
+            </button>
+          </div>
+          <p class="clone-help">Use Git or checkout with SVN using the web URL.</p>
+        </div>
+
+        <div class="download-section" (click)="$event.stopPropagation()">
+          <h4>
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+              <path d="M2.75 14A1.75 1.75 0 011 12.25v-2.5a.75.75 0 011.5 0v2.5c0 .138.112.25.25.25h10.5a.25.25 0 00.25-.25v-2.5a.75.75 0 011.5 0v2.5A1.75 1.75 0 0113.25 14H2.75zM7.25 7.689V2a.75.75 0 011.5 0v5.689l1.97-1.969a.75.75 0 111.06 1.06l-3.25 3.25a.75.75 0 01-1.06 0L4.22 6.78a.75.75 0 111.06-1.06l1.97 1.969z"></path>
+            </svg>
+            Download ZIP
+          </h4>
+          <button class="btn btn-primary download-btn" (click)="downloadRepoAsZip(); $event.stopPropagation()">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+              <path d="M2.75 14A1.75 1.75 0 011 12.25v-2.5a.75.75 0 011.5 0v2.5c0 .138.112.25.25.25h10.5a.25.25 0 00.25-.25v-2.5a.75.75 0 011.5 0v2.5A1.75 1.75 0 0113.25 14H2.75zM7.25 7.689V2a.75.75 0 011.5 0v5.689l1.97-1.969a.75.75 0 111.06 1.06l-3.25 3.25a.75.75 0 01-1.06 0L4.22 6.78a.75.75 0 111.06-1.06l1.97 1.969z"></path>
+            </svg>
+            Download ZIP ({{ selectedBranch }} branch)
+          </button>
+          <p class="download-help">
+            <a href="javascript:void(0)" (click)="downloadFromGitHub(); $event.stopPropagation()">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path>
+              </svg>
+              Try direct GitHub download if the above doesn't work
+            </a>
+          </p>
+        </div>
+
+        <div class="popup-actions">
+          <button class="btn btn-close" (click)="closeCodePopup(); $event.stopPropagation()">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+              <path d="M3.72 3.72a.75.75 0 011.06 0L8 6.94l3.22-3.22a.75.75 0 111.06 1.06L9.06 8l3.22 3.22a.75.75 0 11-1.06 1.06L8 9.06l-3.22 3.22a.75.75 0 01-1.06-1.06L6.94 8 3.72 4.78a.75.75 0 010-1.06z"></path>
+            </svg>
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+
+      <ng-template #modalContainer></ng-template>
+
+    <!-- Latest Commit Info -->
+    <div class="commit-info" *ngIf="!isLoading && !isViewingFile && latestCommit">
+      <div class="commit-avatar">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+          <path d="M8 0a8 8 0 100 16A8 8 0 008 0zM5.78 8.75a9.64 9.64 0 004.44 0 1 1 0 00-.44-1.94 7.65 7.65 0 01-3.56 0 1 1 0 00-.44 1.94zM6.5 6.5a1 1 0 100-2 1 1 0 000 2zm3 0a1 1 0 100-2 1 1 0 000 2z"></path>
+        </svg>
+      </div>
+      <div class="commit-details">
+        <div class="commit-row">
+          <span class="commit-label">Latest commit: </span>
+          <span class="commit-message">{{ latestCommit?.message }}</span>
+          <span class="commit-meta">{{ latestCommit?.pushedAt ? getTimeAgo(latestCommit.pushedAt) : '' }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Back button when viewing a file -->
+    <div *ngIf="isViewingFile" class="file-header">
+      <div class="file-header-left">
+        <button class="btn btn-secondary back-button" (click)="backToFileList()">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+            <path d="M7.78 12.53a.75.75 0 01-1.06 0L2.47 8.28a.75.75 0 010-1.06L6.72 2.97a.75.75 0 011.06 1.06L4.81 7h7.44a.75.75 0 010 1.5H4.81l2.97 2.97a.75.75 0 010 1.06z"></path>
+          </svg>
+          Back to files
+        </button>
+        <span *ngIf="selectedFile" class="file-path-display">{{ selectedFile.filePath }}</span>
+      </div>
+    </div>
+
+    <!-- Loading indicator -->
+    <div *ngIf="isLoading" class="loading-spinner">
+      <div class="spinner"></div>
+      <span>Loading repository contents...</span>
+    </div>
+
+    <!-- File content view -->
+    <div *ngIf="isViewingFile" class="file-content-view">
+      <div *ngIf="isLoadingContent" class="loading-spinner">
+        <div class="spinner"></div>
+        <span>Loading file content...</span>
+      </div>
+
+      <div *ngIf="!isLoadingContent" class="file-content">
+        <!-- Image preview -->
+        <div *ngIf="fileContent.startsWith('<img-preview')" class="image-preview">
+          <img [src]="extractSrcFromImgPreview(fileContent)" alt="Image preview" />
+          <div class="file-actions-bar">
+            <button class="btn btn-secondary" (click)="downloadCurrentFile()">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                <path d="M2.75 14A1.75 1.75 0 011 12.25v-2.5a.75.75 0 011.5 0v2.5c0 .138.112.25.25.25h10.5a.25.25 0 00.25-.25v-2.5a.75.75 0 011.5 0v2.5A1.75 1.75 0 0113.25 14H2.75zM7.25 7.689V2a.75.75 0 011.5 0v5.689l1.97-1.969a.75.75 0 111.06 1.06l-3.25 3.25a.75.75 0 01-1.06 0L4.22 6.78a.75.75 0 111.06-1.06l1.97 1.969z"></path>
+              </svg>
+              Download
+            </button>
+            <button class="btn btn-secondary" (click)="openReplaceFileDialog()">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                <path d="M2.75 14A1.75 1.75 0 011 12.25v-2.5a.75.75 0 011.5 0v2.5c0 .138.112.25.25.25h10.5a.25.25 0 00.25-.25v-2.5a.75.75 0 011.5 0v2.5A1.75 1.75 0 0113.25 14H2.75zM7.25 7.689V2a.75.75 0 011.5 0v5.689l1.97-1.969a.75.75 0 111.06 1.06l-3.25 3.25a.75.75 0 01-1.06 0L4.22 6.78a.75.75 0 111.06-1.06l1.97 1.969z"></path>
+              </svg>
+              Replace
+            </button>
+            <button class="btn btn-danger" (click)="deleteOpenedFile()">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                <path d="M6.5 1h3a.5.5 0 01.5.5v1H6v-1a.5.5 0 01.5-.5zM11 2.5v-1A1.5 1.5 0 009.5 0h-3A1.5 1.5 0 005 1.5v1H2.506a.58.58 0 000 1.152H3.5v8.848A1.5 1.5 0 005 14h6a1.5 1.5 0 001.5-1.5V4.652h.994a.58.58 0 000-1.152H11zM4.5 4.652h7v8.848a.5.5 0 01-.5.5H5a.5.5 0 01-.5-.5V4.652z"></path>
+              </svg>
+              Delete
+            </button>
+          </div>
+        </div>
+
+        <!-- Binary file download -->
+        <div *ngIf="!isLoadingContent && fileContent.startsWith('<binary-file')" class="binary-file-download">
+            <div class="file-content binary-content">
+              <div class="binary-file-message">
+                <h3>Binary File</h3>
+                <p>This file cannot be displayed in the browser. You can download it using the link below:</p>
+                <a [href]="extractUrlFromBinaryFile(fileContent)" class="download-binary-btn" target="_blank" download>
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                    <path d="M2.75 14A1.75 1.75 0 011 12.25v-2.5a.75.75 0 011.5 0v2.5c0 .138.112.25.25.25h10.5a.25.25 0 00.25-.25v-2.5a.75.75 0 011.5 0v2.5A1.75 1.75 0 0113.25 14H2.75zM7.25 7.689V2a.75.75 0 011.5 0v5.689l1.97-1.969a.75.75 0 111.06 1.06l-3.25 3.25a.75.75 0 01-1.06 0L4.22 6.78a.75.75 0 111.06-1.06l1.97 1.969z"></path>
+                  </svg>
+                  Download {{ extractTypeFromBinaryFile(fileContent) }} file
+                </a>
+              </div>
+            </div>
+            <div class="file-actions-bar">
+              <button class="btn btn-secondary" (click)="downloadCurrentFile()">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                  <path d="M2.75 14A1.75 1.75 0 011 12.25v-2.5a.75.75 0 011.5 0v2.5c0 .138.112.25.25.25h10.5a.25.25 0 00.25-.25v-2.5a.75.75 0 011.5 0v2.5A1.75 1.75 0 0113.25 14H2.75zM7.25 7.689V2a.75.75 0 011.5 0v5.689l1.97-1.969a.75.75 0 111.06 1.06l-3.25 3.25a.75.75 0 01-1.06 0L4.22 6.78a.75.75 0 111.06-1.06l1.97 1.969z"></path>
+                </svg>
+                Download
+              </button>
+              <button class="btn btn-secondary" (click)="openReplaceFileDialog()">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                  <path d="M2.75 14A1.75 1.75 0 011 12.25v-2.5a.75.75 0 011.5 0v2.5c0 .138.112.25.25.25h10.5a.25.25 0 00.25-.25v-2.5a.75.75 0 011.5 0v2.5A1.75 1.75 0 0113.25 14H2.75zM7.25 7.689V2a.75.75 0 011.5 0v5.689l1.97-1.969a.75.75 0 111.06 1.06l-3.25 3.25a.75.75 0 01-1.06 0L4.22 6.78a.75.75 0 111.06-1.06l1.97 1.969z"></path>
+                </svg>
+                Replace
+              </button>
+              <button class="btn btn-danger" (click)="deleteOpenedFile()">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                  <path d="M6.5 1h3a.5.5 0 01.5.5v1H6v-1a.5.5 0 01.5-.5zM11 2.5v-1A1.5 1.5 0 009.5 0h-3A1.5 1.5 0 005 1.5v1H2.506a.58.58 0 000 1.152H3.5v8.848A1.5 1.5 0 005 14h6a1.5 1.5 0 001.5-1.5V4.652h.994a.58.58 0 000-1.152H11zM4.5 4.652h7v8.848a.5.5 0 01-.5.5H5a.5.5 0 01-.5-.5V4.652z"></path>
+                </svg>
+                Delete
+              </button>
+            </div>
+        </div>
+
+        <!-- PDF Viewer -->
+        <div *ngIf="!isLoadingContent && fileContent.includes('pdf-viewer')" class="pdf-viewer-container">
+          <div class="pdf-viewer-content">
+            <div class="pdf-info">
+              <h3>📄 PDF Document</h3>
+              <p>{{ selectedFile?.name }}</p>
+            </div>
+
+            <!-- PDF Preview Message -->
+            <div class="pdf-preview-message">
+              <div class="pdf-icon">
+                📄
+              </div>
+              <h4>PDF File Ready to View</h4>
+              <p>This is a PDF document that cannot be displayed directly in the browser due to security restrictions.</p>
+              <p><strong>To view this PDF:</strong></p>
+              <ul>
+                <li>Click <strong>"View in Browser"</strong> to open it in a new tab with a PDF viewer</li>
+                <li>Or click <strong>"Download PDF"</strong> to save it to your device</li>
+              </ul>
+              <div class="pdf-file-info" *ngIf="selectedFile">
+                <p><strong>File:</strong> {{ selectedFile.name }}</p>
+                <p><strong>Size:</strong> {{ getFileSize(selectedFile) }}</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="file-actions-bar">
+            <button class="btn btn-secondary" (click)="openPdfInNewTab()" *ngIf="getPdfUrl()">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                <path d="M3.75 2a.75.75 0 00-.75.75v10.5c0 .414.336.75.75.75h8.5a.75.75 0 00.75-.75V6.5h-2.25a.75.75 0 01-.75-.75V3H3.75zM10.5 3v2.25h2.25L10.5 3z"></path>
+              </svg>
+              View in Browser
+            </button>
+            <button class="btn btn-secondary" (click)="downloadCurrentFile()">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                <path d="M2.75 14A1.75 1.75 0 011 12.25v-2.5a.75.75 0 011.5 0v2.5c0 .138.112.25.25.25h10.5a.25.25 0 00.25-.25v-2.5a.75.75 0 011.5 0v2.5A1.75 1.75 0 0113.25 14H2.75zM7.25 7.689V2a.75.75 0 011.5 0v5.689l1.97-1.969a.75.75 0 111.06 1.06l-3.25 3.25a.75.75 0 01-1.06 0L4.22 6.78a.75.75 0 111.06-1.06l1.97 1.969z"></path>
+              </svg>
+              Download PDF
+            </button>
+            <button class="btn btn-secondary" (click)="openReplaceFileDialog()">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                <path d="M2.75 14A1.75 1.75 0 011 12.25v-2.5a.75.75 0 011.5 0v2.5c0 .138.112.25.25.25h10.5a.25.25 0 00.25-.25v-2.5a.75.75 0 011.5 0v2.5A1.75 1.75 0 0113.25 14H2.75zM7.25 7.689V2a.75.75 0 011.5 0v5.689l1.97-1.969a.75.75 0 111.06 1.06l-3.25 3.25a.75.75 0 01-1.06 0L4.22 6.78a.75.75 0 111.06-1.06l1.97 1.969z"></path>
+              </svg>
+              Replace
+            </button>
+            <button class="btn btn-danger" (click)="deleteOpenedFile()">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                <path d="M6.5 1h3a.5.5 0 01.5.5v1H6v-1a.5.5 0 01.5-.5zM11 2.5v-1A1.5 1.5 0 009.5 0h-3A1.5 1.5 0 005 1.5v1H2.506a.58.58 0 000 1.152H3.5v8.848A1.5 1.5 0 005 14h6a1.5 1.5 0 001.5-1.5V4.652h.994a.58.58 0 000-1.152H11zM4.5 4.652h7v8.848a.5.5 0 01-.5.5H5a.5.5 0 01-.5-.5V4.652z"></path>
+              </svg>
+              Delete
+            </button>
+          </div>
+        </div>
+
+        <!-- Text content with editor -->
+        <div *ngIf="!fileContent.startsWith('<img-preview') && !fileContent.startsWith('<binary-file') && !fileContent.includes('pdf-viewer')" class="text-editor-container">
+          <!-- Toggle between view and edit modes with action buttons -->
+          <div class="editor-mode-toggle">
+            <div class="mode-tabs">
+              <button class="btn" [class.active]="!isEditMode" (click)="isEditMode = false">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                  <path d="M8 2a.75.75 0 01.75.75v2.69l1.44-1.44a.75.75 0 111.06 1.06L8.81 7.5h2.44a.75.75 0 010 1.5H8.81l2.44 2.44a.75.75 0 11-1.06 1.06L8.75 10.06v2.69a.75.75 0 01-1.5 0v-2.69L5.81 11.5a.75.75 0 11-1.06-1.06L7.19 8H4.75a.75.75 0 010-1.5h2.44L4.75 4.06a.75.75 0 111.06-1.06L7.25 4.44V2.75A.75.75 0 018 2z"></path>
+                </svg>
+                View
+              </button>
+              <button class="btn" [class.active]="isEditMode" (click)="isEditMode = true">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                  <path d="M11.013 1.427a1.75 1.75 0 012.474 0l1.086 1.086a1.75 1.75 0 010 2.474l-8.61 8.61c-.21.21-.47.364-.756.445l-3.251.93a.75.75 0 01-.927-.928l.929-3.25a1.75 1.75 0 01.445-.758l8.61-8.61zm1.414 1.06a.25.25 0 00-.354 0L10.811 3.75l1.439 1.44 1.263-1.263a.25.25 0 000-.354l-1.086-1.086zM11.189 6.25L9.75 4.81l-6.286 6.287a.25.25 0 00-.064.108l-.558 1.953 1.953-.558a.249.249 0 00.108-.064l6.286-6.286z"></path>
+                </svg>
+                Edit
+              </button>
+            </div>
+          </div>
+
+          <!-- View mode -->
+          <div *ngIf="!isEditMode">
+            <pre><code [class]="'language-' + getFileExtensionForSyntaxHighlighting()">{{ fileContent }}</code></pre>
+            <div class="file-actions-bar">
+              <button class="btn btn-secondary" (click)="downloadCurrentFile()">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                  <path d="M2.75 14A1.75 1.75 0 011 12.25v-2.5a.75.75 0 011.5 0v2.5c0 .138.112.25.25.25h10.5a.25.25 0 00.25-.25v-2.5a.75.75 0 011.5 0v2.5A1.75 1.75 0 0113.25 14H2.75zM7.25 7.689V2a.75.75 0 011.5 0v5.689l1.97-1.969a.75.75 0 111.06 1.06l-3.25 3.25a.75.75 0 01-1.06 0L4.22 6.78a.75.75 0 111.06-1.06l1.97 1.969z"></path>
+                </svg>
+                Download
+              </button>
+              <button class="btn btn-secondary" (click)="openFileForEditing()">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                  <path d="M11.013 1.427a1.75 1.75 0 012.474 0l1.086 1.086a1.75 1.75 0 010 2.474l-8.61 8.61c-.21.21-.47.364-.756.445l-3.251.93a.75.75 0 01-.927-.928l.929-3.25a1.75 1.75 0 01.445-.758l8.61-8.61zm1.414 1.06a.25.25 0 00-.354 0L10.811 3.75l1.439 1.44 1.263-1.263a.25.25 0 000-.354l-1.086-1.086zM11.189 6.25L9.75 4.81l-6.286 6.287a.25.25 0 00-.064.108l-.558 1.953 1.953-.558a.249.249 0 00.108-.064l6.286-6.286z"></path>
+                </svg>
+                Edit
+              </button>
+              <button class="btn btn-secondary" (click)="openReplaceFileDialog()">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                  <path d="M2.75 14A1.75 1.75 0 011 12.25v-2.5a.75.75 0 011.5 0v2.5c0 .138.112.25.25.25h10.5a.25.25 0 00.25-.25v-2.5a.75.75 0 011.5 0v2.5A1.75 1.75 0 0113.25 14H2.75zM7.25 7.689V2a.75.75 0 011.5 0v5.689l1.97-1.969a.75.75 0 111.06 1.06l-3.25 3.25a.75.75 0 01-1.06 0L4.22 6.78a.75.75 0 111.06-1.06l1.97 1.969z"></path>
+                </svg>
+                Replace
+              </button>
+              <button class="btn btn-danger" (click)="deleteOpenedFile()">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                  <path d="M6.5 1h3a.5.5 0 01.5.5v1H6v-1a.5.5 0 01.5-.5zM11 2.5v-1A1.5 1.5 0 009.5 0h-3A1.5 1.5 0 005 1.5v1H2.506a.58.58 0 000 1.152H3.5v8.848A1.5 1.5 0 005 14h6a1.5 1.5 0 001.5-1.5V4.652h.994a.58.58 0 000-1.152H11zM4.5 4.652h7v8.848a.5.5 0 01-.5.5H5a.5.5 0 01-.5-.5V4.652z"></path>
+                </svg>
+                Delete
+              </button>
+            </div>
+          </div>
+
+          <!-- Edit mode -->
+          <div *ngIf="isEditMode" class="edit-mode">
+            <textarea [(ngModel)]="editableContent" class="code-editor" rows="20"></textarea>
+            <div class="file-actions-bar">
+              <button class="btn btn-primary" (click)="saveFileChanges()">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                  <path d="M13.78 4.22a.75.75 0 010 1.06l-7.25 7.25a.75.75 0 01-1.06 0L2.22 9.28a.75.75 0 011.06-1.06L6 10.94l6.72-6.72a.75.75 0 011.06 0z"></path>
+                </svg>
+                Save Changes
+              </button>
+              <button class="btn btn-secondary" (click)="downloadFile()">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                  <path d="M2.75 14A1.75 1.75 0 011 12.25v-2.5a.75.75 0 011.5 0v2.5c0 .138.112.25.25.25h10.5a.25.25 0 00.25-.25v-2.5a.75.75 0 011.5 0v2.5A1.75 1.75 0 0113.25 14H2.75zM7.25 7.689V2a.75.75 0 011.5 0v5.689l1.97-1.969a.75.75 0 111.06 1.06l-3.25 3.25a.75.75 0 01-1.06 0L4.22 6.78a.75.75 0 111.06-1.06l1.97 1.969z"></path>
+                </svg>
+                Download File
+              </button>
+              <button class="btn btn-secondary" (click)="cancelEditing()">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                  <path d="M3.72 3.72a.75.75 0 011.06 0L8 6.94l3.22-3.22a.75.75 0 111.06 1.06L9.06 8l3.22 3.22a.75.75 0 11-1.06 1.06L8 9.06l-3.22 3.22a.75.75 0 01-1.06-1.06L6.94 8 3.72 4.78a.75.75 0 010-1.06z"></path>
+                </svg>
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="file-meta">
+        <div class="meta-item">
+          <span class="meta-icon">📏</span>
+          <span>2.4 KB</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-icon">📝</span>
+          <span *ngIf="selectedFile">{{ selectedFile.commitMessage || 'No commit message' }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Repository content with sidebar layout -->
+    <div *ngIf="!isLoading && !isViewingFile" class="repo-layout">
+      <!-- Main content area -->
+      <div class="repo-main-content">
+        <div class="repo-content">
+          <table class="files-table">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Commit message</th>
+                <th>Committer</th>
+                <th>Updated</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Recursive template for rendering file tree -->
+              <ng-container *ngTemplateOutlet="fileTreeTemplate; context: { $implicit: folderStructure.children, level: 0 }"></ng-container>
+            </tbody>
+          </table>
+
+          <!-- Repository README Section integrated in table -->
+          <app-repository-readme
+            [owner]="owner"
+            [repositoryName]="repo">
+          </app-repository-readme>
+        </div>
+      </div>
+
+      <!-- Sidebar with contributors and file types -->
+      <div class="repo-sidebar">
+        <!-- Contributors Section -->
+        <div class="sidebar-section">
+          <h3 class="sidebar-title">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+              <path d="M1.5 14.25c0 .138.112.25.25.25H4v-1.25a.75.75 0 01.75-.75h2.5a.75.75 0 01.75.75v1.25h2.25a.25.25 0 00.25-.25V1.75a.25.25 0 00-.25-.25h-8.5a.25.25 0 00-.25.25v12.5zM1.75 16A1.75 1.75 0 010 14.25V1.75C0 .784.784 0 1.75 0h8.5C11.216 0 12 .784 12 1.75v12.5c0 .085-.006.168-.018.25h2.268a.25.25 0 00.25-.25V8.285a.25.25 0 00-.111-.208l-1.055-.703a.75.75 0 11.832-1.248l1.055.703c.487.325.779.871.779 1.456v5.965A1.75 1.75 0 0114.25 16h-2.5a.75.75 0 01-.75-.75V14h-1.25v1.25a.75.75 0 01-.75.75h-2.5a.75.75 0 01-.75-.75V14H4v1.25a.75.75 0 01-.75.75h-1.5z"></path>
+            </svg>
+            Contributors
+            <span class="count-badge" *ngIf="contributors.length > 0">{{ contributors.length }}</span>
+          </h3>
+          <div class="contributors-list">
+            <!-- Loading state -->
+            <div class="loading-state" *ngIf="isLoadingContributors">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" class="fa-spin">
+                <path d="M8 0a8 8 0 100 16A8 8 0 008 0zM1.5 8a6.5 6.5 0 1113 0 6.5 6.5 0 01-13 0z"></path>
+              </svg>
+              <span>Loading contributors...</span>
+            </div>
+            <!-- Contributors list -->
+            <div class="contributor-item" *ngFor="let contributor of contributors">
+              <img [src]="contributor.avatar"
+                   [alt]="contributor.name"
+                   class="contributor-avatar"
+                   (error)="onImageError($event)">
+              <span class="contributor-name">{{ contributor.name }}</span>
+              <span class="contributor-commits">{{ contributor.commits }} commits</span>
+            </div>
+            <!-- Empty state -->
+            <div class="empty-state" *ngIf="!isLoadingContributors && contributors.length === 0">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                <path d="M1.5 14.25c0 .138.112.25.25.25H4v-1.25a.75.75 0 01.75-.75h2.5a.75.75 0 01.75.75v1.25h2.25a.25.25 0 00.25-.25V1.75a.25.25 0 00-.25-.25h-8.5a.25.25 0 00-.25.25v12.5zM1.75 16A1.75 1.75 0 010 14.25V1.75C0 .784.784 0 1.75 0h8.5C11.216 0 12 .784 12 1.75v12.5c0 .085-.006.168-.018.25h2.268a.25.25 0 00.25-.25V8.285a.25.25 0 00-.111-.208l-1.055-.703a.75.75 0 11.832-1.248l1.055.703c.487.325.779.871.779 1.456v5.965A1.75 1.75 0 0114.25 16h-2.5a.75.75 0 01-.75-.75V14h-1.25v1.25a.75.75 0 01-.75.75h-2.5a.75.75 0 01-.75-.75V14H4v1.25a.75.75 0 01-.75.75h-1.5z"></path>
+              </svg>
+              <span>No contributors found</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- File Types Section (Updated from Languages) -->
+        <div class="sidebar-section">
+          <h3 class="sidebar-title">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+              <path d="M4.72 3.22a.75.75 0 011.06 1.06L2.06 8l3.72 3.72a.75.75 0 11-1.06 1.06L.47 8.53a.75.75 0 010-1.06l4.25-4.25zm6.56 0a.75.75 0 10-1.06 1.06L13.94 8l-3.72 3.72a.75.75 0 101.06 1.06l4.25-4.25a.75.75 0 000-1.06l-4.25-4.25z"></path>
+            </svg>
+            File Types
+          </h3>
+          <div class="file-types-chart">
+            <!-- Loading state -->
+            <div class="loading-state" *ngIf="isLoadingFileTypes">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" class="fa-spin">
+                <path d="M8 0a8 8 0 100 16A8 8 0 008 0zM1.5 8a6.5 6.5 0 1113 0 6.5 6.5 0 01-13 0z"></path>
+              </svg>
+              <span>Loading file types...</span>
+            </div>
+            <!-- File types chart -->
+            <div *ngIf="!isLoadingFileTypes && fileTypeStats && fileTypeStats.length > 0">
+              <div class="file-type-bar">
+                <div class="file-type-segment"
+                     *ngFor="let fileType of fileTypeStats"
+                     [style.width.%]="fileType.percentage"
+                     [style.background-color]="getLanguageColor(fileType.extension)"
+                     [title]="fileType.extension + ': ' + fileType.percentage.toFixed(1) + '%'">
+                </div>
+              </div>
+              <div class="file-types-list">
+                <div class="file-type-item" *ngFor="let fileType of fileTypeStats">
+                  <span class="file-type-dot" [style.background-color]="getLanguageColor(fileType.extension)"></span>
+                  <span class="file-type-name">{{ fileType.extension }}</span>
+                  <span class="file-type-percentage">{{ fileType.percentage.toFixed(1) }}%</span>
+                  <span class="file-type-count">({{ fileType.count }} {{ fileType.count === 1 ? 'file' : 'files' }})</span>
+                </div>
+              </div>
+            </div>
+            <!-- Empty state -->
+            <div class="empty-state" *ngIf="!isLoadingFileTypes && (!fileTypeStats || fileTypeStats.length === 0)">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                <path d="M4.72 3.22a.75.75 0 011.06 1.06L2.06 8l3.72 3.72a.75.75 0 11-1.06 1.06L.47 8.53a.75.75 0 010-1.06l4.25-4.25zm6.56 0a.75.75 0 10-1.06 1.06L13.94 8l-3.72 3.72a.75.75 0 101.06 1.06l4.25-4.25a.75.75 0 000-1.06l-4.25-4.25z"></path>
+              </svg>
+              <span>No file types detected</span>
+            </div>
+            <!-- Error state -->
+            <div class="error-state" *ngIf="errors['fileTypes']">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                <path d="M2.343 13.657A8 8 0 1113.657 2.343 8 8 0 012.343 13.657zM6.03 4.97a.75.75 0 00-1.06 1.06L6.94 8 4.97 9.97a.75.75 0 101.06 1.06L8 9.06l1.97 1.97a.75.75 0 001.06-1.06L9.06 8l1.97-1.97a.75.75 0 00-1.06-1.06L8 6.94 6.03 4.97z"></path>
+              </svg>
+              <span>{{ errors['fileTypes'] }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- About Section -->
+        <div class="sidebar-section">
+          <h3 class="sidebar-title">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+              <path d="M0 8a8 8 0 1116 0A8 8 0 010 8zm8-6.5a6.5 6.5 0 100 13 6.5 6.5 0 000-13zM6.5 7.75A.75.75 0 017.25 7h1a.75.75 0 01.75.75v2.75h.25a.75.75 0 010 1.5h-2a.75.75 0 010-1.5h.25v-2h-.25a.75.75 0 01-.75-.75zM8 6a1 1 0 100-2 1 1 0 000 2z"></path>
+            </svg>
+            About
+          </h3>
+          <div class="about-content">
+            <p class="repo-description" *ngIf="repoInfo?.description">
+              {{ repoInfo.description }}
+            </p>
+            <p class="no-description" *ngIf="!repoInfo?.description">
+              No description, website, or topics provided.
+            </p>
+
+            <div class="repo-stats">
+              <div class="stat-item">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                  <path d="M8 .25a.75.75 0 01.673.418l1.882 3.815 4.21.612a.75.75 0 01.416 1.279l-3.046 2.97.719 4.192a.75.75 0 01-1.088.791L8 12.347l-3.766 1.98a.75.75 0 01-1.088-.79l.72-4.194L.818 6.374a.75.75 0 01.416-1.28l4.21-.611L7.327.668A.75.75 0 018 .25z"></path>
+                </svg>
+                <span>{{ repoInfo?.stars || 0 }} stars</span>
+              </div>
+              <div class="stat-item">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                  <path d="M8 2c1.981 0 3.671.992 4.933 2.078 1.27 1.091 2.187 2.345 2.637 3.023a1.62 1.62 0 010 1.798c-.45.678-1.367 1.932-2.637 3.023C11.67 13.008 9.981 14 8 14c-1.981 0-3.671-.992-4.933-2.078C1.797 10.83.88 9.576.43 8.898a1.62 1.62 0 010-1.798c.45-.677 1.367-1.931 2.637-3.022C4.33 2.992 6.019 2 8 2zM1.679 7.932a.12.12 0 000 .136c.411.622 1.241 1.75 2.366 2.717C5.176 11.758 6.527 12.5 8 12.5c1.473 0 2.825-.742 3.955-1.715 1.124-.967 1.954-2.096 2.366-2.717a.12.12 0 000-.136C13.91 7.311 13.08 6.183 11.955 5.215 10.824 4.242 9.473 3.5 8 3.5c-1.473 0-2.825.742-3.955 1.715-1.124.968-1.954 2.096-2.366 2.717zM8 10a2 2 0 100-4 2 2 0 000 4z"></path>
+                </svg>
+                <span>{{ repoInfo?.watchers || 0 }} watching</span>
+              </div>
+              <div class="stat-item">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                  <path d="M5 3.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm0 2.122a2.25 2.25 0 10-1.5 0v.878A2.25 2.25 0 005.75 8.5h1.5v2.128a2.251 2.251 0 101.5 0V8.5h1.5a2.25 2.25 0 002.25-2.25v-.878a2.25 2.25 0 10-1.5 0v.878a.75.75 0 01-.75.75h-4.5A.75.75 0 015 6.25v-.878z"></path>
+                </svg>
+                <span>{{ repoInfo?.forks || 0 }} forks</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Template for recursive file tree rendering -->
+  <ng-template #fileTreeTemplate let-nodes let-level="level">
+    <ng-container *ngIf="nodes">
+      <ng-container *ngFor="let node of nodes">
+        <!-- Folder row -->
+        <tr *ngIf="node && node.type === 'folder'" class="is-directory" (click)="toggleFolder(node)">
+          <td>
+            <div class="file-name" [style.paddingLeft.px]="level * 20">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" [ngClass]="node.isOpen ? 'fa-folder-open' : 'fa-folder'">
+                <path d="M1.75 1A1.75 1.75 0 000 2.75v10.5C0 14.216.784 15 1.75 15h12.5A1.75 1.75 0 0016 13.25v-8.5A1.75 1.75 0 0014.25 3H7.5a.25.25 0 01-.2-.1l-.9-1.2C6.07 1.26 5.55 1 5 1H1.75z"></path>
+              </svg>
+              {{ node.name }}
+              <span class="folder-indicator">{{ node.isOpen ? '▼' : '▶' }}</span>
+            </div>
+          </td>
+          <td>—</td>
+          <td>—</td>
+          <td>—</td>
+        </tr>
+
+        <!-- Folder contents if open -->
+        <ng-container *ngIf="node && node.type === 'folder' && node.isOpen && node.children">
+          <ng-container *ngTemplateOutlet="fileTreeTemplate; context: { $implicit: node.children, level: level + 1 }"></ng-container>
+        </ng-container>
+
+        <!-- File row -->
+        <tr *ngIf="node && node.type === 'file'" class="file-row">
+          <td (click)="viewFileContent(node)">
+            <div class="file-name" [style.paddingLeft.px]="level * 20">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" class="file-icon file-document">
+                <path d="M2 1.75C2 .784 2.784 0 3.75 0h6.586c.464 0 .909.184 1.237.513l2.914 2.914c.329.328.513.773.513 1.237v9.586A1.75 1.75 0 0113.25 16h-9.5A1.75 1.75 0 012 14.25V1.75zm1.75-.25a.25.25 0 00-.25.25v12.5c0 .138.112.25.25.25h9.5a.25.25 0 00.25-.25V6h-2.75A1.75 1.75 0 019 4.25V1.5H3.75zm6.75.062V4.25c0 .138.112.25.25.25h2.688a.252.252 0 00-.011-.013l-2.914-2.914a.25.25 0 00-.013-.011z"></path>
+              </svg>
+              {{ node.name }}
+            </div>
+          </td>
+          <td (click)="viewFileContent(node)">
+            {{ node.commitMessage || 'No commit message' }}
+          </td>
+          <td (click)="viewFileContent(node)">
+            {{ node.pusherName || 'Unknown' }}
+          </td>
+          <td>
+            <div class="file-actions">
+              <span class="file-date" (click)="viewFileContent(node)">
+                {{ node.pushedAt ? getTimeAgo(node.pushedAt) : 'Unknown date' }}
+              </span>
+            </div>
+          </td>
+        </tr>
+      </ng-container>
+    </ng-container>
+  </ng-template>
+
+  <!-- Replace File Dialog -->
+  <div *ngIf="showReplaceDialog" class="modal-overlay" (click)="closeReplaceDialog()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3>
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+            <path d="M2.75 14A1.75 1.75 0 011 12.25v-2.5a.75.75 0 011.5 0v2.5c0 .138.112.25.25.25h10.5a.25.25 0 00.25-.25v-2.5a.75.75 0 011.5 0v2.5A1.75 1.75 0 0113.25 14H2.75zM7.25 7.689V2a.75.75 0 011.5 0v5.689l1.97-1.969a.75.75 0 111.06 1.06l-3.25 3.25a.75.75 0 01-1.06 0L4.22 6.78a.75.75 0 111.06-1.06l1.97 1.969z"></path>
+          </svg>
+          Replace File: {{ selectedFile?.name }}
+        </h3>
+        <button class="close-btn" (click)="closeReplaceDialog()">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+            <path d="M3.72 3.72a.75.75 0 011.06 0L8 6.94l3.22-3.22a.75.75 0 111.06 1.06L9.06 8l3.22 3.22a.75.75 0 11-1.06 1.06L8 9.06l-3.22 3.22a.75.75 0 01-1.06-1.06L6.94 8 3.72 4.78a.75.75 0 010-1.06z"></path>
+          </svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label for="replaceFile">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+              <path d="M2.75 14A1.75 1.75 0 011 12.25v-2.5a.75.75 0 011.5 0v2.5c0 .138.112.25.25.25h10.5a.25.25 0 00.25-.25v-2.5a.75.75 0 011.5 0v2.5A1.75 1.75 0 0113.25 14H2.75zM7.25 7.689V2a.75.75 0 011.5 0v5.689l1.97-1.969a.75.75 0 111.06 1.06l-3.25 3.25a.75.75 0 01-1.06 0L4.22 6.78a.75.75 0 111.06-1.06l1.97 1.969z"></path>
+            </svg>
+            Select new file (all types supported):
+          </label>
+          <input type="file" id="replaceFile" #replaceFileInput (change)="onReplaceFileSelected($event)"
+                 class="file-input" accept="*/*" multiple="false">
+          <small class="file-help-text">
+            Supports all file types: text files, images, documents, binaries, etc.
+          </small>
+        </div>
+        <div class="form-group" *ngIf="selectedReplaceFile">
+          <div class="file-preview">
+            <strong>Selected file:</strong> {{ selectedReplaceFile.name }}
+            <span class="file-size">({{ formatFileSize(selectedReplaceFile.size) }})</span>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="replaceCommitMessage">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+              <path d="M11.013 1.427a1.75 1.75 0 012.474 0l1.086 1.086a1.75 1.75 0 010 2.474l-8.61 8.61c-.21.21-.47.364-.756.445l-3.251.93a.75.75 0 01-.927-.928l.929-3.25a1.75 1.75 0 01.445-.758l8.61-8.61zm1.414 1.06a.25.25 0 00-.354 0L10.811 3.75l1.439 1.44 1.263-1.263a.25.25 0 000-.354l-1.086-1.086zM11.189 6.25L9.75 4.81l-6.286 6.287a.25.25 0 00-.064.108l-.558 1.953 1.953-.558a.249.249 0 00.108-.064l6.286-6.286z"></path>
+            </svg>
+            Commit message:
+          </label>
+          <input type="text" id="replaceCommitMessage" [(ngModel)]="replaceCommitMessage"
+                 placeholder="Replace {{ selectedFile?.name }}" class="form-control">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-primary" (click)="replaceFile()" [disabled]="!selectedReplaceFile">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+            <path d="M2.75 14A1.75 1.75 0 011 12.25v-2.5a.75.75 0 011.5 0v2.5c0 .138.112.25.25.25h10.5a.25.25 0 00.25-.25v-2.5a.75.75 0 011.5 0v2.5A1.75 1.75 0 0113.25 14H2.75zM7.25 7.689V2a.75.75 0 011.5 0v5.689l1.97-1.969a.75.75 0 111.06 1.06l-3.25 3.25a.75.75 0 01-1.06 0L4.22 6.78a.75.75 0 111.06-1.06l1.97 1.969z"></path>
+          </svg>
+          Replace File
+        </button>
+        <button class="btn btn-secondary" (click)="closeReplaceDialog()">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+            <path d="M3.72 3.72a.75.75 0 011.06 0L8 6.94l3.22-3.22a.75.75 0 111.06 1.06L9.06 8l3.22 3.22a.75.75 0 11-1.06 1.06L8 9.06l-3.22 3.22a.75.75 0 01-1.06-1.06L6.94 8 3.72 4.78a.75.75 0 010-1.06z"></path>
+          </svg>
+          Cancel
+        </button>
+      </div>
+    </div>
+  </div>

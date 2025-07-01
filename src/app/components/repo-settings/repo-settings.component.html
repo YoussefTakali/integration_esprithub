@@ -1,0 +1,282 @@
+<div class="settings-layout">
+  <!-- Sidebar -->
+  <aside class="settings-sidebar">
+    <ul>
+      <li [class.active]="activeTab === 'general'" (click)="activeTab = 'general'">
+        <img src="assets/gear-solid.svg" alt="Code Icon" width="16" height="16" style="margin-right: 4px;">General
+      </li>
+      <li [class.active]="activeTab === 'collaborators'" (click)="activeTab = 'collaborators'">
+        <img src="assets/user-group-solid.svg" alt="Code Icon" width="16" height="16" style="margin-right: 4px;"> Collaborators
+      </li>
+  
+      <li [class.active]="activeTab === 'branches'" (click)="activeTab = 'branches'">
+        <img src="assets/code-branch-solid.svg" alt="Code Icon" width="16" height="16" style="margin-right: 4px;"> Branches
+      </li>
+      <li [class.active]="activeTab === 'commits'" (click)="activeTab = 'commits'">
+        <img src="assets/code-commit-solid.svg" alt="Code Icon" width="16" height="16" style="margin-right: 4px;"> Commits
+      </li>
+      <li [class.active]="activeTab === 'delete'" (click)="activeTab = 'delete'">
+        <img src="assets/bin.svg" alt="Code Icon" width="16" height="16" style="margin-right: 4px;"> Delete repository
+      </li>
+    </ul>
+  </aside>
+
+  <!-- Main Content -->
+  <section class="settings-content">
+    <!-- General Tab -->
+    <div *ngIf="activeTab === 'general'" class="general-settings-block">
+      <h3>
+       
+          <img src="assets/repo.png" alt="Code Icon" width="25" height="25" style="margin-right: 4px;"> Repository name
+      </h3>
+      <form class="rename-form" (ngSubmit)="updateRepoName()">
+        <input id="repoName" [(ngModel)]="repoName" name="repoName" required>
+        <button type="submit">
+      
+          Rename
+        </button>
+      </form>
+    </div>
+
+    <!-- Collaborators Tab -->
+    <div *ngIf="activeTab === 'collaborators'">
+      <h2 class="collab">Collaborators</h2>
+      <div class="collab-block">
+        <div *ngIf="collaborators1.length === 1 && invitations.length ===0" class="empty-collab">
+          <p class="empty-collab-message">You haven't invited any collaborators yet</p>
+         </div> 
+        
+          <div class="collab-icon"> <img src="assets/user-group-solid.svg" alt="Code Icon" width="50" height="50" style="margin-right: 4px;"></div>
+            
+         
+      
+      
+     
+ 
+        <div class="error">
+        <div class="add-collab-form">
+       
+          <input [(ngModel)]="collaborator" name="collaborator" placeholder="Username or email" required>
+          <button   class="add-button"(click)="addCollaborator()">Add collaborator</button>
+          <button class="cancel-btn" (click)="showAddCollab = false" class="cancel-btn">Cancel</button>
+        </div>
+          <div *ngIf="inviteError" class="error-msg">{{ inviteError }}</div>
+          <div *ngIf="SuccessError" class="success-msg">{{ SuccessError }}</div>
+        </div>
+     
+      </div>
+      <div *ngIf="collaborators1.length>1 || invitations.length>=1" class="manage-access-container">
+        <h2>Manage access</h2>
+        <div class="block">
+        <div *ngIf="branche_add_success" class="branch-success-message">{{ branche_add_success}}</div>
+        <div *ngIf="branche_add_error" class="branch-error-message">{{ branche_add_error}}</div>
+      </div>
+        <div class="access-card">
+          <div class="access-header">
+            <input type="checkbox" />
+            <span>Select all</span>
+          
+          </div>
+          <div class="collab-search">
+            <input type="text" placeholder="Find a collaborator..." />
+          </div>
+          <div class="collaborators-list">
+            <!-- Pending Invitations -->
+            <div *ngFor="let invite of invitations" class="collab-row pending">
+              <input type="checkbox" />
+              <img [src]="invite.invitee?.avatar_url || 'assets/default-avatar.png'" class="collab-avatar" />
+              <span class="collab-name">
+                {{ invite.invitee?.login || invite.email }}
+              </span>
+              <span class="collab-status">Pending Invite</span>
+              <button class="remove-btn" (click)="openRemoveInviteModal(invite)">
+                <img src="assets/bin.svg" alt="Delete Icon" width="16" height="16">
+              </button>
+            </div>
+            <div class="modal-overlay" *ngIf="showRemoveInviteModal">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <span>Confirm you want to remove this invitation</span>
+                  <button class="close-btn" (click)="closeRemoveInviteModal()">×</button>
+                </div>
+                <div class="modal-body">
+                  <p>
+                    Once canceled, <b>{{ selectedInvite?.invitee?.login || selectedInvite?.email }}</b>
+                    will no longer be invited to access the <b>{{ repoName }}</b> repository.
+                  </p>
+                  <button class="danger-btn" (click)="confirmRemoveInvite()">
+                    Cancel {{ selectedInvite?.invitee?.login || selectedInvite?.email }}'s invitation
+                  </button>
+                </div>
+              </div>
+            </div>
+            <!-- Accepted Collaborators -->
+            <ng-container *ngFor="let collab of collaborators1">
+              <div *ngIf="collab.login!=ownerName"  class="collab-row">
+              <input type="checkbox" />
+              <img [src]="collab.avatar_url" class="collab-avatar" />
+              <span class="collab-name">{{ collab.login }}</span>
+              <span class="collab-status">Active</span>
+              <button class="add-button-branche" (click)="  addBranchForCollaborators()"> add branches</button>
+             
+              <button class="remove-btn" title="Remove Collaborator"  (click)="openRemoveCollabModal(collab.login)">  <img src="assets/bin.svg" alt="Code Icon" width="16" height="16" style="margin-right: 4px;"></button>
+              <div class="modal-overlay" *ngIf="showRemoveCollabModal">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <span>Confirm you want to remove this Collaborator</span>
+                    <button class="close-btn" (click)="closeCollabModal()">×</button>
+                  </div>
+                  <div class="modal-body">
+                    <p>
+                      Once canceled, <b>{{ collab.login || collab.email }}</b>
+                      will no longer have access  to the <b>{{ repoName }}</b> repository.
+                    </p>
+                    <button class="danger-btn" (click)="confirmRemoveCollab()">
+                      Delete {{ selectedInvite?.invitee?.login || selectedInvite?.email }} Collaborator
+                    </button>
+                  </div>
+                </div>
+              </div>
+              </div> 
+             
+            </ng-container>
+          
+          </div>
+        </div>
+        </div>
+      </div>
+    
+
+    <!-- Delete Tab -->
+    <div class="delete-rep"*ngIf="activeTab === 'delete'">
+      <h2>Delete repository</h2>
+      <button class="danger" (click)="showDeleteConfirm = true">Delete this repository</button>
+      <!-- Delete Confirmation Modal -->
+      <div class="modal" *ngIf="showDeleteConfirm">
+        <div class="modal-content">
+          <h3>Are you absolutely sure?</h3>
+          <p>This action <b>cannot</b> be undone. This will permanently delete the <b>{{ repoName }}</b> repository.</p>
+          <p>Please type <b>{{ repoName }}</b> to confirm:</p>
+          <input [(ngModel)]="deleteInput" name="deleteInput" placeholder="Repository name">
+          <div class="modal-actions">
+            <button (click)="confirmDelete()" [disabled]="deleteInput !== repoName" class="danger">I understand, delete this repository</button>
+            <button (click)="showDeleteConfirm = false">Cancel</button>
+          </div>
+        </div>
+      </div>
+    </div>
+<!-- Branches Tab -->
+<div class="sidebar-section" *ngIf="activeTab === 'branches'">
+  <!-- Header + Create -->
+  <div class="branches-header">
+    <h3>Branches</h3>
+    <button class="create-branch-btn" (click)="toggleCreateBranch()">New branch</button>
+  </div>
+
+  <!-- Create Branch Form -->
+  <div *ngIf="showCreateBranchInput" class="create-branch-form">
+    <input
+      type="text"
+      [(ngModel)]="newBranchName"
+      placeholder="Enter new branch name"
+      class="branch-input"
+    />
+    <button (click)="createBranch()" class="confirm-btn">Create</button>
+    <button (click)="toggleCreateBranch()" class="cancel-btn">Cancel</button>
+  </div>
+
+  <!-- Search Bar -->
+  <input
+    type="text"
+    class="branch-search"
+    placeholder="Search branches..."
+    [(ngModel)]="branchSearch"
+  />
+
+<!-- Default Branch Section -->
+<h4>Default</h4>
+<div class="branch-card">
+  <div class="branch-row">
+    <div class="branch-left">
+      <span class="branch-badge">main</span>
+    </div>
+    <div class="branch-right">
+      <span class="default-label">Default</span>
+      <button class="delete-btn">
+        <img src="assets/bin.svg" alt="Delete Icon" width="16" height="16" />
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Your Branches Section -->
+<h4>Your branches</h4>
+<div *ngFor="let branch of filteredBranches()" class="branch-card">
+  <div class="branch-row">
+    <div class="branch-left">
+      <span class="branch-badge">{{ branch.name }}</span>
+    </div>
+    <div class="branch-right">
+      <button class="delete-btn" (click)="openRemoveBranchModal(branch.name)">
+        <img src="assets/bin.svg" alt="Delete Icon" width="16" height="16" />
+      </button>
+    </div>
+  </div>
+  <div class="modal" *ngIf="showRemoveBranchModal">
+    <div class="modal-content">
+      <h3>Delete Branch</h3>
+      <p>Are you sure you want to delete the branch <b>{{ selectedBranchToRemove }}</b>? This action cannot be undone.</p>
+      <div class="modal-actions">
+        <button class="danger" (click)="confirmRemoveBranch()">Yes, delete</button>
+        <button (click)="closeRemoveBranchModal()">Cancel</button>
+      </div>
+    </div>
+  </div>
+  
+</div>
+
+
+  <!-- Feedback Messages -->
+  <div *ngIf="branche_add_success" class="success-msg">   <img src="assets/check.png" alt="Success" width="16" height="16" />{{ branche_add_success_2 }}</div>
+  <div *ngIf="branche_add_error" class="error-msg">   <img src="assets/warning.png" alt="Warning" width="20" height="20" />{{ branche_add_error_2 }}</div>
+</div>
+
+
+
+
+
+
+
+
+
+
+<!-- Commits Tab -->
+<div class="sidebar-section" *ngIf="activeTab === 'commits'">
+  <h3>Branches</h3>
+  <ul class="branch-list">
+    <li *ngFor="let branch of branches" style="margin-bottom: 8px;">
+      <span>{{ branch.name }}</span>
+      <button (click)="getBranchCommits(branch.name)">View Commits</button>
+    </li>
+  </ul>
+  <h3 *ngIf="commits.length > 0">Commits</h3>
+  <ul class="commit-list">
+    <li *ngFor="let commit of commits" class="commit-item" style="margin-bottom: 12px;">
+      <div><strong>Message:</strong> {{ commit.commit.message }}</div>
+      <div>
+        <strong>Author:</strong>
+        <!-- Show avatar and login if available -->
+        <span *ngIf="commit.author">
+          <img *ngIf="commit.author.avatar_url" [src]="commit.author.avatar_url" width="20" height="20" style="vertical-align: middle; border-radius: 50%;">
+          {{ commit.author.login }}
+        </span>
+        <!-- Otherwise, show authorName -->
+        <span *ngIf="!commit?.authorLogin">{{ commit?.authorName }}</span>
+      </div>
+      <div><strong>Date:</strong> {{ commit.commit.author.date | date:'short' }}</div>
+      <hr>
+    </li>
+  </ul>
+</div>
+  </section>
+</div>

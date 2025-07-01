@@ -1,0 +1,139 @@
+<div class="main-content" [ngClass]="{'sidebar-open': sidebarOpen, 'sidebar-collapsed': sidebarCollapsed}">
+  <!-- Header with add button -->
+  <div class="header">
+    <div class="header-content">
+      <div class="header-top">
+        <button class="add-specialty-button" (click)="openAddModal()" title="Add a specialty">
+          <span>Add Speciality</span>
+        </button>
+      </div>
+      <h1 class="page-title">Specialties</h1>
+      <p class="page-subtitle">Manage your areas of expertise</p>
+    </div>
+  </div>
+
+  <!-- Main content -->
+  <div class="container">
+    <div class="levels-list-wrapper">
+      <div *ngFor="let specialty of specialties" class="level-list-card">
+        <!-- Colored border -->
+        <div class="level-border"></div>
+
+        <!-- Content -->
+        <div class="level-card-content">
+          <div class="level-title">{{ specialty.nom }}</div>
+          <div class="level-meta">
+            <div class="level-info">
+              <img src="assets/book(4).png" alt="Speciality" width="17" height="17" />
+              {{ specialty.specialites }}
+            </div>
+            <div class="level-info">
+              <img src="assets/book(4).png" alt="Formation" width="17" height="17" />
+              {{  typeFormationMap[specialty.typeFormation]}}
+            </div>
+            <div class="level-info">
+              <img src="assets/book(4).png" alt="Levels" width="17" height="17" />
+              {{ specialty.niveaux?.length || 0 }} levels
+            </div>
+          </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="level-card-actions">
+          <button (click)="startEdit(specialty)" title="Edit">
+            <img src="assets/pen-to-square-solid.svg" alt="Edit" width="17" height="17" />
+          </button>
+          <button (click)="deleteSpecialty(specialty.id)" title="Delete">
+            <img src="assets/bin.svg" alt="Delete" width="17" height="17" />
+          </button>
+          <button class="view-btn" [routerLink]="['/levels', specialty.id]">
+            <img src="assets/next.png" alt="View" width="17" height="17" />
+          </button>
+        </div>
+      </div>
+
+      <!-- No specialties -->
+      <div *ngIf="specialties.length === 0" class="empty-state">
+        <div class="empty-state-content">
+          <div class="empty-state-icon">
+            <img src="assets/book(4).png" alt="No specialties" width="45" height="45" />
+          </div>
+          <h3>No specialty found</h3>
+          <p>Add one to get started.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add specialty modal -->
+  <div class="modal-overlay" *ngIf="showAddModal" (click)="closeAddModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h2>Add new speciality</h2>
+        <button class="modal-close" (click)="closeAddModal()">×</button>
+      </div>
+
+      <div class="modal-body">
+        <form (ngSubmit)="addSpecialty()" #specialtyForm="ngForm">
+          <div class="form-group">
+            <label for="nom">Name of Speciality</label>
+            <input 
+              type="text" 
+              id="nom" 
+              name="nom" 
+              class="form-input" 
+              [(ngModel)]="newSpecialty.nom" 
+              required
+              placeholder="Ex: Artificial Intelligence">
+          </div>
+
+          <div class="form-group">
+            <label for="typeFormation">Type of Specialty</label>
+            <input 
+              type="text"
+              id="specialites" 
+              name="specialites" 
+              class="form-input" 
+              [(ngModel)]="newSpecialty.specialites" 
+              list="specialtyTypes"
+              required
+              placeholder="Select or type a specialty type">
+            
+            <datalist id="specialtyTypes">
+              <option value="IA">Artificial Intelligence</option>
+              <option value="DS">Data Science</option>
+              <option value="IOT">Internet of Things</option>
+              <option value="GL">Software Engineering</option>
+              <option value="TRONC_COMMUN">Common Core</option>
+        
+            </datalist>
+          </div>
+
+          <div class="form-group">
+            <label for="typeFormation">Type of Training</label>
+            <select 
+              id="typeFormation" 
+              name="typeFormation" 
+              class="form-input" 
+              [(ngModel)]="newSpecialty.typeFormation" 
+              required>
+              <option value="">Select Type</option>
+              <option value="ALTERNANT">Alternating</option>
+              <option value="COURS_DU_JOUR">Day Courses</option>
+              <option value="COURS_DU_SOIR">Evening Courses</option>
+            </select>
+          </div>
+
+          <div class="modal-actions">
+            <button type="button" class="btn btn-cancel" (click)="closeAddModal()">
+              Cancel
+            </button>
+            <button type="submit" class="btn btn-save" [disabled]="!specialtyForm.form.valid" >
+              Add Speciality
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

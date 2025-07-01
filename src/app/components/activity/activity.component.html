@@ -1,0 +1,16 @@
+<div class="assignment-group">
+    <h2 class="group-title">{{ groupTitle }}</h2>
+  
+    <div class="cards-container">
+      <app-assignmentcard
+        *ngFor="let assignment of assignments"
+        [title]="assignment.title"
+        [description]="assignment.description"
+        [submissionRate]="assignment.submissionRate"
+        [courseCode]="assignment.courseCode"
+        [dueDate]="assignment.dueDate"
+        [aiAssisted]="assignment.aiAssisted"
+        [sidebarVisible]="sidebarVisible">
+      </app-assignmentcard>
+    </div>
+  </div>

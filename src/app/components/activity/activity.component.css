@@ -1,0 +1,19 @@
+.assignment-group {
+    margin-bottom: 2rem;
+    display: flex;
+    justify-content: center; /* Horizontally centers the group */
+    align-items: center;     /* Vertically centers the group */
+  }
+  
+  .group-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+  }
+  
+  .cards-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* 3 columns, equal width */
+    gap: 1rem;
+  }
+  

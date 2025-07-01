@@ -1,0 +1,82 @@
+<div class="create-repo-wrapper">
+    <div class="create-repo-container">
+      <h2>Create a new repository</h2>
+      <form (ngSubmit)="onSubmit()" #repoForm="ngForm" class="repo-form">
+        <!-- Owner and Repo Name -->
+        <div class="owner-repo-row">
+          <div class="owner-box">
+            <img class="avatar" src="assets/image.png" alt="profile" />
+            <span class="username">maramoueslati</span>
+          </div>
+          <span class="slash">/</span>
+          <input
+            class="repo-name-input"
+            name="name"
+            [(ngModel)]="repo.name"
+            required
+            placeholder="Repository name *"
+          />
+        </div>
+        <div class="helper-text">Great repository names are short and memorable.</div>
+      
+        <!-- Description -->
+        <input
+          class="desc-input"
+          name="description"
+          [(ngModel)]="repo.description"
+          placeholder="Description (optional)"
+        />
+      
+        <!-- Visibility -->
+        <div class="visibility-section">
+          <label class="radio-label">
+            <input type="radio" name="visibility" [(ngModel)]="repo.visibility" value="public" required>
+            <span class="icon"><img src="assets/folder-open-solid.svg" alt="Code Icon" width="26" height="16"></span>
+            <span class="box">
+              <b class="desc">Public</b>
+              <div class="radio-helper">Anyone on the internet can see this repository.</div>
+            </span>
+          </label>
+          <label class="radio-label">
+            <input type="radio" name="visibility" [(ngModel)]="repo.visibility" value="private">
+            <span class="icon"><img src="assets/lock-solid.svg" alt="Code Icon" width="26" height="16"></span>
+            <span class="box">
+              <b class="desc">Private</b>
+              <div class="radio-helper">You choose who can see and commit to this repository.</div>
+            </span>
+          </label>
+        </div>
+      
+        <!-- Initialize with README -->
+        <div class="init-section">
+          <label>
+            <input type="checkbox" [(ngModel)]="repo.auto_init" name="auto_init">
+            <b >Add a README file</b>
+          
+          </label>
+        </div>
+        <div class="init-helper">This is where you can write a long description for your project.</div>
+      
+        <!-- Add .gitignore -->
+        <div class="gitignore-section">
+          <label for="gitignore_template"><b>Add .gitignore</b></label>
+          <div class="select-wrapper">
+            <select class="select_box" id="gitignore_template" [(ngModel)]="repo.gitignore_template" name="gitignore_template">
+              <option value="" disabled hidden>.gitignore template: None</option>
+            <option value="None">None</option>
+            <option value="Node">Node</option>
+            <option value="Java">Java</option>
+            <option value="Python">Python</option>
+            <!-- Add more templates as needed -->
+          </select>
+        </div>
+          <div class="init-helper">Choose which files not to track from a list of templates.</div>
+        </div>
+        <div class="button-wrapper">
+          <button type="button" class="create-btn" (click)="goBack()">Return</button>
+          <button type="submit" [disabled]="!repoForm.form.valid" class="create-btn">Create repository</button>
+        
+      
+        </div>
+      </form>
+  </div>

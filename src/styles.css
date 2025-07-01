@@ -1,0 +1,237 @@
+/* You can add global styles to this file, and also import other style files */
+html{
+z-index: 3;
+@import url('https://geistsans.com/font.css');
+}
+.cdk-overlay-container {
+  position: fixed !important;
+  bottom: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  pointer-events: none;
+  z-index: 1000;
+}
+
+.mat-snack-bar-container {
+  pointer-events: auto; /* so you can click on action buttons */
+}
+/* === Dialog Container Styling === */
+/* === CSS Custom Properties for Better Maintainability === */
+/* ...existing code... */
+
+.dialog-header {
+  position: relative;
+  overflow: hidden;
+}
+
+.dialog-title-enhanced {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0;
+}
+
+.dialog-icon {
+  font-size: 24px;
+  width: 24px;
+  height: 24px;
+  
+  &.dialog-icon-warning {
+    color: #ff9800;
+  }
+  
+  &.dialog-icon-error {
+    color: #f44336;
+  }
+  
+  &.dialog-icon-success {
+    color: #4caf50;
+  }
+  
+  &.dialog-icon-info {
+    color: #2196f3;
+  }
+}
+
+.dialog-content-enhanced {
+  .dialog-message {
+    margin-bottom: 16px;
+    line-height: 1.6;
+  }
+  
+  .dialog-additional-content {
+    margin-bottom: 16px;
+    padding: 12px;
+    background-color: rgba(0, 0, 0, 0.04);
+    border-radius: 8px;
+    border-left: 4px solid var(--dialog-primary-color);
+  }
+  
+  .dialog-details {
+    margin-top: 16px;
+    
+    .dialog-details-summary {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      color: var(--dialog-text-secondary);
+      font-size: 14px;
+      
+      &:hover {
+        color: var(--dialog-primary-color);
+      }
+    }
+    
+    .dialog-details-content {
+      margin-top: 8px;
+      padding: 12px;
+      background-color: #f5f5f5;
+      border-radius: 4px;
+      font-family: monospace;
+      font-size: 12px;
+      white-space: pre-wrap;
+    }
+  }
+  
+  .dialog-loading {
+    margin-top: 16px;
+    text-align: center;
+    
+    .dialog-loading-text {
+      display: block;
+      margin-top: 8px;
+      font-size: 14px;
+      color: var(--dialog-text-secondary);
+    }
+  }
+}
+
+.dialog-actions-enhanced {
+  &.dialog-actions-loading {
+    pointer-events: none;
+    opacity: 0.7;
+  }
+}
+
+.dialog-button {
+  position: relative;
+  
+  &.dialog-button-danger {
+    background-color: #f44336 !important;
+    
+    &:hover {
+      background-color: #d32f2f !important;
+    }
+  }
+  
+  .dialog-button-spinner {
+    animation: spin 1s linear infinite;
+  }
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@media (max-width: 480px) {
+  .dialog-title-enhanced {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  
+  .dialog-icon {
+    align-self: center;
+  }
+}
+/* Target Material Dialog specifically */
+.mat-mdc-dialog-container .dialog-header,
+.mat-dialog-container .dialog-header {
+  position: relative;
+  overflow: hidden;
+}
+
+.mat-mdc-dialog-container .dialog-title-enhanced,
+.mat-dialog-container .dialog-title-enhanced {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0;
+}
+
+.mat-mdc-dialog-container .dialog-icon,
+.mat-dialog-container .dialog-icon {
+  font-size: 24px;
+  width: 24px;
+  height: 24px;
+}
+
+.mat-mdc-dialog-container .dialog-icon-warning,
+.mat-dialog-container .dialog-icon-warning {
+  color: #ff9800;
+}
+
+.mat-mdc-dialog-container .dialog-icon-error,
+.mat-dialog-container .dialog-icon-error {
+  color: #f44336;
+}
+
+.mat-mdc-dialog-container .dialog-icon-success,
+.mat-dialog-container .dialog-icon-success {
+  color: #4caf50;
+}
+
+.mat-mdc-dialog-container .dialog-icon-info,
+.mat-dialog-container .dialog-icon-info {
+  color: #2196f3;
+}
+.dialog-header {
+  position: relative !important;
+  overflow: hidden !important;
+}
+
+.dialog-title-enhanced {
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+  margin: 0 !important;
+}
+
+.dialog-icon {
+  font-size: 24px !important;
+  width: 24px !important;
+  height: 24px !important;
+  
+  &.dialog-icon-warning {
+    color: #ff9800 !important;
+  }
+  
+  &.dialog-icon-error {
+    color: #f44336 !important;
+  }
+  
+  &.dialog-icon-success {
+    color: #4caf50 !important;
+  }
+  
+  &.dialog-icon-info {
+    color: #2196f3 !important;
+  }
+}
+
+.dialog-content-enhanced {
+  .dialog-message {
+    margin-bottom: 16px !important;
+    line-height: 1.6 !important;
+  }
+  
+  .dialog-additional-content {
+    margin-bottom: 16px !important;
+    padding: 12px !important;
+    background-color: rgba(0, 0, 0, 0.04) !important;
+    border-radius: 8px !important;
+    border-left: 4px solid var(--dialog-primary-color) !important;
+  }
+}

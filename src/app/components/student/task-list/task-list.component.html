@@ -1,0 +1,257 @@
+<div class="projects-container">
+  <!-- Header Section -->
+  <div class="page-header">
+    <div class="header-content">
+      <h1 class="page-title">
+        <i class="fas fa-project-diagram"></i>
+        Project Management
+      </h1>
+      <p class="page-subtitle">Select a project to view and manage tasks</p>
+    </div>
+    <div class="header-stats">
+      <div class="stat-item">
+        <span class="stat-value">{{ projects.length || 0 }}</span>
+        <span class="stat-label">Projects</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-value">{{ getTotalTasks() }}</span>
+        <span class="stat-label">Total Tasks</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Projects Section -->
+  <div class="projects-section">
+    <div class="section-header">
+      <h2>
+        <i class="fas fa-folder-open"></i>
+        Available Projects
+      </h2>
+      <div class="section-actions">
+        <button class="btn btn-outline btn-sm" (click)="refreshProjects()">
+          <i class="fas fa-sync-alt"></i>
+          Refresh
+        </button>
+      </div>
+    </div>
+
+    <!-- Loading State -->
+    <div class="loading-state" *ngIf="loadingProjects">
+      <div class="loading-spinner">
+        <i class="fas fa-spinner fa-spin"></i>
+      </div>
+      <p>Loading projects...</p>
+    </div>
+
+    <!-- Error State -->
+    <div class="error-state" *ngIf="errorProjects && !loadingProjects">
+      <div class="error-icon">
+        <i class="fas fa-exclamation-triangle"></i>
+      </div>
+      <h4>Error Loading Projects</h4>
+      <p>{{ errorProjects }}</p>
+      <button class="btn btn-primary" (click)="refreshProjects()">
+        <i class="fas fa-redo"></i>
+        Try Again
+      </button>
+    </div>
+
+    <!-- Projects Grid -->
+    <div class="projects-grid" *ngIf="!loadingProjects && !errorProjects && projects?.length">
+      <div 
+        class="project-card" 
+        *ngFor="let project of projects; trackBy: trackByProjectId"
+        (click)="selectProject(project)" 
+        [class.selected]="project === selectedProject">
+        
+        <div class="project-card-header">
+          <div class="project-icon">
+            <i class="fas fa-briefcase"></i>
+          </div>
+          <div class="project-status" [ngClass]="getProjectStatusClass(project)">
+            {{ getProjectStatus(project) }}
+          </div>
+        </div>
+
+        <div class="project-card-content">
+          <h3 class="project-name">{{ project.name }}</h3>
+          <p class="project-description">{{ project.description }}</p>
+          
+          <div class="project-meta">
+            <div class="meta-item">
+              <i class="fas fa-tasks"></i>
+              <span>{{ getProjectTaskCount(project) }} tasks</span>
+            </div>
+            <div class="meta-item" *ngIf="project.dueDate">
+              <i class="fas fa-calendar"></i>
+              <span>{{ project.dueDate | date:'MMM dd' }}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="project-card-footer">
+          <div class="progress-info">
+            <span class="progress-label">Progress</span>
+            <span class="progress-value">{{ getProjectProgress(project) }}%</span>
+          </div>
+          <div class="progress-bar">
+            <div class="progress-fill" [style.width.%]="getProjectProgress(project)"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Empty State -->
+    <div class="empty-state" *ngIf="!loadingProjects && !errorProjects && !projects?.length">
+      <div class="empty-icon">
+        <i class="fas fa-folder-plus"></i>
+      </div>
+      <h4>No Projects Found</h4>
+      <p>Start by creating your first project to organize your tasks.</p>
+      <button class="btn btn-primary" (click)="createProject()">
+        <i class="fas fa-plus"></i>
+        Create Project
+      </button>
+    </div>
+  </div>
+
+  <!-- Tasks Section -->
+  <div class="tasks-section" *ngIf="selectedProject">
+    <div class="section-header">
+      <h2>
+        <i class="fas fa-tasks"></i>
+        Tasks for: {{ selectedProject.name }}
+      </h2>
+      <div class="section-actions">
+        <div class="filter-group">
+          <select class="filter-select" [(ngModel)]="taskFilter" (ngModelChange)="applyTaskFilter()">
+            <option value="">All Tasks</option>
+            <option value="PENDING">Pending</option>
+            <option value="SUBMITTED">Submitted</option>
+            <option value="GRADED">Graded</option>
+          </select>
+        </div>
+        <button class="btn btn-outline btn-sm" (click)="refreshTasks()">
+          <i class="fas fa-sync-alt"></i>
+          Refresh
+        </button>
+      </div>
+    </div>
+
+    <!-- Tasks Loading State -->
+    <div class="loading-state" *ngIf="loadingTasks">
+      <div class="loading-spinner">
+        <i class="fas fa-spinner fa-spin"></i>
+      </div>
+      <p>Loading tasks...</p>
+    </div>
+
+    <!-- Tasks Error State -->
+    <div class="error-state" *ngIf="errorTasks && !loadingTasks">
+      <div class="error-icon">
+        <i class="fas fa-exclamation-triangle"></i>
+      </div>
+      <h4>Error Loading Tasks</h4>
+      <p>{{ errorTasks }}</p>
+      <button class="btn btn-primary" (click)="refreshTasks()">
+        <i class="fas fa-redo"></i>
+        Try Again
+      </button>
+    </div>
+
+    <!-- Tasks List -->
+    <div class="tasks-list" *ngIf="!loadingTasks && !errorTasks && filteredTasks?.length">
+      <div 
+        class="task-card" 
+        *ngFor="let task of filteredTasks; trackBy: trackByTaskId">
+        
+        <div class="task-header">
+          <div class="task-title-section">
+            <h4 class="task-title">{{ task.title }}</h4>
+            <div class="task-badges">
+              <span class="scope-badge" [ngClass]="getScopeBadgeClass(task.scope)">
+                {{ task.scope.toLowerCase() }}
+              </span>
+              <span class="status-badge" [ngClass]="getStatusBadgeClass(task.status)">
+                {{ task.status }}
+              </span>
+            </div>
+          </div>
+          <div class="task-due-date" [class.overdue]="isTaskOverdue(task)">
+            <i class="fas fa-calendar-alt"></i>
+            <span>{{ task.dueDate | date:'MMM dd, yyyy' }}</span>
+          </div>
+        </div>
+
+        <div class="task-content">
+          <p class="task-description">{{ task.description }}</p>
+          
+          <div class="task-meta">
+            <div class="meta-row">
+              <div class="meta-item">
+                <i class="fas fa-clock"></i>
+                <span>Due: {{ task.dueDate | date:'short' }}</span>
+              </div>
+              <div class="meta-item" *ngIf="task.assignedTo">
+                <i class="fas fa-user"></i>
+                <span>{{ task.assignedTo }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="task-actions">
+          <button 
+            *ngIf="task.status === 'PENDING'" 
+            (click)="submitTask(task)" 
+            class="btn btn-primary"
+            [disabled]="isSubmittingTask(task.id)">
+            <i class="fas" [ngClass]="isSubmittingTask(task.id) ? 'fa-spinner fa-spin' : 'fa-paper-plane'"></i>
+            {{ isSubmittingTask(task.id) ? 'Submitting...' : 'Submit Task' }}
+          </button>
+
+          <button 
+            *ngIf="task.status !== 'PENDING'" 
+            disabled 
+            class="btn btn-disabled">
+            <i class="fas fa-check-circle"></i>
+            {{ getTaskActionText(task.status) }}
+          </button>
+
+          <button class="btn btn-outline btn-sm" (click)="viewTaskDetails(task)">
+            <i class="fas fa-eye"></i>
+            View Details
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tasks Empty State -->
+    <div class="empty-state" *ngIf="!loadingTasks && !errorTasks && !filteredTasks?.length">
+      <div class="empty-icon">
+        <i class="fas fa-clipboard-list"></i>
+      </div>
+      <h4>No Tasks Found</h4>
+      <p *ngIf="taskFilter">No tasks match the current filter. Try changing the filter or create a new task.</p>
+    </div>
+  </div>
+
+  <!-- Success/Error Messages -->
+  <div class="toast-container">
+    <div class="toast toast-success" *ngIf="successMessage" [@slideIn]>
+      <i class="fas fa-check-circle"></i>
+      <span>{{ successMessage }}</span>
+      <button class="toast-close" (click)="clearSuccessMessage()">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+    
+    <div class="toast toast-error" *ngIf="errorMessage" [@slideIn]>
+      <i class="fas fa-exclamation-circle"></i>
+      <span>{{ errorMessage }}</span>
+      <button class="toast-close" (click)="clearErrorMessage()">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+  </div>
+</div>

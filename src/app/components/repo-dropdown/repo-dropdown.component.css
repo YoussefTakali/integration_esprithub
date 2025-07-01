@@ -1,0 +1,199 @@
+.repo-dropdown-container {
+  position: relative;
+  display: inline-block;
+}
+
+.repo-dropdown-button {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-width: 150px;
+  padding: 6px 12px;
+  background-color: white;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: normal;
+  color: #333;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.repo-dropdown-button:hover {
+  border-color: #999;
+}
+
+.button-text {
+  margin-right: 8px;
+}
+
+.dropdown-arrow {
+  font-size: 14px;
+  color: #e30613;
+  margin-left: 5px;
+}
+
+.dropdown-menu {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 300px;
+  background-color: white;
+  border: 1px solid var(--esprit-gray);
+  border-radius: 6px;
+  margin-top: 4px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  pointer-events: none;
+}
+
+.dropdown-menu.show {
+  display: block;
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.dropdown-header {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--esprit-gray);
+}
+
+.header-title-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.dropdown-header h3 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--esprit-text-dark);
+}
+
+.view-all-link {
+  color: #e30613;
+  font-size: 12px;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.view-all-link:hover {
+  text-decoration: underline;
+}
+
+.search-container {
+  position: relative;
+}
+
+.search-input {
+  width: 100%;
+  padding: 6px 10px;
+  border: 1px solid var(--esprit-gray);
+  border-radius: 4px;
+  font-size: 14px;
+  transition: border-color 0.2s;
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: var(--esprit-red);
+  box-shadow: 0 0 0 2px rgba(227, 6, 19, 0.1);
+}
+
+.dropdown-content {
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.repo-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.repo-item {
+  display: flex;
+  align-items: center;
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--esprit-gray);
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.repo-item:last-child {
+  border-bottom: none;
+}
+
+.repo-item:hover {
+  background-color: var(--esprit-very-light-red);
+}
+
+.repo-icon {
+  margin-right: 12px;
+  color: var(--esprit-red);
+  font-size: 16px;
+}
+
+.repo-info {
+  flex: 1;
+  overflow: hidden;
+}
+
+.repo-name {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--esprit-text-dark);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.repo-time {
+  font-size: 12px;
+  color: var(--esprit-text-gray);
+  margin-top: 2px;
+}
+
+.no-results, .no-repos {
+  padding: 16px;
+  text-align: center;
+  color: var(--esprit-text-gray);
+  font-style: italic;
+}
+
+.dropdown-footer {
+  padding: 12px 16px;
+  border-top: 1px solid var(--esprit-gray);
+  text-align: center;
+}
+
+.show-all-button {
+  width: 100%;
+  padding: 10px 12px;
+  background-color: #e30613;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.show-all-button:hover {
+  background-color: #ff4d4d;
+}
+
+.show-all-button:active {
+  background-color: #b30000;
+}

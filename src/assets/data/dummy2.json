@@ -1,0 +1,332 @@
+[
+    {
+        "id": 14,
+        "projectId": 2,
+        "title": "Prepare final report",
+        "description": "Complete and submit the final project report",
+        "dueDate": "2025-06-01T23:59:00",
+        "createdBy": "61eb987b-d7ea-487d-b42d-9f9e4951af05",
+        "status": "PENDING",
+        "createdDate": "2025-05-27T09:16:07.588277",
+        "assignments": [
+            {
+                "id": 8,
+                "scope": "GROUP",
+                "groupId": 1,
+                "classId": null,
+                "studentId": null,
+                "group": {
+                    "id": 1,
+                    "name": "Group A",
+                    "projectId": null,
+                    "classId": null,
+                    "classe": {
+                        "id": 3,
+                        "name": "Physics 101"
+                    },
+                    "memberIds": [
+                        "101",
+                        "102",
+                        "103"
+                    ]
+                }
+            },
+            {
+                "id": 9,
+                "scope": "GROUP",
+                "groupId": 7,
+                "classId": null,
+                "studentId": null,
+                "group": {
+                    "id": 7,
+                    "name": "Group B",
+                    "projectId": null,
+                    "classId": null,
+                    "classe": {
+                        "id": 3,
+                        "name": "Physics 101"
+                    },
+                    "memberIds": [
+                        "101",
+                        "102",
+                        "103"
+                    ]
+                }
+            }
+        ]
+    },
+    {
+        "id": 15,
+        "projectId": 8,
+        "title": "Prepare final report",
+        "description": "Complete and submit the final project report",
+        "dueDate": "2025-06-01T23:59:00",
+        "createdBy": "61eb987b-d7ea-487d-b42d-9f9e4951af05",
+        "status": "PENDING",
+        "createdDate": "2025-05-27T09:31:44.014304",
+        "assignments": [
+            {
+                "id": 10,
+                "scope": "GROUP",
+                "groupId": 1,
+                "classId": null,
+                "studentId": null,
+                "group": {
+                    "id": 1,
+                    "name": "Group A",
+                    "projectId": null,
+                    "classId": null,
+                    "classe": {
+                        "id": 3,
+                        "name": "Physics 101"
+                    },
+                    "memberIds": [
+                        "101",
+                        "102",
+                        "103"
+                    ]
+                }
+            },
+            {
+                "id": 11,
+                "scope": "GROUP",
+                "groupId": 7,
+                "classId": null,
+                "studentId": null,
+                "group": {
+                    "id": 7,
+                    "name": "Group B",
+                    "projectId": null,
+                    "classId": null,
+                    "classe": {
+                        "id": 3,
+                        "name": "Physics 101"
+                    },
+                    "memberIds": [
+                        "101",
+                        "102",
+                        "103"
+                    ]
+                }
+            }
+        ]
+    },
+    {
+        "id": 16,
+        "projectId": 8,
+        "title": "Prepare final report",
+        "description": "Complete and submit the final project report",
+        "dueDate": "2025-06-01T23:59:00",
+        "createdBy": "61eb987b-d7ea-487d-b42d-9f9e4951af05",
+        "status": "PENDING",
+        "createdDate": "2025-05-27T09:33:23.786195",
+        "assignments": [
+            {
+                "id": 12,
+                "scope": "GROUP",
+                "groupId": 9,
+                "classId": null,
+                "studentId": null,
+                "group": {
+                    "id": 9,
+                    "name": "Group t",
+                    "projectId": null,
+                    "classId": null,
+                    "classe": {
+                        "id": 4,
+                        "name": "English Literature"
+                    },
+                    "memberIds": [
+                        "101",
+                        "102",
+                        "103"
+                    ]
+                }
+            }
+        ]
+    },
+    {
+        "id": 17,
+        "projectId": 8,
+        "title": "Prepare final report",
+        "description": "Complete and submit the final project report",
+        "dueDate": "2025-06-01T23:59:00",
+        "createdBy": "61eb987b-d7ea-487d-b42d-9f9e4951af05",
+        "status": "PENDING",
+        "createdDate": "2025-05-27T09:33:45.734495",
+        "assignments": [
+            {
+                "id": 13,
+                "scope": "GROUP",
+                "groupId": 8,
+                "classId": null,
+                "studentId": null,
+                "group": {
+                    "id": 8,
+                    "name": "Group c",
+                    "projectId": null,
+                    "classId": null,
+                    "classe": {
+                        "id": 4,
+                        "name": "English Literature"
+                    },
+                    "memberIds": [
+                        "101",
+                        "102",
+                        "103"
+                    ]
+                }
+            },
+            {
+                "id": 14,
+                "scope": "GROUP",
+                "groupId": 9,
+                "classId": null,
+                "studentId": null,
+                "group": {
+                    "id": 9,
+                    "name": "Group t",
+                    "projectId": null,
+                    "classId": null,
+                    "classe": {
+                        "id": 4,
+                        "name": "English Literature"
+                    },
+                    "memberIds": [
+                        "101",
+                        "102",
+                        "103"
+                    ]
+                }
+            }
+        ]
+    },
+    {
+        "id": 18,
+        "projectId": 8,
+        "title": "Prepare final report",
+        "description": "Complete and submit the final project report",
+        "dueDate": "2025-06-01T23:59:00",
+        "createdBy": "61eb987b-d7ea-487d-b42d-9f9e4951af05",
+        "status": "PENDING",
+        "createdDate": "2025-05-27T09:35:28.090295",
+        "assignments": [
+            {
+                "id": 15,
+                "scope": "PROJECT",
+                "groupId": null,
+                "classId": null,
+                "studentId": null,
+                "group": null
+            }
+        ]
+    },
+    {
+        "id": 20,
+        "projectId": 8,
+        "title": "Prepare final report",
+        "description": "Complete and submit the final project report",
+        "dueDate": "2025-06-01T23:59:00",
+        "createdBy": "61eb987b-d7ea-487d-b42d-9f9e4951af05",
+        "status": "PENDING",
+        "createdDate": "2025-05-27T09:37:25.305125",
+        "assignments": [
+            {
+                "id": 16,
+                "scope": "PROJECT",
+                "groupId": null,
+                "classId": null,
+                "studentId": null,
+                "group": null
+            }
+        ]
+    },
+    {
+        "id": 21,
+        "projectId": 8,
+        "title": "Prepare final report",
+        "description": "Complete and submit the final project report",
+        "dueDate": "2025-06-01T23:59:00",
+        "createdBy": "61eb987b-d7ea-487d-b42d-9f9e4951af05",
+        "status": "PENDING",
+        "createdDate": "2025-05-27T09:45:58.606005",
+        "assignments": [
+            {
+                "id": 17,
+                "scope": "PROJECT",
+                "groupId": null,
+                "classId": null,
+                "studentId": null,
+                "group": null
+            }
+        ]
+    },
+    {
+        "id": 23,
+        "projectId": 8,
+        "title": "Prepare final report",
+        "description": "Complete and submit the final project report",
+        "dueDate": "2025-06-01T23:59:00",
+        "createdBy": "61eb987b-d7ea-487d-b42d-9f9e4951af05",
+        "status": "PENDING",
+        "createdDate": "2025-05-27T14:43:18.049426",
+        "assignments": [
+            {
+                "id": 18,
+                "scope": "GROUP",
+                "groupId": 9,
+                "classId": null,
+                "studentId": null,
+                "group": {
+                    "id": 9,
+                    "name": "Group t",
+                    "projectId": null,
+                    "classId": null,
+                    "classe": {
+                        "id": 4,
+                        "name": "English Literature"
+                    },
+                    "memberIds": [
+                        "101",
+                        "102",
+                        "103"
+                    ]
+                }
+            }
+        ]
+    },
+    {
+        "id": 24,
+        "projectId": 8,
+        "title": "ccccc",
+        "description": "cc",
+        "dueDate": "2027-02-05T23:59:00",
+        "createdBy": "61eb987b-d7ea-487d-b42d-9f9e4951af05",
+        "status": "PENDING",
+        "createdDate": "2025-05-29T16:30:36.003475",
+        "assignments": [
+            {
+                "id": 19,
+                "scope": "GROUP",
+                "groupId": 3,
+                "classId": null,
+                "studentId": null,
+                "group": {
+                    "id": 3,
+                    "name": "Group A",
+                    "projectId": null,
+                    "classId": null,
+                    "classe": {
+                        "id": 3,
+                        "name": "Physics 101"
+                    },
+                    "memberIds": [
+                        "101",
+                        "102",
+                        "103"
+                    ]
+                }
+            }
+        ]
+    }
+]

@@ -1,0 +1,27 @@
+<div class="page-wrapper">
+  <div class="page-content">
+    <h2>Add Git Info</h2>
+    <form #userForm="ngForm" (ngSubmit)="onSubmit()" class="repo-form">
+      <input
+        class="repo-name-input"
+        name="githubUsername"
+        [(ngModel)]="gitusername"
+        required
+        placeholder="Username *"
+      />
+      <input
+        class="repo-name-input"
+        name="githubToken"
+        [(ngModel)]="gitToken"
+        required
+        placeholder="Token *"
+      />
+
+      <div class="button-wrapper">
+        <button type="submit" [disabled]="!userForm.form.valid" class="create-btn">
+          Add Git Info
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

@@ -1,0 +1,88 @@
+<div class="s-container" [class.visible]="isSidebarVisible">
+  <ul>
+    <!-- Links for TEACHER -->
+    <ng-container *ngIf="userRole === 'teacher'">
+      <!-- Home -->
+      <li class="s-link" [routerLink]="'/'" routerLinkActive="active">
+        <img src="assets/home-agreement.png" style="color: #C9190D; width:20px;height:20px" />
+        <div class="s-link-text">Home</div>
+      </li>
+      <li class="s-link" [routerLink]="'/users'">
+        <i class="fas fa-users s-icon" style="color: #C9190D; width:20px;height:20px"></i>
+        <div class="s-link-text">Users</div>
+      </li>
+      <!-- Specialties -->
+      <li class="s-link" (click)="navigateToSpecialties()" 
+          [class.active]="router.url.includes('/specialties')">
+        <i class="fas fa-graduation-cap" style="color: #C9190D; width:17px;height:17px"></i>
+        <div class="s-link-text">Specialities</div>
+      </li>
+
+      <!-- Levels (only when not on /specialties) -->
+      <li class="s-link" *ngIf="showLevels && !isRootPath()" (click)="navigateToLevels()"
+          [class.active]="router.url.includes('/levels')">
+        <i class="fas fa-layer-group" style="color: #C9190D; width:17px;height:17px"></i>
+        <div class="s-link-text">Levels</div>
+      </li>
+
+      <!-- Classes (only when not on /levels or /specialties) -->
+      <li class="s-link" *ngIf="showClasses && !isRootPath()" (click)="navigateToClasses()" 
+          [class.active]="router.url.includes('/classes') || router.url.includes('/students')">
+        <i class="fas fa-users" style="color: #C9190D; width:17px;height:17px"></i>
+        <div class="s-link-text">Classes</div>
+      </li>
+
+      <!-- Projects (conditional) -->
+      <li class="s-link" 
+          *ngIf="(router.url.includes('/students/') && router.url.includes('specialtyId=') && router.url.includes('levelId=')) || router.url.includes('/students/') || router.url.includes('/projects')">
+        <img src="assets/check-list.png" style="color: #C9190D; width:20px; height:20px" />
+        <div class="s-link-text">Projects</div>
+      </li>
+
+      <!-- Submissions -->
+      <li class="s-link" [routerLink]="'/submissions'" routerLinkActive="active">
+        <i class="fas fa-file-alt" style="color: #C9190D; width:20px;height:20px"></i>
+        <div class="s-link-text">Submissions</div>
+      </li>
+
+      <!-- Tasks -->
+      <li class="s-link" [routerLink]="'/classes'" routerLinkActive="active">
+        <i class="fas fa-tasks" style="color: #C9190D; width:20px;height:20px"></i>
+        <div class="s-link-text">Tasks</div>
+      </li>
+
+    </ng-container>
+
+    <!-- Links for STUDENT -->
+    <ng-container *ngIf="userRole === 'student'">
+        <li class="s-link" [routerLink]="'/home'" routerLinkActive="active">
+        <i class="fas fa-tasks"></i>
+        <div class="s-link-text">home</div>
+      </li>
+      <li class="s-link" [routerLink]="'/tasks-list'" routerLinkActive="active">
+        <i class="fas fa-tasks"></i>
+        <div class="s-link-text">My Assignments</div>
+      </li>
+            <li class="s-link" [routerLink]="'/repo-selector'" routerLinkActive="active">
+        <i class="fas fa-tasks"></i>
+        <div class="s-link-text">Go to repo</div>
+      </li>
+    </ng-container>
+
+    <!-- Links for STUDENT -->
+    <ng-container *ngIf="userRole === 'student'">
+      <li class="s-link" [routerLink]="'/home'" routerLinkActive="active">
+        <i class="fas fa-tasks"></i>
+        <div class="s-link-text">Home</div>
+      </li>
+      <li class="s-link" [routerLink]="'/tasks-list'" routerLinkActive="active">
+        <i class="fas fa-tasks"></i>
+        <div class="s-link-text">My Assignments</div>
+      </li>
+      <li class="s-link" [routerLink]="'/repo-selector'" routerLinkActive="active">
+        <i class="fas fa-tasks"></i>
+        <div class="s-link-text">Go to repo</div>
+      </li>
+    </ng-container>
+  </ul>
+</div>

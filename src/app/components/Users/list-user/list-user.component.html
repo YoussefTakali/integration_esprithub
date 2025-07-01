@@ -1,0 +1,171 @@
+<div class="repo-container">
+
+ 
+  <input
+    type="text"
+    (input)="onSearch()"
+    placeholder="Search users..."
+    class="repo-search"
+  />
+  <div>
+      <button class="view-btn" (click)="toggleRoleInputs()">Find By role</button>
+ <div *ngIf="showRoleInputs" class="role-inputs-container">
+  <div *ngFor="let role of roles; let i = index">
+<input
+  type="radio"
+  id="role-{{i}}"
+  name="selectedRoleOption"
+  [value]="role"
+  [(ngModel)]="selectedRole"
+  (change)="onRoleChange()">
+    <label for="role-{{i}}">{{ role }}</label><br>
+  </div>
+</div>
+
+  </div>
+
+  <div class="btns">
+<button class="view-btn" *ngIf="selectedRole === 'Student'" (click)="fileInput.click()">Import</button>
+<input type="file" #fileInput style="display:none" (change)="onFileSelected($event)" accept=".xlsx,.xls" />
+
+<button class="view-btn" *ngIf="selectedRole === 'Student'" (click)="downloadExcel()">Export</button>
+      <button class="view-btn" (click)="openAddUserPopup()">+ Add User</button>
+
+  </div>
+
+ 
+
+  <div *ngIf="users.length === 0" class="no">
+    No users found.
+  </div>
+ 
+
+<table class="table table-striped" *ngIf="users.length > 0 && selectedRole === 'Student'">
+  <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">firstName</th>
+      <th scope="col">lastName</th>
+       <th scope="col">email</th>
+      <th scope="col">githubUsername</th>
+      <th scope="col">Groupes</th>
+       <th scope="col">Action</th>
+
+    </tr>
+  </thead>
+  <tbody>
+      <tr *ngFor="let user of users; let i = index">
+
+      <th scope="row">{{i}}</th>
+      <td>{{user.firstName}}</td>
+      <td>{{user.lastName}}</td>
+      <td>{{user.email}}</td>    
+      <td>{{user.githubUsername}}</td>    
+
+   
+    <td>
+      <button class="view-btn">View</button>
+    </td>
+ <td>
+      <button class="view-btn" (click)="deleteUser(user.keycloakId)">Delete</button>
+    </td>
+</tr>
+
+  </tbody>
+</table>
+
+
+<table class="table table-striped" *ngIf="users.length > 0 && (selectedRole === 'Teacher' ||  selectedRole === 'OPTION_MANAGER'
+ ||  selectedRole === 'Admin') ">
+  <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">firstName</th>
+      <th scope="col">lastName</th>
+      <th scope="col">email</th>
+      <th scope="col">githubUsername</th>
+
+
+    </tr>
+  </thead>
+  <tbody>
+      <tr *ngFor="let user of users; let i = index">
+
+      <th scope="row">{{i}}</th>
+      <td>{{user.firstName}}</td>
+      <td>{{user.lastName}}</td>
+      <td>{{user.email}}</td>    
+      <td>{{user.githubUsername}} </td>    
+
+
+</tr>
+
+  </tbody>
+</table>
+
+<table class="table table-striped" *ngIf="users.length > 0 && selectedRole === 'Without role'">
+  <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">firstName</th>
+      <th scope="col">lastName</th>
+      <th scope="col">email</th>
+      <th scope="col">githubUsername</th>
+      <th scope="col">Role</th>
+     <th scope="col">Action</th>
+
+
+
+    </tr>
+  </thead>
+  <tbody>
+      <tr *ngFor="let user of users; let i = index">
+
+      <th scope="row">{{i}}</th>
+      <td>{{user.firstName}}</td>
+      <td>{{user.lastName}}</td>
+      <td>{{user.email}}</td>    
+      <td>{{user.githubUsername}} </td>
+       <td>
+      <button class="view-btn" (click)="deleteUser(user.keycloakId)">Delete</button>
+    </td>    
+  <td>
+  {{ user.role ? user.role : '' }}
+  <span *ngIf="!user.role" (click)="addRole(user.keycloakId)" class="plus-icon">+</span>
+</td>
+   
+   
+
+</tr>
+
+  </tbody>
+</table>
+
+<div *ngIf="showAddUserPopup" class="popup-overlay">
+  <div class="popup-content">
+    <button class="close-popup-btn" (click)="closeAddUserPopup()">X</button>
+    <app-add-user
+    ></app-add-user>
+  </div>
+</div>
+</div>
+
+  <!-- Popup Role Selector -->
+<!-- Popup Role Selector -->
+<div class="popup-overlay" *ngIf="showAddRole">
+  <div class="popup-container">
+    <!-- Bouton X (fermeture) -->
+    <button class="close-popup-btn" (click)="closePopup()">×</button>
+
+    <!-- Sélecteur de rôle -->
+    <select class="select_box" id="role_select" name="role" [(ngModel)]="RoleToAdd">
+      <option value="" disabled hidden>Select Role</option>
+      <option *ngFor="let role of rolesForAdd" [value]="role">
+        {{ role }}
+      </option>
+    </select>
+
+    <!-- Bouton Submit -->
+    <button class="submit-button" (click)="submitRole()">Submit</button>
+  </div>
+</div>

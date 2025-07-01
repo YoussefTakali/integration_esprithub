@@ -1,0 +1,29 @@
+<div class="assignment-card" [ngClass]="{ 'sidebar-open': sidebarVisible, 'sidebar-closed': !sidebarVisible }">
+    <div class="card-header">
+      <h3 class="title">{{ title }}</h3>
+      <span class="ai-badge" *ngIf="aiAssisted">AI Assisted</span>
+    </div>
+  
+    <p class="description">
+      {{ description }}
+    </p>
+  
+    <div class="submission-info">
+      <span class="label">Submission Rate</span>
+      <span class="rate">{{ submissionRate }}%</span>
+    </div>
+  
+    <div class="progress-bar">
+      <div class="fill" [style.width.%]="submissionRate"></div>
+    </div>
+  
+    <div class="footer">
+      <span class="course">
+  <i class="fas fa-book icon"></i> {{ courseCode }}
+      </span>
+      <span class="due">
+  <i class="fas fa-calendar-alt icon"></i> Due: {{ dueDate }}
+      </span>
+    </div>
+  </div>
+  

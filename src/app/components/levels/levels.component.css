@@ -1,0 +1,691 @@
+/* Full height container with safe padding */
+body,
+html {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  background-color: white;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* New header styling - left aligned, no background */
+.header {
+  padding: 30px 0 20px 0;
+  position: relative;
+  width: 100%;
+  background-color: transparent;
+}
+
+.header-content {
+  padding: 0 0 0 20px; /* Left padding for title */
+}
+
+.header-top {
+  margin-bottom: 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-right: 20px;
+}
+
+.page-title {
+  font-size: 2.5rem;
+  font-weight: 400;
+  margin-bottom: 5px;
+  color: #dc2626; /* Red title */
+  text-align: left;
+}
+
+.page-subtitle {
+  font-size: 1.1rem;
+  color: #6b7280;
+  margin-bottom: 0;
+  font-weight: 400;
+  text-align: left;
+}
+.spec {
+  font-size: 1.1rem;
+  color: #6b7280;
+  margin-bottom: 0;
+  font-weight: 600;
+  text-align: left;
+}
+
+
+/* Divider line */
+.content-divider {
+  height: 2px;
+  background-color: #e5e7eb;
+  margin: 15px 0 30px 0;
+  position: relative;
+}
+
+.content-divider::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 2px;
+  background-color: #dc2626;
+}
+
+/* Main container - adjusted for left alignment and 80% width */
+.container {
+  padding: 0 0 40px 0; /* Removed left padding */
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+/* Levels list wrapper - adjusted for left alignment and 80% width */
+.levels-list-wrapper {
+  width: 98%; /* Set to 98% of page width */
+  margin: 0; /* Remove auto margins */
+  max-width: none; /* Remove max-width constraint */
+  margin-left: 10px;
+}
+
+/* Enhanced level card - bigger size */
+.level-list-card {
+  display: flex;
+  align-items: center;
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  margin-bottom: 20px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  position: relative;
+  min-height: 120px;
+}
+
+.level-list-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+}
+
+/* Colored side border - thicker */
+.level-border {
+  width: 8px;
+  height: 100%;
+  min-height: 120px;
+  background-color: #dc2626;
+  position: relative;
+}
+
+/* Level card content - bigger padding */
+.level-card-content {
+  flex-grow: 1;
+  padding: 25px 30px;
+}
+
+.level-code {
+  font-weight: 700;
+  font-size: 18px;
+  color: #1f2937;
+  margin-bottom: 8px;
+}
+
+.level-title {
+  font-size: 22px;
+  font-weight: 400;
+  color: #111827;
+  margin-bottom: 12px;
+  line-height: 1.3;
+}
+
+.level-meta {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-top: 10px;
+}
+
+.level-info {
+  font-size: 14px;
+  color: #6b7280;
+  background-color: #f3f4f6;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.level-info::before {
+  font-size: 12px;
+}
+
+/* Back button styling */
+.back-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 2px solid #dc2626;
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  background-color: #dc2626;
+  color: white;
+}
+
+.back-button:hover {
+
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.2);
+}
+
+.back-button:active {
+  transform: translateY(0);
+}
+
+/* Add level button styling */
+.add-level-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: #dc2626;
+  border: 2px solid #dc2626;
+  color: white;
+  padding: 12px 24px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.2);
+
+}
+
+.add-level-button:hover {
+  background-color: #b91c1c;
+  border-color: #b91c1c;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(220, 38, 38, 0.3);
+}
+
+.add-level-button:active {
+  transform: translateY(0);
+}
+
+/* Enhanced action buttons */
+.level-card-actions {
+  padding: 0 25px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: center;
+}
+
+.level-card-actions button {
+  background: white;
+  border: 1px solid #e2e8f0;
+  cursor: pointer;
+  font-size: 18px;
+  color: #64748b;
+  transition: all 0.3s ease;
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.level-card-actions button:hover {
+  background-color: #f1f5f9;
+  color: #dc2626;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+/* Sidebar compatibility - adjusted for left alignment */
+.main-layout {
+  display: flex;
+  min-height: 100vh;
+}
+
+.main-content {
+  flex-grow: 1;
+  transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  background-color: white;
+  width: 100%;
+  padding-top: 50px;
+}
+
+/* Adjust container padding when sidebar is open */
+.sidebar-open .container,
+.sidebar-open .header-content,
+.sidebar-open .content-divider {
+  padding-left: 0; /* No extra padding needed */
+}
+
+/* Adjust margins for sidebar states */
+.sidebar-open .main-content {
+  margin-left: 250px; /* Width of the sidebar */
+}
+
+.sidebar-collapsed .main-content {
+  margin-left: 80px; /* Width of collapsed sidebar */
+}
+
+/* Empty state styling */
+.empty-state {
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  padding: 50px 30px;
+  text-align: center;
+  margin-bottom: 20px;
+  border: 1px dashed #e2e8f0;
+}
+
+.empty-state-content {
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+.empty-state-icon {
+  font-size: 40px;
+  margin-bottom: 20px;
+}
+
+.empty-state h3 {
+  font-size: 22px;
+  color: #1f2937;
+  margin-bottom: 10px;
+}
+
+.empty-state p {
+  font-size: 16px;
+  color: #6b7280;
+}
+
+/* Modal Styles */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6); /* Transparent dark background */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  backdrop-filter: blur(4px); /* Add blur effect */
+}
+
+.modal-content {
+  background-color: white;
+  border-radius: 16px;
+  border: 2px solid #dc2626;
+  width: 90%;
+  max-width: 600px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+  animation: modalSlideIn 0.3s ease-out;
+}
+
+@keyframes modalSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24px;
+  border-bottom: 2px solid #dc2626;
+  background-color: #f8f9fa;
+}
+
+.modal-header h2 {
+  color: #1f2937;
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.modal-close {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #dc2626;
+  font-size: 28px;
+  line-height: 1;
+  padding: 4px;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+}
+
+.modal-close:hover {
+  background-color: #fee2e2;
+  color: #b91c1c;
+}
+
+.modal-body {
+  padding: 24px;
+}
+
+.form-group {
+  margin-bottom: 24px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  color: #1f2937;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.form-input {
+  width: 100%;
+  padding: 12px 16px;
+  border: 2px solid #e5e7eb;
+  border-radius: 8px;
+  font-size: 16px;
+  transition: all 0.3s ease;
+  box-sizing: border-box;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: #dc2626;
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+}
+
+.form-help {
+  display: block;
+  margin-top: 4px;
+  font-size: 12px;
+  color: #6b7280;
+  font-style: italic;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  margin-top: 32px;
+  padding-top: 24px;
+  border-top: 1px solid #e5e7eb;
+}
+
+.btn {
+  padding: 12px 24px;
+  border: 2px solid;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-save {
+  background-color: #dc2626;
+  color: white;
+  border-color: #dc2626;
+}
+
+.btn-save:hover:not(:disabled) {
+  background-color: #b91c1c;
+  border-color: #b91c1c;
+}
+
+.btn-save:disabled {
+  background-color: #d1d5db;
+  border-color: #d1d5db;
+  color: #9ca3af;
+  cursor: not-allowed;
+}
+
+.btn-cancel {
+  background-color: white;
+  color: #6b7280;
+  border-color: #d1d5db;
+}
+
+.btn-cancel:hover {
+  background-color: #f9fafb;
+  border-color: #9ca3af;
+}
+
+/* Error and Success Messages */
+.error-message {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+  padding: 8px 12px;
+  background-color: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 6px;
+  color: #dc2626;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.success-message {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+  padding: 8px 12px;
+  background-color: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  border-radius: 6px;
+  color: #16a34a;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.error-message img,
+.success-message img {
+  flex-shrink: 0;
+}
+
+/* Form input error state */
+.form-input.error {
+  border-color: #dc2626;
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+}
+
+.form-input.success {
+  border-color: #16a34a;
+  box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.1);
+}
+
+/* Enhanced responsive design */
+@media (max-width: 1400px) {
+  .levels-list-wrapper {
+    width: 90%; /* Increase width on smaller screens */
+  }
+}
+
+@media (max-width: 1200px) {
+  .levels-list-wrapper {
+    width: 95%; /* Further increase width on smaller screens */
+  }
+
+  .level-card-content {
+    padding: 20px 25px;
+  }
+
+  .level-card-actions {
+    padding: 0 20px;
+  }
+}
+
+@media (max-width: 1024px) {
+  .sidebar-open .main-content,
+  .sidebar-collapsed .main-content {
+    margin-left: 0;
+  }
+
+  .container {
+    padding: 0 15px 30px 15px;
+  }
+
+  .page-title {
+    font-size: 2.2rem;
+  }
+
+  .levels-list-wrapper {
+    width: 100%; /* Full width on smaller screens */
+  }
+}
+
+@media (max-width: 768px) {
+  .header {
+    padding: 25px 0 15px 0;
+  }
+
+  .header-top {
+    flex-direction: column;
+    gap: 10px;
+    align-items: flex-start;
+  }
+
+  .page-title {
+    font-size: 2rem;
+  }
+
+  .page-subtitle {
+    font-size: 1rem;
+  }
+
+  .container {
+    padding: 0 10px 20px 10px;
+  }
+
+  .add-level-button {
+    padding: 10px 20px;
+    font-size: 14px;
+  }
+
+  .add-level-button span {
+    display: none;
+  }
+
+  .level-list-card {
+    flex-direction: column;
+    align-items: stretch;
+    border-radius: 10px;
+    min-height: auto;
+  }
+
+  .level-border {
+    width: 100%;
+    height: 6px;
+    min-height: 6px;
+  }
+
+  .level-card-content {
+    padding: 20px 15px;
+  }
+
+  .level-card-actions {
+    flex-direction: row;
+    justify-content: center;
+    padding: 10px 15px;
+    background-color: white;
+    border-top: 1px solid #e2e8f0;
+  }
+
+  .level-card-actions button {
+    width: 36px;
+    height: 36px;
+    font-size: 16px;
+  }
+
+  .modal-content {
+    width: 95%;
+    margin: 10px;
+  }
+
+  .modal-actions {
+    flex-direction: column;
+  }
+
+  .modal-actions .btn {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .levels-list-wrapper {
+    margin: 0;
+  }
+
+  .level-card-content {
+    padding: 15px;
+  }
+
+  .level-code {
+    font-size: 16px;
+  }
+
+  .level-title {
+    font-size: 18px;
+  }
+
+  .level-info {
+    font-size: 12px;
+    padding: 4px 10px;
+  }
+
+  .back-button span {
+    display: none; /* Hide text on mobile, show only icon */
+  }
+}
+
+/* Accessibility improvements */
+.level-card-actions button:focus,
+.back-button:focus,
+.add-level-button:focus,
+.btn:focus {
+
+  outline-offset: 2px;
+}
+
+.level-list-card:focus-within {
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+/* Print styles */
+@media print {
+  .level-card-actions,
+  .back-button,
+  .add-level-button {
+    display: none;
+  }
+
+  .level-list-card {
+    box-shadow: none;
+    border: 1px solid #ccc;
+    break-inside: avoid;
+  }
+}

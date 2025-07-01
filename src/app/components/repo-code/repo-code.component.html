@@ -1,0 +1,268 @@
+<!-- Repository Container -->
+<div class="repo-container-wrapper">
+  <!-- Repo Header -->
+  <div class="repo-header">
+    <span class="repo-title">{{ repoName }}</span>
+  </div>
+
+  <!-- Toggle Stats Button (when panel is hidden) -->
+  <button class="show-stats-btn" *ngIf="!showStatsPanel" (click)="toggleStatsPanel()">
+    <i class="fas fa-chart-bar"></i>
+    Show Statistics
+  </button>
+
+  <!-- Main Content Area with Statistics on Right -->
+  <div class="main-content">
+    <!-- Left Side: Main Content -->
+    <div class="content-area">
+      <!-- Invite Collaborators -->
+      <div *ngIf="collaborators.length <= 1" class="invite-collab-block">
+        <h2>Add collaborators to this repository</h2>
+        <p>Search for people using their username or email address.</p>
+        <button class="add-btn" (click)="goToAccessControl()">Invite collaborators</button>
+      </div>
+
+      <!-- Repository Navigation Area -->
+      <div class="repo-navigation">
+        <div class="branch-dropdown">
+          <button class="branch-btn" (click)="toggleBranchList()">
+            <img src="assets/code-branch-solid.svg" alt="Branch Icon" width="16" height="16" />
+            {{ selectedBranch }}
+           
+            <span class="arrow">&#9662;</span>
+          </button>
+          <ul class="branch-list" *ngIf="showBranchList">
+            <li *ngFor="let branch of branches" (click)="selectBranch(branch.name)" class="branch-item">
+              <div class="branch-item-content">
+                <div class="branch-item-header">
+                  <span class="branch-item-name">{{ branch.name }}</span>
+                  <span *ngIf="branch.name === 'main'" class="default-badge">default</span>
+                </div>
+                <div class="branch-item-stats">
+                  <span class="branch-item-stat">{{ getBranchCommitCount(branch.name) }} commits</span>
+                  <span class="branch-item-stat">{{ getBranchLanguageCount(branch.name) }} languages</span>
+                </div>
+              </div>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Clone Dropdown -->
+        <div class="clone-dropdown">
+          <button class="code-btn" (click)="toggleCloneDropdown()">
+            <img src="assets/code-solid-pull.svg" alt="Code" width="16" height="16" />
+            Code
+          </button>
+          <div *ngIf="showCloneBox" class="clone-box">
+            <input
+              #cloneInput
+              type="text"
+              [value]="cloneUrl"
+              readonly
+              (click)="cloneInput.select()"
+            />
+            <button (click)="copyCloneUrl()"> 
+              <i class="fas fa-copy"></i>
+          
+              Copy
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Commit Banner -->
+      <div *ngIf="latestCommitBanner" class="commit-banner">
+        <div class="commit-left">
+          <img [src]="latestCommitBanner.avatarUrl" alt="avatar" class="commit-avatar" />
+          <div class="commit-info">
+            <strong>{{ latestCommitBanner.author }}</strong>
+            <span class="commit-message">{{ latestCommitBanner.message }}</span>
+          </div>
+        </div>
+        <div class="commit-right">
+          <code class="commit-sha">{{ latestCommitBanner.sha }}</code>
+          <span class="commit-time">{{ latestCommitBanner.time | timeAgo }}</span>
+          <div class="commit-count" *ngIf="commitCount > 0">
+            <span>{{ commitCount }} commits</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- File List -->
+      <div *ngIf="!isFile" class="file-list-container">
+        <div class="file-list">
+          <!-- Back link -->
+          <div *ngIf="path" class="file-row back-row" (click)="goBack()">
+            <div class="file-left">
+              <img src="assets/back.png" alt="Back" width="16" height="16" />
+            </div>
+          </div>
+
+          <!-- Folder and File Rows -->
+          <div *ngFor="let item of contents" class="file-row" (click)="loadContents(item.path)">
+            <div class="file-left">
+              <div class="file-icon">
+                <span *ngIf="item.type === 'dir'">
+                  <img src="assets/folder-solid.svg" alt="Folder Icon" width="16" height="16" />
+                </span>
+                <span *ngIf="item.type === 'file'">
+                  <img src="assets/file-lines-solid.svg" alt="File Icon" width="16" height="16" />
+                </span>
+              </div>
+              <div class="file-name">{{ item.name }}</div>
+            </div>
+            <div class="file-commit" *ngIf="item.latestCommit">{{ item.latestCommit }}</div>
+          </div>
+        </div>
+      </div>
+<!-- File Viewer -->
+<div class="file-viewer" *ngIf="isFile">
+  <button class="back-button" (click)="goBack()">
+    <i class="fas fa-arrow-left"></i>
+    Back
+  </button>
+
+  <!-- File Header with Title and Actions -->
+  <div class="file-header-container">
+    <div class="file-header-left">
+      <h3 class="file-title">{{ getFileName() }}</h3>
+      <span class="file-size-info">{{ getFileSize() }}</span>
+    </div>
+    <div class="file-header-right">
+      <button class="file-action-btn copy-btn" 
+              [class.copied]="copyButtonState === 'copied'"
+              (click)="copyFileContent()">
+ 
+        <img src="assets/copy-solid.svg" alt="Code" width="16" height="16" />
+        {{ copyButtonState === 'copied' ? 'Copied!' : 'Copy' }}
+      </button>
+      <a class="file-action-btn download-btn" 
+         [href]="getDownloadUrl()" 
+         [download]="getFileName()">
+        
+        <img src="assets/download.svg" alt="Code" width="16" height="16" />
+        Download
+      </a>
+    </div>
+  </div>
+
+  <!-- File Navigation Tabs -->
+  <div class="file-nav-tabs">
+    <button class="file-nav-tab active">
+      <i class="fas fa-code"></i>
+      Code
+    </button>
+    <span class="file-info-text">{{ getLineCount() }} lines • {{ getFileSize() }}</span>
+  </div>
+
+  <!-- File Content -->
+  <div class="file-content-wrapper" *ngIf="!isImage">
+
+
+
+    <!-- Line Numbers -->
+    <div class="line-numbers">
+      <span class="line-number" *ngFor="let line of fileLines; let i = index">
+        {{ i + 1 }}
+      </span>
+    </div>
+
+    <!-- Code Content -->
+    <div class="code-content">
+      <pre>{{ fileContent }}</pre>
+    </div>
+  </div>
+
+  <!-- Image Content -->
+  <div class="file-content-wrapper" *ngIf="isImage">
+    <img [src]="fileContent" [alt]="getFileName()" class="file-image">
+  </div>
+</div>
+
+      <!-- README Display -->
+      <div *ngIf="readmeContent && !isFile" class="readme-preview">
+        <h3 class="readme-title">README</h3>
+        <pre class="readme-box">{{ readmeContent }}</pre>
+      </div>
+    </div>
+
+    <!-- Right Side: Statistics Panel -->
+    <div class="stats-panel" *ngIf="showStatsPanel">
+      <div class="stats-header">
+        <h3>Repository Statistics</h3>
+    
+      </div>
+      
+      <!-- Overview Stats -->
+      <div class="stats-overview">
+        <div class="stat-card">
+          <div class="stat-number">{{ repoStats.totalCommits }}</div>
+          <div class="stat-label">Total Commits</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">{{ repoStats.totalBranches }}</div>
+          <div class="stat-label">Branches</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">{{ repoStats.totalContributors }}</div>
+          <div class="stat-label">Contributors</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">{{ repoStats.totalLanguages }}</div>
+          <div class="stat-label">Languages</div>
+        </div>
+      </div>
+
+      <!-- Language Distribution -->
+      <div class="language-stats" *ngIf="getTopLanguages().length > 0">
+        <h4>Language Distribution</h4>
+        <div class="language-bar">
+          <div class="language-segment" 
+               *ngFor="let lang of getTopLanguages()" 
+               [style.width.%]="lang.percentage"
+               [attr.data-language]="lang.name"
+               [title]="lang.name + ': ' + lang.percentage + '%'">
+          </div>
+        </div>
+        <div class="language-list">
+          <div class="language-item" *ngFor="let lang of getTopLanguages()">
+            <span class="language-dot" [attr.data-language]="lang.name"></span>
+            <span class="language-name">{{ lang.name }}</span>
+            <span class="language-percent">{{ lang.percentage }}%</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Branch Statistics -->
+      <div class="branch-stats" *ngIf="branches.length > 0">
+        <h4>Branch Details</h4>
+        <div class="branch-stats-list">
+          <div class="branch-stat-item" *ngFor="let branch of branches">
+            <div class="branch-stat-header">
+              <span class="branch-stat-name">{{ branch.name }}</span>
+              <span class="default-badge" *ngIf="branch.name === 'main'">default</span>
+            </div>
+            <div class="branch-stat-details">
+              <span class="branch-stat-detail">
+                <i class="fas fa-code-branch"></i>
+                {{ getBranchCommitCount(branch.name) }} commits
+              </span>
+              <span class="branch-stat-detail">
+                <i class="fas fa-code"></i>
+                {{ getBranchLanguageCount(branch.name) }} languages
+              </span>
+            </div>
+            <div class="branch-languages" *ngIf="getBranchLanguages(branch.name).length > 0">
+              <span class="branch-language-tag" *ngFor="let lang of getBranchLanguages(branch.name).slice(0, 3)">
+                {{ lang }}
+              </span>
+              <span class="more-languages" *ngIf="getBranchLanguages(branch.name).length > 3">
+                +{{ getBranchLanguages(branch.name).length - 3 }} more
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

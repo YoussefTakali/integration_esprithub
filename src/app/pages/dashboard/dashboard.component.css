@@ -1,0 +1,162 @@
+.user-legend{
+    border:2px solid black;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    height:250px;
+    width: 100%;
+    background: linear-gradient(
+  to right,
+  #ff0000,
+  #cc3333,
+  #b34747,
+  #996666,
+  #857575,
+  #757575
+);
+    z-index: -1;
+}
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    position: relative;
+    left: 10%;
+  }
+  .d-userpicture {
+    border : 5px solid white;
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+
+  }
+  .d-username {
+    position: relative;
+    bottom: 5px;
+    font-size: 50px;
+    font-weight: 600;
+    margin: 0;
+    color: white;
+  }
+  
+  .datetime {
+    position: relative;
+    text-align: right;
+    color: white;
+    right: 10%;
+  }
+  
+  .time {
+    font-weight: bold;
+    font-size: 50px;
+  }
+  
+  .date {
+    font-size: 30px;
+    color: white;
+  }
+  .card-container {
+    position: relative;
+    top: 4rem;
+    width: 95%;
+    display: flex;
+    justify-content: space-between; /* Keep space between items */
+    margin: 0 auto; /* Center the container horizontally */
+    gap: 0px; /* Reduce the gap between cards (you can adjust the value as needed) */
+  }
+  /* user-legend.component.css */
+.sub-nav {
+    background-color: rgb(225, 225, 225);
+    position: relative;
+    top: 5rem;
+    left: 2.5%;
+    display: flex;
+    gap: 0rem;
+    border-bottom: 1px solid #e5e7eb;
+    width: 600px;
+    height: 55px;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    padding-right: 0.4rem;
+    padding-left: 0.4rem;
+
+  }
+  
+  .sub-nav button {
+    position: relative;
+    background: none;
+    border: none;
+    font-size: 1rem;
+    cursor: pointer;
+    color: #6b7280;
+    height: 40px;
+    width: 150px;
+    border-radius: 5px;
+    transition: background 0.2s;
+  }
+  
+  .sub-nav button.active {
+    background-color: #ffffff;
+    font-weight: bold;
+    color: #111827;
+  }
+  .tab-content {
+position: relative; 
+top: 100px;
+}
+  .sub-nav-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.sub-nav {
+  display: flex;
+  gap: 10px;
+}
+.search-container {
+  position: relative;
+  top: 80px;
+  right: 3vw;
+}
+
+.search-bar {
+  position: relative;
+  width: 500px;
+}
+
+.search-bar input {
+  width: 100%;
+  padding: 10px 40px 10px 10px; /* Add right padding for icon */
+  border: none;
+  border-bottom: 2px solid #ccc;
+  background-color: transparent;
+  outline: none;
+  transition: border-color 0.3s;
+  font-size: 16px;
+}
+
+.search-bar input:focus {
+  border-bottom: 2px solid red;
+}
+
+.search-bar input::placeholder {
+  color: #aaa;
+}
+
+.search-bar i.fa-search {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #aaa;
+  pointer-events: none;
+  transition: color 0.3s;
+}
+
+.search-bar input:focus + i.fa-search {
+  color: red;
+}

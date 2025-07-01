@@ -1,0 +1,97 @@
+<br>
+<br>
+<br>
+<div class="github-repo-selector">
+  <!-- Header with user info -->
+  <div class="user-header">
+    <div class="user-info">
+      <div class="user-avatar">
+        <img [src]="getCurrentUserAvatar()" [alt]="getCurrentUsername() + ' avatar'">
+      </div>
+      <div class="user-details">
+        <h2 class="username">{{ getCurrentUsername() }}</h2>
+        <p class="repo-count">{{ userRepos.length }} repositories</p>
+      </div>
+    </div>
+ =
+  </div>
+
+  <!-- Search and filters -->
+  <div class="search-filters-container">
+    <div class="search-container">
+      <input 
+        type="text" 
+        [(ngModel)]="searchQuery" 
+        (input)="filterRepositories()" 
+        placeholder="Search your repositories..." 
+        class="search-input">
+    </div>
+    
+    <div class="filters-container">
+      <button class="filter-button">
+        Filters & Sorting
+        <i class="fa fa-caret-down"></i>
+      </button>
+      
+      <button class="filter-button">
+        Language
+        <i class="fa fa-caret-down"></i>
+      </button>
+      
+      <button class="filter-button">
+        Sort by
+        <i class="fa fa-caret-down"></i>
+      </button>
+      
+      <button class="filter-button">
+        Visibility
+        <i class="fa fa-caret-down"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- Loading state -->
+  <div *ngIf="isLoading" class="loading-container">
+    <div class="loading-spinner"></div>
+    <p>Loading repositories...</p>
+  </div>
+
+  <!-- Error state -->
+  <div *ngIf="errorMessage && !isLoading" class="error-container">
+    <p class="error-message">{{ errorMessage }}</p>
+    <button (click)="loadUserRepositories()" class="retry-button">Try Again</button>
+  </div>
+
+  <!-- Repository list -->
+  <div *ngIf="!isLoading && !errorMessage" class="repo-list">
+    <div *ngFor="let repo of filteredRepos" class="repo-item" (click)="selectRepository(repo)">
+      <div class="repo-content">
+        <div class="repo-name-container">
+          <h3 class="repo-name">{{ repo.name }}</h3>
+          <span class="repo-visibility">{{ repo.visibility }}</span>
+        </div>
+        
+        <div class="repo-meta">
+          <div class="repo-owner">
+            <img [src]="repo.owner?.avatar_url || getCurrentUserAvatar()" 
+                 [alt]="repo.owner?.login + ' avatar'" 
+                 class="owner-avatar">
+            <span>{{ repo.owner?.login || getCurrentUsername() }}</span>
+          </div>
+          <span class="repo-created">Updated at  {{ getTimeAgo(repo.updated_at) }}</span>
+        </div>
+      </div>
+      
+      <div class="repo-actions">
+        <button class="action-button arrow-button">
+          <i class="fa fa-arrow-right"></i>
+        </button>
+      </div>
+    </div>
+    
+    <!-- Empty state -->
+    <div *ngIf="filteredRepos.length === 0" class="empty-state">
+      <p>No repositories found matching your criteria.</p>
+    </div>
+  </div>
+</div>

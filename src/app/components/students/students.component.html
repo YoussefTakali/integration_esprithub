@@ -1,0 +1,125 @@
+<div class="main-content" [ngClass]="{'sidebar-open': sidebarOpen, 'sidebar-collapsed': sidebarCollapsed}">
+  <!-- Left-aligned header with red title -->
+  <div class="header">
+    <div class="header-content">
+      <div class="header-top">
+        <button class="back-button" (click)="goBack()" title="Back to classes">
+          <span>Return</span>
+        </button>
+        <div class="header-actions">
+          <button class="export-button" (click)="exportAttendanceList()" title="Export to Excel"  *ngIf="activeTab != 'repositories'">
+            <img src="assets/export.png" alt="Export" width="20" height="20" />
+            <span>Export</span>
+          </button>
+        </div>
+      </div>
+      <div class="page-header-wrapper"  *ngIf="activeTab != 'repositories'">
+        <h1 class="page-title">Students</h1>
+        <div class="attendance-stats">
+          <p class="students-count">{{ students.length }} students</p>
+          <p class="attendance-summary">
+            {{ getPresentCount() }} present, {{ getAbsentCount() }} absent
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tab Navigation -->
+  <div class="tabs-container">
+    <div class="tabs-wrapper">
+      <div class="tab active" (click)="setActiveTab('students')">
+        Students
+      </div>
+      <div class="tab" [class.active]="activeTab === 'repositories'"   (click)="setActiveTab('repositories')">
+        Repositories
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Container -->
+  <div class="container">
+    <!-- Students Tab Content -->
+    <div class="tab-content" *ngIf="activeTab === 'students'">
+
+      <div class="table-wrapper">
+        <!-- Students Table -->
+        <div class="table-container" *ngIf="students.length > 0">
+          <table class="students-table">
+            <thead>
+              <tr>
+                <th class="col-student-number">Student ID</th>
+                <th class="col-name">Full Name</th>
+                <th class="col-email">Email</th>
+                <th class="col-phone">Phone</th>
+                <th class="col-status">Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let student of students; let i = index" 
+                  [class.absent-row]="student.status === 'absent'"
+                  [class.present-row]="student.status === 'present'">
+                <td class="col-student-number">
+                  <span class="student-id" *ngIf="student.numeroEtudiant">{{ student.numeroEtudiant }}</span>
+                  <span class="no-data" *ngIf="!student.numeroEtudiant">-</span>
+                </td>
+                <td class="col-name">
+                  <div class="student-name">
+                    <strong>{{ student.prenom }} {{ student.nom }}</strong>
+                  </div>
+                </td>
+                <td class="col-email">
+                  <span class="student-email" *ngIf="student.email">{{ student.email }}</span>
+                  <span class="no-data" *ngIf="!student.email">-</span>
+                </td>
+                <td class="col-phone">
+                  <span class="student-phone" *ngIf="student.telephone">{{ student.telephone }}</span>
+                  <span class="no-data" *ngIf="!student.telephone">-</span>
+                </td>
+                <td class="col-status">
+                  <button 
+                    class="status-toggle"
+                    [class.present]="student.status === 'present'"
+                    [class.absent]="student.status === 'absent'"
+                    (click)="toggleAttendance(student)"
+                    title="Click to toggle status">
+                    <img *ngIf="student.status === 'present'" 
+                         src="assets/check-mark.png" alt="Present" width="20" height="20" />
+                    <img *ngIf="student.status === 'absent'" 
+                         src="assets/remove.png" alt="Absent" width="20" height="20" />
+                    <span>{{ student.status === 'present' ? 'Present' : 'Absent' }}</span>
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Empty State -->
+        <div *ngIf="students.length === 0" class="empty-state">
+          <div class="empty-state-content">
+            <div class="empty-state-icon">
+              <img src="assets/graduation.png" alt="No Students" width="45" height="45" />
+            </div>
+            <h3>No students found</h3>
+            <p>Start by adding students to this class.</p>
+          </div>
+        </div>
+      </div>
+
+  </div>
+
+
+
+
+
+
+
+
+
+
+  
+  <div class="repositories-wrapper" *ngIf="activeTab === 'repositories'">
+    <!-- Integrate the repo-list component -->
+    <app-repo-list [classId]="classId"></app-repo-list>
+  </div>

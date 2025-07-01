@@ -1,0 +1,20 @@
+<div class="repo-header">
+ 
+    <!-- Return Button -->
+    <button class="return-button" routerLink="/students/36" title="Back to Repository List">
+      <img src="assets/back.png" alt="Back" width="17" height="17" />
+    
+    </button>
+    <div class="repo-tabs">
+        <a routerLink="code" routerLinkActive="active">
+            <img src="assets/code-solid.svg" alt="Code Icon" width="16" height="16" style="margin-right: 4px;">
+            Code
+          </a>
+      <a routerLink="settings" routerLinkActive="active"> 
+        <img src="assets/gear-solid.svg" alt="Code Icon" width="16" height="16" style="margin-right: 4px;">
+    Settings</a>
+    </div>
+  </div>
+
+
+  <router-outlet></router-outlet>

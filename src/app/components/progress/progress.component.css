@@ -1,0 +1,104 @@
+.card-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* 3 cards per row */
+    gap: 1.5rem; /* space between cards */
+    margin: 0 auto; /* center the container on the page */
+    width: 95vw; /* Make container width flexible */
+  }
+  .card {
+    background-color: white;
+    padding: 2rem;
+    border-radius: 0.75rem;
+    border: 1px solid rgba(255, 255, 255, 0.475);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    width: 31vw; /* Take full width of the grid cell */
+    text-align: left; /* Ensures all text inside is left-aligned */
+  }
+  
+  .sidebar-open-container {
+    width: 80vw;
+  }
+  
+  .sidebar-open {
+    width: 25vw !important;
+  }
+  
+  .card-content {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .card-left {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .card-icon-name {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem; /* Space between icon and name */
+  }
+  
+  .card-icon {
+    width: 24px; /* Adjust icon size */
+    height: 24px;
+    object-fit: contain;
+  }
+  
+  .card-name {
+    font-size: 2rem;
+    font-weight: 600;
+    margin-top: 0.5rem;
+  }
+  
+  .card-value {
+    font-size: 1.25rem;
+    margin: 0.5rem 0;
+    color: #9ca3af;
+  }
+  
+  /* AI Assisted box in top-right corner */
+  .ai-assisted-box {
+    background-color: #a851ff;
+    color: white;
+    font-size: 0.9rem;
+    font-weight: 500;
+    padding: 0.25rem 0.5rem;
+    border-radius: 1.5rem;
+    position: absolute; /* Position it in the top-right */
+    top: 2.9rem;
+    right: 2rem; /* Adjust the horizontal positioning */
+    width: fit-content;
+    text-align: center;
+    align-self: flex-start; /* Align it to the left */
+  }
+
+  .card-bottom {
+    display: flex;
+    align-items: center;
+    margin-top: 1rem;
+    gap: 2rem;
+  }
+  
+  .card-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  
+  .meta-icon {
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+  }
+  
+  .card-text {
+    font-size: 1rem;
+    font-weight: 500;
+    color: #4b5563;
+  }
+  

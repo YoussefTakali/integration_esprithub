@@ -1,0 +1,198 @@
+
+<br>
+<br>
+<br>
+<div class="commit-history-container">
+  <!-- Header -->
+  <div class="header">
+    <button class="back-button" (click)="goBack()">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+        <path d="M7.78 12.53a.75.75 0 01-1.06 0L2.47 8.28a.75.75 0 010-1.06l4.25-4.25a.75.75 0 011.06 1.06L4.81 7h7.44a.75.75 0 010 1.5H4.81l2.97 2.97a.75.75 0 010 1.06z"></path>
+      </svg>
+      Back to Repositories
+    </button>
+    <div class="repo-info">
+      <h1 class="repo-name">{{ owner }}/{{ repo }}</h1>
+      <div class="repo-meta">
+        <span class="repo-visibility">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+            <path d="M2 2.5A2.5 2.5 0 014.5 0h8.75a.75.75 0 01.75.75v12.5a.75.75 0 01-.75.75h-2.5a.75.75 0 110-1.5h1.75v-2h-8a1 1 0 00-.714 1.7.75.75 0 01-1.072 1.05A2.495 2.495 0 012 11.5v-9zm10.5-1V9h-8c-.356 0-.694.074-1 .208V2.5a1 1 0 011-1h8zM5 12.25v3.25a.25.25 0 00.4.2l1.45-1.087a.25.25 0 01.3 0L8.6 15.7a.25.25 0 00.4-.2v-3.25a.25.25 0 00-.25-.25h-3.5a.25.25 0 00-.25.25z"></path>
+          </svg>
+          Public repository
+        </span>
+        <span class="repo-path">{{ owner }}/{{ repo }}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tab Navigation -->
+  <div class="tab-navigation">
+    <div class="tab-item">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+        <path d="M1.75 1A1.75 1.75 0 000 2.75v10.5C0 14.216.784 15 1.75 15h12.5A1.75 1.75 0 0016 13.25v-8.5A1.75 1.75 0 0014.25 3H7.5a.25.25 0 01-.2-.1l-.9-1.2C6.07 1.26 5.55 1 5 1H1.75z"></path>
+      </svg>
+      <span>Code</span>
+    </div>
+    <div class="tab-item active">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+        <path d="M1.5 1.75a.75.75 0 00-1.5 0v12.5c0 .414.336.75.75.75h14.5a.75.75 0 000-1.5H1.5V1.75zm14.28 2.53a.75.75 0 00-1.06-1.06L10 7.94 7.53 5.47a.75.75 0 00-1.06 0L3.22 8.72a.75.75 0 001.06 1.06L7 7.06l2.47 2.47a.75.75 0 001.06 0l5.25-5.25z"></path>
+      </svg>
+      <span>Statistics</span>
+    </div>
+  </div>
+
+  <!-- Action Bar -->
+  <div class="action-bar">
+
+    
+    <div class="branch-selector">
+      <span>Branch:</span>
+      <div class="select-wrapper">
+        <select [(ngModel)]="selectedBranch" (change)="loadCommits()">
+          <option *ngFor="let branchName of branches" [value]="branchName">{{ branchName }}</option>
+        </select>
+        <svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor">
+          <path d="M4.427 7.427l3.396 3.396a.25.25 0 00.354 0l3.396-3.396A.25.25 0 0011.396 7H4.604a.25.25 0 00-.177.427z"></path>
+        </svg>
+      </div>
+    </div>
+    
+    <div class="action-buttons">
+      <button class="action-button secondary">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+          <path d="M3.75 1.5a.25.25 0 00-.25.25v12.5c0 .138.112.25.25.25h9.5a.25.25 0 00.25-.25V6h-2.75A1.75 1.75 0 019 4.25V1.5H3.75zm6.75.062V4.25c0 .138.112.25.25.25h2.688l-.011-.013-2.914-2.914-.013-.011z"></path>
+        </svg>
+        Add file
+      </button>
+      <button class="action-button secondary">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+          <path d="M4.72 3.22a.75.75 0 011.06 1.06L2.06 8l3.72 3.72a.75.75 0 11-1.06 1.06L.47 8.53a.75.75 0 010-1.06l4.25-4.25zm6.56 0a.75.75 0 10-1.06 1.06L13.94 8l-3.72 3.72a.75.75 0 101.06 1.06l4.25-4.25a.75.75 0 000-1.06l-4.25-4.25z"></path>
+        </svg>
+        Code
+      </button>
+    </div>
+  </div>
+
+  <!-- Latest Commit -->
+  <div *ngIf="commits && commits.length > 0" class="latest-commit">
+    <div class="commit-icon">
+      <span>U</span>
+    </div>
+    <div class="commit-info">
+      <span class="commit-label">LATEST COMMIT:</span>
+      <span class="commit-message">{{ commits[0].commit.message }}</span>
+    </div>
+    <div class="commit-time">{{ getTimeAgo(commits[0].commit.author.date) }}</div>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="loading">
+    <div class="spinner"></div>
+    <p>Loading commit history...</p>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="errorMessage && !isLoading" class="error">
+    <div class="error-icon">
+      <svg width="24" height="24" viewBox="0 0 16 16" fill="currentColor">
+        <path d="M8 0a8 8 0 100 16A8 8 0 008 0zm0 14.5a6.5 6.5 0 110-13 6.5 6.5 0 010 13z"></path>
+        <path d="M8 4a.75.75 0 01.75.75v3.5a.75.75 0 01-1.5 0v-3.5A.75.75 0 018 4zm0 8a1 1 0 100-2 1 1 0 000 2z"></path>
+      </svg>
+    </div>
+    <h3>Error Loading Commits</h3>
+    <p>{{ errorMessage }}</p>
+    <button class="retry-button" (click)="loadCommits()">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+        <path d="M8 2.5a5.487 5.487 0 00-4.131 1.869l1.204 1.204A.25.25 0 014.896 6H1.25A.25.25 0 011 5.75V2.104a.25.25 0 01.427-.177l1.38 1.38A7.001 7.001 0 0114.95 7.16a.75.75 0 11-1.49.178A5.501 5.501 0 008 2.5zM1.705 8.005a.75.75 0 01.834.656 5.501 5.501 0 009.592 2.97l-1.204-1.204a.25.25 0 01.177-.427h3.646a.25.25 0 01.25.25v3.646a.25.25 0 01-.427.177l-1.38-1.38A7.001 7.001 0 011.05 8.84a.75.75 0 01.656-.834z"></path>
+      </svg>
+      Retry
+    </button>
+  </div>
+
+  <!-- Main Content Area -->
+  <div class="main-content">
+    <!-- Commit List Table -->
+    <div *ngIf="!isLoading && !errorMessage && commits && commits.length > 0" class="commits-table">
+      <table>
+        <thead>
+          <tr>
+            <th class="name-header">NAME</th>
+            <th class="message-header">COMMIT MESSAGE</th>
+            <th class="committer-header">COMMITTER</th>
+            <th class="updated-header">UPDATED</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let commit of commits" (click)="viewCommitDetail(commit)" class="commit-row">
+            <td class="name-cell">
+              <a href="#" class="file-link">{{ getFileName(commit) }}</a>
+            </td>
+            <td class="message-cell">{{ commit.commit.message }}</td>
+            <td class="committer-cell">{{ commit.commit.author.name }}</td>
+            <td class="updated-cell">{{ getTimeAgo(commit.commit.author.date) }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <div class="sidebar-section contributors-section">
+        <div class="sidebar-header">
+          <h3 class="sidebar-title">Contributors</h3>
+          <span class="contributors-count">{{ getUniqueContributors().length }}</span>
+        </div>
+        <div class="contributors-list">
+          <div *ngFor="let contributor of getUniqueContributors()" class="contributor-item">
+            <img *ngIf="contributor.avatar_url" 
+                 [src]="contributor.avatar_url" 
+                 [alt]="contributor.name"
+                 class="contributor-avatar">
+            <div *ngIf="!contributor.avatar_url" class="contributor-avatar-fallback">
+              {{ contributor.name.charAt(0).toUpperCase() }}
+            </div>
+            <div class="contributor-info">
+              <div class="contributor-name">{{ contributor.name }}</div>
+              <div class="contributor-commits">{{ contributor.commitCount }} commit{{ contributor.commitCount !== 1 ? 's' : '' }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="sidebar-section">
+        <div class="sidebar-header">
+          <h3 class="sidebar-title">File Types</h3>
+        </div>
+      </div>
+      
+      <div class="sidebar-section">
+        <div class="sidebar-header">
+          <h3 class="sidebar-title">About</h3>
+        </div>
+        <div class="sidebar-content">
+          <p>repo for test</p>
+          <div class="repo-stats">
+            <div class="stat-item">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                <path d="M8 .25a.75.75 0 01.673.418l1.882 3.815 4.21.612a.75.75 0 01.416 1.279l-3.046 2.97.719 4.192a.75.75 0 01-1.088.791L8 12.347l-3.766 1.98a.75.75 0 01-1.088-.79l.72-4.194L.818 6.374a.75.75 0 01.416-1.28l4.21-.611L7.327.668A.75.75 0 018 .25zm0 2.445L6.615 5.5a.75.75 0 01-.564.41l-3.097.45 2.24 2.184a.75.75 0 01.216.664l-.528 3.084 2.769-1.456a.75.75 0 01.698 0l2.77 1.456-.53-3.084a.75.75 0 01.216-.664l2.24-2.183-3.096-.45a.75.75 0 01-.564-.41L8 2.694v.001z"></path>
+              </svg>
+              <span>0 stars</span>
+            </div>
+            <div class="stat-item">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                <path d="M1.679 7.932c.412-.621 1.242-1.75 2.366-2.717C5.175 4.242 6.527 3.5 8 3.5c1.473 0 2.824.742 3.955 1.715 1.124.967 1.954 2.096 2.366 2.717a.119.119 0 010 .136c-.412.621-1.242 1.75-2.366 2.717C10.825 11.758 9.473 12.5 8 12.5c-1.473 0-2.824-.742-3.955-1.715C2.92 9.818 2.09 8.69 1.679 8.068a.119.119 0 010-.136zM8 2c-1.981 0-3.67.992-4.933 2.078C1.797 5.169.88 6.423.43 7.1a1.619 1.619 0 000 1.798c.45.678 1.367 1.932 2.637 3.024C4.329 13.008 6.019 14 8 14c1.981 0 3.67-.992 4.933-2.078 1.27-1.091 2.187-2.345 2.637-3.023a1.619 1.619 0 000-1.798c-.45-.678-1.367-1.932-2.637-3.023C11.671 2.992 9.981 2 8 2zm0 8a2 2 0 100-4 2 2 0 000 4z"></path>
+              </svg>
+              <span>0 watching</span>
+            </div>
+            <div class="stat-item">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                <path d="M5 3.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm0 2.122a2.25 2.25 0 10-1.5 0v.878A2.25 2.25 0 005.75 8.5h1.5v2.128a2.251 2.251 0 101.5 0V8.5h1.5a2.25 2.25 0 002.25-2.25v-.878a2.25 2.25 0 10-1.5 0v.878a.75.75 0 01-.75.75h-4.5A.75.75 0 015 6.25v-.878zm3.75 7.378a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm3-8.75a.75.75 0 100-1.5.75.75 0 000 1.5z"></path>
+              </svg>
+              <span>0 forks</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

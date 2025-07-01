@@ -1,0 +1,134 @@
+
+<br>
+<br>
+<br>
+<div class="commit-detail-container">
+  <!-- Header -->
+  <div class="header">
+    <div class="header-left">
+      <button class="back-button" (click)="goBack()">
+        ← Back to Commit History
+      </button>
+      <h1 class="page-title">Commit Details</h1>
+    </div>
+    <div class="repo-info">
+      {{ owner }}/{{ repo }}
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="loading">
+    <div class="spinner"></div>
+    <p>Loading commit details...</p>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="errorMessage && !isLoading" class="error">
+    <h3>Error Loading Commit</h3>
+    <p>{{ errorMessage }}</p>
+    <button class="retry-button" (click)="loadCommitDetails()">
+      Retry
+    </button>
+  </div>
+
+  <!-- Commit Details -->
+  <div *ngIf="commit && !isLoading" class="commit-details">
+    <!-- Commit Header -->
+    <div class="commit-header">
+      <h2 class="commit-title">{{ commit.commit.message }}</h2>
+      <div class="commit-meta">
+        <div class="commit-author">
+          <img 
+            [src]="commit.author.avatar_url || 'https://github.com/identicons/default.png'" 
+            [alt]="commit.author.login || commit.commit.author.name"
+            (error)="onImageError($event)">
+          <span class="author-name">{{ commit.author.login || commit.commit.author.name }}</span>
+          <span class="commit-time">committed {{ getTimeAgo(commit.commit.author.date) }}</span>
+        </div>
+        <div class="commit-sha-info">
+          <span class="commit-label">Commit:</span>
+          <code class="commit-sha" (click)="copyShaToClipboard()" title="Click to copy">
+            {{ getShortSha(commit.sha) }}
+          </code>
+        </div>
+      </div>
+    </div>
+
+    <!-- Commit Stats -->
+    <div *ngIf="commit.stats" class="commit-stats">
+      <p class="stats-text">
+        <strong>{{ commit.stats.total }}</strong> files changed
+        <span class="additions">+{{ commit.stats.additions }} additions</span>
+        <span class="deletions">-{{ commit.stats.deletions }} deletions</span>
+      </p>
+    </div>
+
+    <!-- Changed Files -->
+    <div *ngIf="commit.files && commit.files.length > 0" class="changed-files">
+      <h3 class="changed-files-header">
+        Changed Files ({{ commit.files.length }})
+      </h3>
+      
+      <div *ngFor="let file of commit.files; trackBy: trackByFilename" class="file-item">
+        <div 
+          class="file-header" 
+          [class]="getFileStatusClass(file.status)"
+          (click)="toggleFileExpansion(file.filename)">
+          
+          <div class="file-icon" [class]="getFileIcon(file.filename)"></div>
+          <div class="file-name">{{ file.filename }}</div>
+          
+          <div class="file-changes">
+            <span *ngIf="file.additions > 0" class="additions">+{{ file.additions }}</span>
+            <span *ngIf="file.deletions > 0" class="deletions">-{{ file.deletions }}</span>
+          </div>
+          
+          <div class="file-status">{{ getFileStatusLabel(file.status) }}</div>
+          
+          <div class="expand-icon">
+            {{ isFileExpanded(file.filename) ? '▼' : '▶' }}
+          </div>
+        </div>
+        
+        <div *ngIf="isFileExpanded(file.filename) && file.patch" class="file-diff">
+          <div class="diff-header">
+            <span>Showing changes for {{ file.filename }}</span>
+            <div class="diff-stats">
+              <span class="additions">+{{ file.additions }}</span>
+              <span class="deletions">-{{ file.deletions }}</span>
+            </div>
+          </div>
+          <div class="diff-content">
+            <div *ngFor="let diffLine of parseDiffContent(file.patch)" 
+                 class="diff-row" 
+                 [ngClass]="{
+                   'diff-row-added': diffLine.type === 'added',
+                   'diff-row-deleted': diffLine.type === 'deleted',
+                   'diff-row-context': diffLine.type === 'context',
+                   'diff-row-hunk': diffLine.type === 'hunk'
+                 }">
+              <div class="diff-row-number">{{ diffLine.lineNumber }}</div>
+              <div class="diff-row-content">{{ diffLine.content }}</div>
+            </div>
+          </div>
+        </div>
+        
+        <div *ngIf="isFileExpanded(file.filename) && !file.patch" class="no-diff">
+          <p>No diff available for this file</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- No Files Changed -->
+    <div *ngIf="!commit.files || commit.files.length === 0" class="no-files">
+      <p>No files were changed in this commit</p>
+    </div>
+
+    <!-- GitHub Link -->
+    <div class="github-link">
+      <a [href]="commit.html_url" target="_blank" rel="noopener noreferrer">
+        View on GitHub →
+      </a>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,28 @@
+<div>
+    <app-navbar (sidebarToggled)="onSidebarToggle($event)"></app-navbar>
+    <app-sidebar [isSidebarVisible]="isSidebarVisible"></app-sidebar>
+    <div class="content" [class.sidebar-open]="isSidebarVisible">
+
+      <!<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.1.1/css/all.css" integrity="sha384-O8whS3fhG2OnA5Kas0Y9l3cfpmYjapjI0E4theH4iuMD+pLhbf6JI0jIMfYcK3yZ" crossorigin="anonymous">
+
+
+      <!--    juste pour la permier page 
+     
+        <div class="user-legend" *ngIf="isDashboardRoute">
+      <div class="user-info">
+        <img class="d-userpicture" src="assets/Detachment.webp" />
+        <h2 class="d-username">{{ username }}</h2>
+      </div>
+  
+      <div class="datetime">
+        <div class="time">{{ currentTime }}</div>
+        <div class="date">{{ currentDate }}</div>
+      </div>
+    </div> 
+      
+      -->
+      
+      <router-outlet></router-outlet>
+    </div>
+  </div>
+  
