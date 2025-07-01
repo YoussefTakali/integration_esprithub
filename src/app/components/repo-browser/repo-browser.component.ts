@@ -7,6 +7,7 @@ import  { Router } from "@angular/router"
 import  { ActivatedRoute } from "@angular/router"
 import {  Observable, catchError, throwError, tap } from "rxjs"
 import  { StatsService } from "src/app/services/stats.service"
+import { GithubTokenService } from "src/app/services/github-token.service"
 
 interface FileNode {
   name: string
@@ -149,6 +150,7 @@ export class RepoBrowserComponent implements OnInit {
     private http: HttpClient,
     private cd: ChangeDetectorRef,
     private statsService: StatsService,
+    private tokenService: GithubTokenService
   ) {}
 
   private parsedRepo: string | null = null
@@ -314,11 +316,13 @@ export class RepoBrowserComponent implements OnInit {
     formData.append("commitMessage", `Update ${this.selectedFile.name}`)
     formData.append("repository", this.selectedRepo)
     formData.append("branch", this.selectedBranch)
-
+    const token   = this.tokenService.getToken();    
     this.http
       .post("http://localhost:8080/files/edit", formData, {
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
+          'X-GitHub-Token': token
+
         },
         responseType: "text",
       })
@@ -1476,74 +1480,56 @@ export class RepoBrowserComponent implements OnInit {
     }
   }
 
-  // Enhanced method to fetch commit info with avatar
-  fetchCommitInfoForFile(node: FileNode): void {
-    if (!this.selectedRepo || !this.selectedBranch) return
+fetchCommitInfoForFile(node: FileNode): void {
+  if (!this.selectedRepo || !this.selectedBranch) return;
 
-    console.log(`Fetching commit info for file: ${node.path}`)
+  console.log(`Fetching commit info for file: ${node.path}`);
 
-    if (node.name === "test.py" || node.path === "test.py") {
-      console.log(`🐍 Applying static data for test.py immediately`)
-      node.commitMessage = "added test file"
-      node.pusherName = "salmabm"
-      node.pushedAt = new Date(Date.now() - 47 * 60 * 1000).toISOString()
+  const [owner, repoName] = this.selectedRepo.split("/");
+  const url = `http://localhost:8080/api/github/metadata/${owner}/${repoName}/file-info?path=${encodeURIComponent(node.path)}&ref=${this.selectedBranch}`;
+  
+  // Set default avatar URL upfront in case avatar fetch fails or no user found
+  node.pusherAvatar = "https://github.com/identicons/default.png";
 
-      // Get avatar for static user
-      this.getGitHubUserAvatar("salmabm").then((avatar) => {
-        node.pusherAvatar = avatar
-        this.cd.detectChanges()
-      })
+  this.http.get<any>(url).subscribe({
+    next: async (response) => {
+      console.log(`Received metadata for file ${node.path}:`, response);
 
-      this.cd.detectChanges()
-      return
-    }
+      if (response?.latestCommit) {
+        node.commitMessage = response.latestCommit.commitMessage || "No commit message";
+        node.pusherName = (response.latestCommit.committerName || response.latestCommit.authorName || "Unknown").trim();
+        node.pushedAt = response.latestCommit.commitDate || "";
+        node.pusherEmail = response.latestCommit.committerEmail || response.latestCommit.authorEmail;
 
-    const [owner, repoName] = this.selectedRepo.split("/")
-
-    const url = `http://localhost:8080/api/github/metadata/${owner}/${repoName}/file-info?path=${encodeURIComponent(node.path)}&ref=${this.selectedBranch}`
-
-    console.log(`Fetching from GitHub metadata API: ${url}`)
-
-    this.http.get<any>(url).subscribe({
-      next: async (response) => {
-        console.log(`Received metadata for file ${node.path}:`, response)
-
-        if (response && response.latestCommit) {
-          node.commitMessage = response.latestCommit.commitMessage || "No commit message"
-          node.pusherName = response.latestCommit.committerName || response.latestCommit.authorName || "Unknown"
-          node.pushedAt = response.latestCommit.commitDate || ""
-          node.pusherEmail = response.latestCommit.committerEmail || response.latestCommit.authorEmail
-
-          // Get GitHub avatar for the committer
-          if (node.pusherName && node.pusherName !== "Unknown") {
-            try {
-              node.pusherAvatar = await this.getGitHubUserAvatar(node.pusherName)
-            } catch (error) {
-              console.warn(`Failed to get avatar for ${node.pusherName}:`, error)
-              node.pusherAvatar = "https://github.com/identicons/default.png"
-            }
+        // Fetch GitHub avatar dynamically for the actual pusherName if not unknown
+        if (node.pusherName && node.pusherName !== "Unknown") {
+          try {
+            node.pusherAvatar = await this.getGitHubUserAvatar(node.pusherName);
+          } catch (error) {
+            console.warn(`Failed to get avatar for ${node.pusherName}:`,  error);
           }
-
-          console.log(`Updated commit info for ${node.name} from metadata:`, {
-            message: node.commitMessage,
-            committer: node.pusherName,
-            date: node.pushedAt,
-            avatar: node.pusherAvatar,
-          })
-
-          // Trigger change detection to update the UI
-          this.cd.detectChanges()
-        } else {
-          console.log(`No commit metadata found for file: ${node.path}`)
-          this.fallbackToOldCommitMethod(node)
         }
-      },
-      error: (error) => {
-        console.error(`Error fetching metadata for ${node.path}:`, error)
-        this.fallbackToOldCommitMethod(node)
-      },
-    })
-  }
+
+        console.log(`Updated commit info for ${node.name}:`, {
+          message: node.commitMessage,
+          committer: node.pusherName,
+          date: node.pushedAt,
+          avatar: node.pusherAvatar,
+        });
+
+        this.cd.detectChanges();
+      } else {
+        console.log(`No commit metadata found for file: ${node.path}`);
+        this.fallbackToOldCommitMethod(node);
+      }
+    },
+    error: (error) => {
+      console.error(`Error fetching metadata for ${node.path}:`, error.message || error);
+      this.fallbackToOldCommitMethod(node);
+    },
+  });
+}
+
 
   // Enhanced fallback method with avatar support
   async fallbackToOldCommitMethod(node: FileNode): Promise<void> {

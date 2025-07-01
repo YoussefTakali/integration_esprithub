@@ -4,6 +4,8 @@ import  { Router } from "@angular/router"
 import  { RecentReposService } from "src/app/services/recent-repos.service"
 import  { ChangeDetectorRef } from "@angular/core"
 import  { RepoService } from "src/app/services/rep.service"
+import { GithubTokenService } from "src/app/services/github-token.service"
+import { HttpHeaders } from '@angular/common/http';
 
 interface GitHubRepo {
   id: number
@@ -33,7 +35,6 @@ export class RepoSelectorComponent implements OnInit {
   searchQuery = ""
   selectedRepo?: GitHubRepo
   currentUser = "" // Dynamic user
-
   // Filter options
   sortBy: "name" | "updated" | "created" = "updated"
   filterLanguage = ""
@@ -47,6 +48,7 @@ export class RepoSelectorComponent implements OnInit {
     private recentReposService: RecentReposService,
     private cdr: ChangeDetectorRef,
     private repoService: RepoService,
+    private tokenService: GithubTokenService
   ) {}
 
   ngOnInit(): void {
@@ -55,20 +57,32 @@ export class RepoSelectorComponent implements OnInit {
     this.loadStarredRepos()
   }
 
-  loadCurrentUser(): void {
-    // First try to get the current user from the GitHub API
-    this.http.get<any>("http://localhost:8080/api/user").subscribe({
-      next: (user) => {
-        this.currentUser = user.login || "salmabm"
-        console.log("✅ Current user loaded:", this.currentUser)
-      },
-      error: (error) => {
-        console.warn("⚠️ Could not load current user, using default:", error)
-        // Fallback: try to extract from first repository or use default
-        this.currentUser = "salmabm"
-      },
-    })
-  }
+loadCurrentUser(): void {
+  // 1️⃣  Grab the token from your front-end service
+  const token = this.tokenService.getToken();
+
+  // 2️⃣  Send it in the header your Spring controller is looking for
+  //     – either `Authorization: Bearer …` or your custom `X-GitHub-Token`
+  const headers = new HttpHeaders({
+    // If your Spring controller uses @RequestHeader("X-GitHub-Token")
+    'X-GitHub-Token': token,
+
+    // OR, if you kept the standard Bearer pattern:
+    // 'Authorization': `Bearer ${token}`,
+  });
+this.http.get<any[]>('http://localhost:8080/api/repos', { headers }).subscribe({
+  next: (repos) => {
+    this.userRepos = repos;
+    if (repos.length > 0) {
+      this.currentUser = repos[0].owner.login;
+    }
+    console.log('✅ Repos loaded, current user:', this.currentUser);
+  },
+  error: (error) => {
+    console.warn('⚠️ Could not load repos:', error);
+  },
+});
+}
 
   loadStarredRepos(): void {
     const saved = localStorage.getItem("starredRepos")
@@ -84,6 +98,7 @@ export class RepoSelectorComponent implements OnInit {
     console.log("🔄 Loading repositories...")
 
     this.repoService.loadrepo().subscribe({
+
       next: (data) => {
         console.log("✅ Repositories loaded:", data)
 

@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, catchError, map, of, throwError, tap, switchMap } from 'rxjs';
+import { GithubTokenService } from './github-token.service';
 
 export interface PushedFile {
   id: number;
@@ -22,6 +23,7 @@ export interface PushedFile {
   download_url?: string;
   html_url?: string;
   type?: string;
+
 }
 
 export interface GitHubCommit {
@@ -70,10 +72,17 @@ export class RepoService {
   private apiUrl = 'http://localhost:8080/api';
   private currentUser = 'salmabm'; // TODO: Make dynamic if needed
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private tokenService: GithubTokenService) {}
 
   getRepos(): Observable<string[]> {
-    return this.http.get<string[]>(`${this.apiUrl}/users/${this.currentUser}/repos`)
+    const token = this.tokenService.getToken();
+
+
+      const headers = new HttpHeaders({
+        'X-GitHub-Token': token
+      });
+
+    return this.http.get<string[]>(`${this.apiUrl}/users/${this.currentUser}/repos`,{headers})
       .pipe(
         catchError(error => {
           console.error('Error fetching repositories:', error);
@@ -82,7 +91,12 @@ export class RepoService {
       );
   }
   loadrepo(): Observable<string[]> {
-  return this.http.get<string[]>(`${this.apiUrl}/repos`)
+      const token = this.tokenService.getToken();
+
+      const headers = new HttpHeaders({
+        'X-GitHub-Token': token
+      });
+  return this.http.get<string[]>(`${this.apiUrl}/repos`,{headers})
     .pipe(
       catchError(error => {
         console.error('Error fetching repositories:', error);
@@ -91,95 +105,101 @@ export class RepoService {
     );
 }
 
-  getCommits(repo: string, branch: string): Observable<any[]> {
-    const [owner, repoName] = repo.split('/');
-    const url = `http://localhost:8080/api/repos/${owner}/${repoName}/commits?branch=${branch}`;
+getCommits(repo: string, branch: string): Observable<any[]> {
+  const token = this.tokenService.getToken();
 
-    console.log(`Fetching commits for repository: ${repo}, branch: ${branch}`);
+  const headers = new HttpHeaders({
+    'X-GitHub-Token': token
+  });
 
-    return this.http.get<any[]>(url).pipe(
-      tap(commits => {
-        console.log(`Received ${commits?.length || 0} commits for repository`);
+  const [owner, repoName] = repo.split('/');
+  const url = `http://localhost:8080/api/repos/${owner}/${repoName}/commits?branch=${branch}`;
 
-        // Log the first commit to understand its structure
-        if (commits && commits.length > 0) {
-          console.log('First commit structure:', commits[0]);
+  console.log(`Fetching commits for repository: ${repo}, branch: ${branch}`);
 
-          // Check if the commit has the expected properties
-          if (commits[0].commit) {
-            console.log('Commit message:', commits[0].commit.message);
-            console.log('Commit author:', commits[0].commit.author);
-            console.log('Commit committer:', commits[0].commit.committer);
-          } else {
-            console.warn('Commit object does not have expected structure');
-          }
+  return this.http.get<any[]>(url, { headers }).pipe(
+    tap(commits => {
+      console.log(`Received ${commits?.length || 0} commits for repository`);
+
+      if (commits && commits.length > 0) {
+        console.log('First commit structure:', commits[0]);
+
+        if (commits[0].commit) {
+          console.log('Commit message:', commits[0].commit.message);
+          console.log('Commit author:', commits[0].commit.author);
+          console.log('Commit committer:', commits[0].commit.committer);
+        } else {
+          console.warn('Commit object does not have expected structure');
         }
-      }),
-      catchError(error => {
-        console.error(`Error fetching commits for repository ${repo}:`, error);
-        return of([]);
-      })
-    );
-  }
+      }
+    }),
+    catchError(error => {
+      console.error(`Error fetching commits for repository ${repo}:`, error);
+      return of([]);
+    })
+  );
+}
+
 
   // Get commit history for a specific file using the new GitHub metadata endpoint
-  getFileCommits(repo: string, branch: string, path: string): Observable<any[]> {
-    const [owner, repoName] = repo.split('/');
+getFileCommits(repo: string, branch: string, path: string): Observable<any[]> {
+  const token = this.tokenService.getToken();
+  const [owner, repoName] = repo.split('/');
 
-    // Use the new GitHub metadata endpoint
-    const url = `http://localhost:8080/api/github/metadata/${owner}/${repoName}/file-info?path=${encodeURIComponent(path)}&ref=${branch}`;
+  const url = `http://localhost:8080/api/github/metadata/${owner}/${repoName}/file-info?path=${encodeURIComponent(path)}&ref=${branch}`;
 
-    console.log(`Fetching file metadata for: ${path} from ${url}`);
+  const headers = new HttpHeaders({
+    'X-GitHub-Token': token
+  });
 
-    return this.http.get<any>(url).pipe(
-      tap(response => {
-        console.log(`Received metadata for file ${path}:`, response);
-      }),
-      map(response => {
-        // Convert the response to the format expected by the component
-        if (response && response.latestCommit) {
-          const commit = {
-            commit: {
-              message: response.latestCommit.commitMessage || 'No commit message',
-              committer: {
-                name: response.latestCommit.committerName || 'Unknown',
-                date: response.latestCommit.commitDate || ''
-              },
-              author: {
-                name: response.latestCommit.authorName || 'Unknown',
-                date: response.latestCommit.commitDate || ''
-              }
+  console.log(`Fetching file metadata for: ${path} from ${url}`);
+
+  return this.http.get<any>(url, { headers }).pipe(
+    tap(response => console.log(`Received metadata for file ${path}:`, response)),
+    map(response => {
+      if (response && response.latestCommit) {
+        return [{
+          commit: {
+            message: response.latestCommit.commitMessage ?? 'No commit message',
+            committer: {
+              name: response.latestCommit.committerName ?? 'Unknown',
+              date: response.latestCommit.commitDate ?? ''
+            },
+            author: {
+              name: response.latestCommit.authorName ?? 'Unknown',
+              date: response.latestCommit.commitDate ?? ''
             }
-          };
-          return [commit]; // Return as array with one commit
-        }
-        return []; // Return empty array if no commit info
-      }),
-      catchError(error => {
-        console.error(`Error fetching metadata for file ${path}:`, error);
+          }
+        }];
+      }
+      return [];
+    }),
+    catchError(error => {
+      console.error(`Error fetching metadata for file ${path}:`, error);
 
-        // Try the old endpoint as fallback
-        const fallbackUrl = `http://localhost:8080/api/repos/${owner}/${repoName}/commits?branch=${branch}&path=${encodeURIComponent(path)}`;
-        console.log(`Trying fallback URL: ${fallbackUrl}`);
+      // fallback URL
+      const fallbackUrl = `http://localhost:8080/api/repos/${owner}/${repoName}/commits?branch=${branch}&path=${encodeURIComponent(path)}`;
 
-        return this.http.get<any[]>(fallbackUrl).pipe(
-          tap(commits => {
-            if (commits && Array.isArray(commits) && commits.length > 0) {
-              console.log(`Received ${commits.length} commits from fallback for file ${path}`);
-            }
-          }),
-          catchError(fallbackError => {
-            console.error(`Fallback also failed for file ${path}:`, fallbackError);
-            return of([]);
-          })
-        );
-      })
-    );
-  }
+      console.log(`Trying fallback URL: ${fallbackUrl}`);
 
-  // Generate a unique commit for a specific file
-  getLastCommitForFile(repo: string, branch: string, path: string): Observable<any> {
-    const [owner, repoName] = repo.split('/');
+      return this.http.get<any[]>(fallbackUrl, { headers }).pipe(
+        tap(commits => {
+          if (Array.isArray(commits) && commits.length > 0) {
+            console.log(`Received ${commits.length} commits from fallback for file ${path}`);
+          }
+        }),
+        catchError(fallbackError => {
+          console.error(`Fallback also failed for file ${path}:`, fallbackError);
+          return of([]);
+        })
+      );
+    })
+  );
+}
+
+// Generate a unique commit for a specific file
+getLastCommitForFile(repo: string, branch: string, path: string): Observable<any> {
+  const [owner, repoName] = repo.split('/');
 
     console.log(`Generating unique commit info for file: ${path}`);
 
@@ -255,410 +275,405 @@ export class RepoService {
     }
     return Math.abs(hash);
   }
+getFileWithCommitInfo(repo: string, branch: string, path: string): Observable<any> {
+  const token = this.tokenService.getToken();
 
-  // Get file with commit information using the GitHub metadata API
-  getFileWithCommitInfo(repo: string, branch: string, path: string): Observable<any> {
-    const [owner, repoName] = repo.split('/');
+  const [owner, repoName] = repo.split('/');
+  if (!owner || !repoName) {
+    console.error(`Invalid repo format: ${repo}. Expected 'owner/repo'.`);
+    return of(null);
+  }
 
-    // First get the file metadata
-    const fileUrl = `http://localhost:8080/api/repos/${owner}/${repoName}/contents/${encodeURIComponent(path)}?ref=${branch}`;
+  const encodedPath = encodeURIComponent(path);
 
-    // Use the new GitHub metadata endpoint for commit info
-    const metadataUrl = `http://localhost:8080/api/github/metadata/${owner}/${repoName}/file-info?path=${encodeURIComponent(path)}&ref=${branch}`;
+  const fileUrl = `http://localhost:8080/api/repos/${owner}/${repoName}/contents/${encodedPath}?ref=${branch}`;
+  const metadataUrl = `http://localhost:8080/api/github/metadata/${owner}/${repoName}/file-info?path=${encodedPath}&ref=${branch}`;
+  const headers = new HttpHeaders({
+    'X-GitHub-Token': token
+  });
 
-    console.log(`Fetching file metadata from: ${fileUrl}`);
-    console.log(`Fetching commit metadata from: ${metadataUrl}`);
 
-    // Get both file metadata and commit info in parallel
-    return this.http.get<any>(fileUrl).pipe(
-      switchMap(file => {
-        console.log(`Received file metadata for ${path}:`, file);
-
-        // Now get the commit info from the GitHub metadata API
-        return this.http.get<any>(metadataUrl).pipe(
-          map(metadata => {
-            console.log(`Received commit metadata for ${path}:`, metadata);
-
-            // If we have commit metadata, use it
-            if (metadata && metadata.latestCommit) {
-              return {
-                ...file,
-                commitMessage: metadata.latestCommit.commitMessage || 'No commit message',
-                pusherName: metadata.latestCommit.committerName || metadata.latestCommit.authorName || 'Unknown',
-                pushedAt: metadata.latestCommit.commitDate || ''
-              };
-            }
-
-            // If no metadata found, use default values
+  return this.http.get<any>(fileUrl, { headers }).pipe(
+    switchMap(file =>
+      this.http.get<any>(metadataUrl, { headers }).pipe(
+        map(metadata => {
+          if (metadata?.latestCommit) {
             return {
               ...file,
-              commitMessage: 'No commit history',
-              pusherName: 'Unknown',
-              pushedAt: ''
+              commitMessage: metadata.latestCommit.commitMessage ?? 'No commit message',
+              pusherName: metadata.latestCommit.committerName ?? metadata.latestCommit.authorName ?? 'Unknown',
+              pushedAt: metadata.latestCommit.commitDate ?? ''
             };
-          }),
-          catchError(error => {
-            console.error(`Error fetching commit metadata for ${path}:`, error);
+          }
+          return { ...file, commitMessage: 'No commit history', pusherName: 'Unknown', pushedAt: '' };
+        }),
+        catchError(errMeta => {
+          console.error(`Error fetching commit metadata for ${path}:`, errMeta);
 
-            // If we can't get metadata, fall back to the regular commit history API
-            return this.getFileCommits(repo, branch, path).pipe(
-              map(commits => {
-                console.log(`Received ${commits?.length || 0} commits for file ${path}`);
-
-                // If we have commits, use the latest one
-                if (commits && commits.length > 0) {
-                  const latestCommit = commits[0];
-                  console.log(`Latest commit for ${path}:`, latestCommit);
-
-                  return {
-                    ...file,
-                    commitMessage: latestCommit.commit?.message || 'No commit message',
-                    pusherName: latestCommit.commit?.committer?.name || latestCommit.commit?.author?.name || 'Unknown',
-                    pushedAt: latestCommit.commit?.committer?.date || latestCommit.commit?.author?.date || ''
-                  };
-                }
-
-                // If no commits found, use default values
+          // Fallback: reuse existing method
+          return this.getFileCommits(repo, branch, path).pipe(
+            map(commits => {
+              if (commits?.length) {
+                const c = commits[0];
                 return {
                   ...file,
-                  commitMessage: 'No commit history',
-                  pusherName: 'Unknown',
-                  pushedAt: ''
+                  commitMessage: c.commit?.message ?? 'No commit message',
+                  pusherName: c.commit?.committer?.name ?? c.commit?.author?.name ?? 'Unknown',
+                  pushedAt: c.commit?.committer?.date ?? c.commit?.author?.date ?? ''
                 };
-              }),
-              catchError(error => {
-                console.error(`Error fetching commits for file ${path}:`, error);
+              }
+              return { ...file, commitMessage: 'No commit history', pusherName: 'Unknown', pushedAt: '' };
+            }),
+            catchError(fallbackError => {
+              console.error(`Fallback also failed for file ${path}:`, fallbackError);
+              return of({ ...file, commitMessage: 'Error fetching commit info', pusherName: 'Unknown', pushedAt: '' });
+            })
+          );
+        })
+      )
+    ),
+    catchError(errFile => {
+      console.error(`Error fetching file metadata for ${path}:`, errFile);
+      return of({
+        name: path.split('/').pop(),
+        path,
+        type: 'file',
+        commitMessage: 'Error fetching file',
+        pusherName: 'Unknown',
+        pushedAt: ''
+      });
+    })
+  );
+}
 
-                // If we can't get commits, at least return the file metadata
-                return of({
-                  ...file,
-                  commitMessage: 'Error fetching commit info',
-                  pusherName: 'Unknown',
-                  pushedAt: ''
-                });
-              })
-            );
-          })
-        );
-      }),
-      catchError(error => {
-        console.error(`Error fetching file metadata for ${path}:`, error);
 
-        // Create a minimal file object with error information
-        return of({
-          name: path.split('/').pop(),
-          path: path,
-          type: 'file',
-          commitMessage: 'Error fetching file',
-          pusherName: 'Unknown',
-          pushedAt: ''
-        });
-      })
-    );
+/* ------------------------------------------------------------------ */
+/* 2) getAllFilesWithCommitInfo                                       */
+/* ------------------------------------------------------------------ */
+getAllFilesWithCommitInfo(repo: string, branch: string): Observable<any[]> {
+  const token = this.tokenService.getToken();
+
+  const [owner, repoName] = repo.split('/');
+  if (!owner || !repoName) {
+    console.error(`Invalid repo format: ${repo}. Expected 'owner/repo'.`);
+    return of([]);
   }
 
-  // Get all files with their latest commit information using a direct API call
-  getAllFilesWithCommitInfo(repo: string, branch: string): Observable<any[]> {
-    const [owner, repoName] = repo.split('/');
+  const url = `http://localhost:8080/api/repos/${owner}/${repoName}/contents?ref=${branch}&with_commit_info=true`;
+  const headers = new HttpHeaders({ 'X-GitHub-Token': token });
 
-    // Use a direct API call to get files with commit information
-    const url = `http://localhost:8080/api/repos/${owner}/${repoName}/contents?ref=${branch}&with_commit_info=true`;
+  return this.http.get<any[]>(url, { headers }).pipe(
+    tap(files => console.log('Received files with commit info:', files)),
+    map(files => {
+      if (!Array.isArray(files) || files.length === 0) return [];
 
-    console.log(`Fetching files with commit info from: ${url}`);
-
-    return this.http.get<any[]>(url).pipe(
-      tap(response => {
-        console.log(`Received files with commit info response:`, response);
-
-        // Check if the response is an array and log the first item
-        if (Array.isArray(response) && response.length > 0) {
-          console.log('First item in response:', response[0]);
-          console.log('Properties of first item:', Object.keys(response[0]));
-        }
-      }),
-      map(files => {
-        if (!files || !Array.isArray(files) || files.length === 0) {
-          console.log('No files found in repository');
-          return [];
+      return files.map(file => {
+        if (file.type === 'dir') {
+          return { ...file, commitMessage: 'Directory', pusherName: '', pushedAt: '' };
         }
 
-        console.log(`Processing ${files.length} files to add commit info`);
-
-        // Process each file to ensure it has commit information
-        return files.map(file => {
-          // For directories, just add placeholder commit info
-          if (file.type === 'dir') {
-            return {
-              ...file,
-              commitMessage: 'Directory',
-              pusherName: '',
-              pushedAt: ''
-            };
-          }
-
-          // Static data for specific files
-          if (file.name === 'test.py' || file.path === 'test.py') {
-            console.log(`Adding static commit info for test.py`);
-            return {
-              ...file,
-              commitMessage: 'added test file',
-              pusherName: 'salmabm',
-              pushedAt: new Date(Date.now() - 47 * 60 * 1000).toISOString() // 47 minutes ago
-            };
-          }
-
-          // If the file already has commit information, use it
-          if (file.commit) {
-            console.log(`File ${file.path} already has commit info:`, file.commit);
-            return {
-              ...file,
-              commitMessage: file.commit.message,
-              pusherName: file.commit.committer?.name || file.commit.author?.name || 'Unknown',
-              pushedAt: file.commit.committer?.date || file.commit.author?.date || ''
-            };
-          }
-
-          // If the file has sha property, try to use it to get commit info
-          if (file.sha) {
-            console.log(`File ${file.path} has sha: ${file.sha}`);
-
-            // We'll use a placeholder for now, but in a real implementation
-            // we would make an API call to get the commit info for this sha
-            return {
-              ...file,
-              commitMessage: 'Latest commit',
-              pusherName: 'Repository Owner',
-              pushedAt: new Date().toISOString()
-            };
-          }
-
-          // If we can't find commit info, use default values
-          console.log(`No commit info found for file ${file.path}`);
+        // Special test case
+        if (file.name === 'test.py' || file.path === 'test.py') {
           return {
             ...file,
-            commitMessage: 'No commit info',
-            pusherName: 'Unknown',
-            pushedAt: ''
+            commitMessage: 'added test file',
+            pusherName: 'salmabm',
+            pushedAt: new Date(Date.now() - 47 * 60 * 1000).toISOString()
           };
-        });
-      }),
-      catchError(error => {
-        console.error('Error getting files with commit info:', error);
-        return of([]);
-      })
-    );
+        }
+
+        // Real commit info available
+        if (file.commit) {
+          const committerName = file.commit.committer?.name ?? file.commit.author?.name ?? 'Unknown';
+          const commitDate = file.commit.committer?.date ?? file.commit.author?.date ?? '';
+          return {
+            ...file,
+            commitMessage: file.commit.message,
+            pusherName: committerName,
+            pushedAt: commitDate
+          };
+        }
+
+        // Fallback if sha exists but no commit info
+        if (file.sha) {
+          return {
+            ...file,
+            commitMessage: 'Latest commit',
+            pusherName: 'Repository Owner',
+            pushedAt: new Date().toISOString()
+          };
+        }
+
+        // No commit info at all
+        return { ...file, commitMessage: 'No commit info', pusherName: 'Unknown', pushedAt: '' };
+      });
+    }),
+    catchError(err => {
+      console.error('Error getting files with commit info:', err);
+      return of([]);
+    })
+  );
+}
+
+getBranches(owner: string, repoName: string): Observable<string[]> {
+  const token = this.tokenService.getToken();
+  const headers = new HttpHeaders({
+    'X-GitHub-Token': token
+  });
+
+  const url = `http://localhost:8080/api/repos/${owner}/${repoName}/branches`;
+
+  return this.http.get<string[]>(url, { headers }).pipe(
+    catchError(err => {
+      console.error('Error fetching branches:', err);
+      return of([]); // Return empty array on error
+    })
+  );
+}
+
+getFileMetadata(repo: string, branch: string, path: string): Observable<any> {
+  const token = this.tokenService.getToken();
+  const [owner, repoName] = repo.split('/');
+
+  if (!owner || !repoName) {
+    console.error(`Invalid repo format: ${repo}. Expected 'owner/repo'.`);
+    return throwError(() => new Error('Invalid repo format'));
   }
 
+  const url = `http://localhost:8080/api/file-metadata` +
+    `?owner=${encodeURIComponent(owner)}` +
+    `&repo=${encodeURIComponent(repoName)}` +
+    `&branch=${encodeURIComponent(branch)}` +
+    `&path=${encodeURIComponent(path)}`;
 
-  getBranches(owner: string, repoName: string): Observable<string[]> {
-    return this.http.get<string[]>(`http://localhost:8080/api/repos/${owner}/${repoName}/branches`)
-      .pipe(
-        catchError(error => {
-          console.error('Error fetching branches:', error);
-          return of([]);
+  const headers = new HttpHeaders({
+    'X-GitHub-Token': token
+  });
+
+  console.log(`Fetching file metadata for: ${path} from ${url}`);
+
+  return this.http.get<any>(url, { headers }).pipe(
+    tap(response => console.log('Received file metadata:', response)),
+    catchError(error => {
+      console.error('Error fetching file metadata:', error);
+      return throwError(() => new Error(`Failed to load file metadata: ${error.message}`));
+    })
+  );
+}
+
+getRepoContents(owner: string, repoName: string, branch: string, path: string = ''): Observable<any> {
+  const token = this.tokenService.getToken();
+
+  let url = `http://localhost:8080/api/contents` +
+    `?owner=${encodeURIComponent(owner)}` +
+    `&repo=${encodeURIComponent(repoName)}` +
+    `&branch=${encodeURIComponent(branch)}`;
+
+  if (path) {
+    url += `&path=${encodeURIComponent(path)}`;
+  }
+
+  const headers = new HttpHeaders({
+    'X-GitHub-Token': token
+  });
+
+
+  console.log(`Fetching repository contents from: ${url}`);
+
+  return this.http.get<any>(url, { headers }).pipe(
+    tap(response => {
+      console.log('Repository contents response:', response);
+
+      if (Array.isArray(response) && response.length > 0) {
+        console.log('First item:', response[0]);
+        console.log('Keys:', Object.keys(response[0]));
+
+        if (response[0].commit) {
+          console.log('Commit info exists');
+        } else {
+          console.log('No commit info');
+        }
+      }
+    }),
+    catchError(error => {
+      console.error('Error fetching repository contents:', error);
+      return throwError(() => new Error('Failed to fetch repository contents'));
+    })
+  );
+}
+getFileContent(repo: string, branch: string, path: string): Observable<string> {
+  const token = this.tokenService.getToken();
+  const [owner, repoName] = repo.split('/');
+
+  if (!owner || !repoName) {
+    return throwError(() => new Error('Invalid repo format, expected "owner/repo"'));
+  }
+
+  const url = `http://localhost:8080/api/file-content` +
+              `?owner=${encodeURIComponent(owner)}` +
+              `&repo=${encodeURIComponent(repoName)}` +
+              `&branch=${encodeURIComponent(branch)}` +
+              `&path=${encodeURIComponent(path)}`;
+
+  const headers = new HttpHeaders({
+    'X-GitHub-Token': token
+  });
+
+  console.log(`Fetching file content for: ${path} (branch: ${branch})`);
+
+  return this.http.get(url, { headers, responseType: 'text' }).pipe(
+    tap(content => console.log(`Received file content (${content.length} bytes)`)),
+    catchError(error => {
+      console.error(`Error fetching file content for ${path}:`, error);
+      return throwError(() => new Error(`Failed to load file content: ${error.message}`));
+    })
+  );
+}
+
+getAllContentByUserAndBranch(branch: string): Observable<string[]> {
+  const token = this.tokenService.getToken();
+
+  const headers = new HttpHeaders({
+    'X-GitHub-Token': token
+  });
+
+
+  const url = `${this.apiUrl}/users/${encodeURIComponent(this.currentUser)}/branches/${encodeURIComponent(branch)}/content`;
+
+  console.log(`Fetching all content for user ${this.currentUser} on branch ${branch}`);
+
+  return this.http.get<string[]>(url, { headers }).pipe(
+    catchError(error => {
+      console.error('Error fetching content by user and branch:', error);
+      return of([]);  // fallback to empty list on error
+    })
+  );
+}
+
+getCloneCommand(owner: string, repoName: string): Observable<string> {
+  const token = this.tokenService.getToken();
+
+  const headers = new HttpHeaders({
+    'X-GitHub-Token': token
+  });
+
+  const url = `${this.apiUrl}/clone/${encodeURIComponent(owner)}/${encodeURIComponent(repoName)}/command?protocol=https`;
+
+  console.log(`Attempting to get clone command from: ${url}`);
+
+  return this.http.get<any>(url, { headers }).pipe(
+    tap(response => console.log('Clone command response:', response)),
+    map(response => {
+      if (response) {
+        if (typeof response === 'string') return response;
+        if ('command' in response && response.command) return response.command;
+        if ('url' in response && response.url) return response.url;
+      }
+      console.warn('Could not extract clone URL from response, using fallback URL');
+      return `https://github.com/${owner}/${repoName}.git`;
+    }),
+    catchError(error => {
+      console.error('Error fetching clone command:', error);
+      console.error('Request URL was:', url);
+      // fallback clone URL
+      return of(`https://github.com/${owner}/${repoName}.git`);
+    })
+  );
+}deleteFile(
+  repo: string,
+  branch: string,
+  path: string,
+  commitMessage: string = 'Delete file'
+): Observable<any> {
+
+  const token = this.tokenService.getToken();
+  if (!token) {
+    return throwError(() => new Error('GitHub token not found. Please login first.'));
+  }
+
+  const [owner, repoName] = repo.split('/');
+
+  const headers = new HttpHeaders({
+    Authorization: `Bearer ${token}`,         // ← MUST be Authorization
+    Accept: 'application/vnd.github+json'
+  });
+
+  // 1️⃣  Get current SHA for the file -------------------------------
+  const getFileUrl =
+    `https://api.github.com/repos/${owner}/${repoName}` +
+    `/contents/${encodeURIComponent(path)}?ref=${branch}`;
+
+  return this.http.get<{ sha: string }>(getFileUrl, { headers }).pipe(
+    switchMap(fileInfo => {
+
+      // 2️⃣  Issue the DELETE (actually PUT) -------------------------
+      const deleteUrl =
+        `https://api.github.com/repos/${owner}/${repoName}/contents/${encodeURIComponent(path)}`;
+
+      const body = {
+        message: commitMessage,
+        branch,
+        sha: fileInfo.sha
+      };
+
+      console.log(`Deleting ${path} (sha=${fileInfo.sha}) from ${repo}@${branch}`);
+
+      return this.http.put(deleteUrl, body, { headers });  // Observable<any>
+    }),
+    tap(() => console.log(`✅ ${path} deleted`)),
+    catchError(err => {
+      console.error(`❌ Failed to delete ${path}:`, err);
+      return throwError(() => new Error(err?.message || 'Unknown GitHub error'));
+    })
+  );
+}
+
+downloadRepoAsZip(owner: string, repoName: string, branch: string = 'main'): Observable<Blob> {
+  const token = this.tokenService.getToken();
+
+  const headers = new HttpHeaders({
+    'X-GitHub-Token': token
+  });
+
+  const url = `${this.apiUrl}/repos/${owner}/${repoName}/download?branch=${branch}`;
+  console.log(`Attempting to download repository from: ${url}`);
+
+  const githubUrl = `https://github.com/${owner}/${repoName}/archive/refs/heads/${branch}.zip`;
+  console.log(`Fallback GitHub URL: ${githubUrl}`);
+
+  return this.http.get(url, { headers, responseType: 'blob' }).pipe(
+    tap(response => console.log('Download successful, received blob:', response.type, response.size)),
+    catchError(error => {
+      console.error('Error downloading repository from API:', error);
+      console.error('Request URL was:', url);
+      console.log('Trying direct GitHub download instead...');
+
+      // Direct GitHub download usually does NOT require token (public repo)
+      return this.http.get(githubUrl, { responseType: 'blob' }).pipe(
+        tap(response => console.log('GitHub download successful, received blob:', response.type, response.size)),
+        catchError(githubError => {
+          console.error('Error downloading from GitHub:', githubError);
+          console.error('GitHub URL was:', githubUrl);
+          return throwError(() => new Error(`Failed to download repository: ${error.message}`));
         })
       );
-  }
+    })
+  );
+}getCommitDetails(owner: string, repo: string, sha: string): Observable<GitHubCommit> {
+  const token = this.tokenService.getToken();
 
-  // Add this to your repo.service.ts
-  getFileMetadata(repo: string, branch: string, path: string): Observable<any> {
-    const [owner, repoName] = repo.split('/');
-
-    const url = `http://localhost:8080/api/file-metadata?owner=${encodeURIComponent(owner)}&repo=${encodeURIComponent(repoName)}&branch=${encodeURIComponent(branch)}&path=${encodeURIComponent(path)}`;
-
-    console.log(`Fetching file metadata for: ${path}`);
-
-    return this.http.get<any>(url).pipe(
-      tap(response => console.log('Received file metadata:', response)),
-      catchError(error => {
-        console.error(`Error fetching file metadata:`, error);
-        return throwError(() => new Error(`Failed to load file metadata: ${error.message}`));
-      })
-    );
-  }
-  getRepoContents(owner: string, repoName: string, branch: string, path: string = ''): Observable<any> {
-    let url = `http://localhost:8080/api/contents?owner=${owner}&repo=${repoName}&branch=${branch}`;
-    if (path) {
-      url += `&path=${encodeURIComponent(path)}`;
-    }
-  
-    console.log(`Fetching repository contents from: ${url}`);
-  
-    return this.http.get(url).pipe(
-      tap(response => {
-        console.log('Repository contents response:', response);
-  
-        if (Array.isArray(response) && response.length > 0) {
-          console.log('First item:', response[0]);
-          console.log('Keys:', Object.keys(response[0]));
-  
-          if (response[0].commit) {
-            console.log('Commit info exists');
-          } else {
-            console.log('No commit info');
-          }
-        }
-      }),
-      catchError(error => {
-        console.error('Error fetching repository contents:', error);
-        return throwError(() => new Error('Failed to fetch repository contents'));
-      })
-    );
-  }
-  
+  const headers = new HttpHeaders({
+    'X-GitHub-Token': token
+  });
 
 
-  getFileContent(repo: string, branch: string, path: string): Observable<string> {
-    const [owner, repoName] = repo.split('/');
+  const url = `${this.apiUrl}/repos/${owner}/${repo}/commits/${sha}`;
+  console.log(`🔄 RepoService: Fetching commit details from ${url}`);
 
-    // Make sure all parameters are properly encoded
-    const url = `http://localhost:8080/api/file-content?owner=${encodeURIComponent(owner)}&repo=${encodeURIComponent(repoName)}&branch=${encodeURIComponent(branch)}&path=${encodeURIComponent(path)}`;
-
-    console.log(`Fetching file content for: ${path} (branch: ${branch})`);
-
-    return this.http.get(url, { responseType: 'text' }).pipe(
-      tap(content => console.log(`Received file content (${content.length} bytes)`)),
-      catchError(error => {
-        console.error(`Error fetching file content for ${path}:`, error);
-        return throwError(() => new Error(`Failed to load file content: ${error.message}`));
-      })
-    );
-  }
-
-  getAllContentByUserAndBranch(branch: string): Observable<string[]> {
-    return this.http.get<string[]>(
-      `${this.apiUrl}/users/${this.currentUser}/branches/${branch}/content`
-    ).pipe(
-      catchError(error => {
-        console.error('Error fetching content by user and branch:', error);
-        return of([]);
-      })
-    );
-  }
-
-  // Get HTTPS clone command - using the exact endpoint format
-  getCloneCommand(owner: string, repoName: string): Observable<string> {
-    // Using the exact endpoint format you provided: GET /api/clone/{owner}/{repo}/command?protocol=https
-    const url = `${this.apiUrl}/clone/${owner}/${repoName}/command?protocol=https`;
-    console.log(`Attempting to get clone command from: ${url}`);
-
-    return this.http.get<any>(url).pipe(
-      tap(response => console.log('Clone command response:', response)),
-      map(response => {
-        // Extract the clone URL from the response
-        // The response format might be {command: string} or something else
-        if (response) {
-          if (response.command) return response.command;
-          if (response.url) return response.url;
-          if (typeof response === 'string') return response;
-        }
-
-        // Fallback to a standard GitHub URL format if we can't extract the URL
-        console.warn('Could not extract clone URL from response, using fallback URL');
-        return `https://github.com/${owner}/${repoName}.git`;
-      }),
-      catchError(error => {
-        console.error('Error fetching clone command:', error);
-        console.error('Request URL was:', url);
-
-        // Fallback to a standard GitHub URL format if the API fails
-        return of(`https://github.com/${owner}/${repoName}.git`);
-      })
-    );
-  }
-
-  // Delete a file from GitHub repository
-  deleteFile(repo: string, branch: string, path: string, commitMessage: string = 'Delete file'): Observable<any> {
-    const [owner, repoName] = repo.split('/');
-
-    // Use the correct GitHub token
-    const token = 'xx'; // Token provided by the user
-
-    if (!token) {
-      return throwError(() => new Error('GitHub token not found. Please login first.'));
-    }
-
-    // Set up headers with authentication
-    const headers = new HttpHeaders({
-      'Authorization': `Bearer ${token}`,
-      'Accept': 'application/vnd.github+json'
-    });
-
-    // First, we need to get the file's SHA directly from GitHub API
-    const getFileUrl = `https://api.github.com/repos/${owner}/${repoName}/contents/${encodeURIComponent(path)}?ref=${branch}`;
-
-    console.log(`Getting file SHA for: ${path} from ${repo} (branch: ${branch})`);
-    console.log(`URL: ${getFileUrl}`);
-
-    return this.http.get<any>(getFileUrl, { headers }).pipe(
-      switchMap(fileInfo => {
-        // Now we have the file info with SHA, we can delete it
-        const deleteUrl = `https://api.github.com/repos/${owner}/${repoName}/contents/${encodeURIComponent(path)}`;
-
-        console.log(`Attempting to delete file: ${path} from ${repo} (branch: ${branch}) with SHA: ${fileInfo.sha}`);
-
-        // Prepare the request body with SHA
-        const body = {
-          message: commitMessage,
-          branch: branch,
-          sha: fileInfo.sha
-        };
-
-        return this.http.delete(deleteUrl, { headers, body }).pipe(
-          tap(response => console.log('File deletion successful:', response)),
-          catchError(error => {
-            console.error(`Error deleting file ${path}:`, error);
-            return throwError(() => new Error(`Failed to delete file: ${error.message}`));
-          })
-        );
-      }),
-      catchError(error => {
-        console.error(`Error getting file info for ${path}:`, error);
-        return throwError(() => new Error(`Failed to get file info: ${error.message}`));
-      })
-    );
-  }
-
-  // Download repository as ZIP - using GitHub directly as a fallback
-  downloadRepoAsZip(owner: string, repoName: string, branch: string = 'main'): Observable<Blob> {
-    // First try the API endpoint
-    const url = `${this.apiUrl}/repos/${owner}/${repoName}/download?branch=${branch}`;
-    console.log(`Attempting to download repository from: ${url}`);
-
-    // Create a GitHub URL as fallback
-    const githubUrl = `https://github.com/${owner}/${repoName}/archive/refs/heads/${branch}.zip`;
-    console.log(`Fallback GitHub URL: ${githubUrl}`);
-
-    // Try the API endpoint first
-    return this.http.get(url, {
-      responseType: 'blob'
-    }).pipe(
-      tap(response => console.log('Download successful, received blob:', response.type, response.size)),
-      catchError(error => {
-        console.error('Error downloading repository from API:', error);
-        console.error('Request URL was:', url);
-        console.log('Trying direct GitHub download instead...');
-
-        // If the API fails, try GitHub directly
-        return this.http.get(githubUrl, {
-          responseType: 'blob'
-        }).pipe(
-          tap(response => console.log('GitHub download successful, received blob:', response.type, response.size)),
-          catchError(githubError => {
-            console.error('Error downloading from GitHub:', githubError);
-            console.error('GitHub URL was:', githubUrl);
-
-            // If both fail, throw an error
-            return throwError(() => new Error(`Failed to download repository: ${error.message}`));
-          })
-        );
-      })
-    );
-  }
-getCommitDetails(owner: string, repo: string, sha: string): Observable<GitHubCommit> {
-    const url = `${this.apiUrl}/repos/${owner}/${repo}/commits/${sha}`;
-    console.log(`🔄 RepoService: Fetching commit details from ${url}`);
-    return this.http.get<GitHubCommit>(url);
-  }
-
-}
+  return this.http.get<GitHubCommit>(url, { headers }).pipe(
+    catchError(error => {
+      console.error(`Error fetching commit details for ${sha}:`, error);
+      return throwError(() => new Error(`Failed to load commit details: ${error.message}`));
+    })
+  );
+}}
